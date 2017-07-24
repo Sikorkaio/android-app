@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    val textbox = findViewById(R.id.textbox) as TextView
+    val textbox = findViewById<TextView>(R.id.textbox)
     textbox.text = ""
 
     startService(Intent(this, MyService::class.java))

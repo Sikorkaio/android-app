@@ -1,4 +1,4 @@
-package io.sikorka.test_geth
+package io.sikorka.test_geth.io
 
 import okio.Okio
 import java.io.File

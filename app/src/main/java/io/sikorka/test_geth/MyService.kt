@@ -11,6 +11,8 @@ import android.os.Environment
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import io.sikorka.test_geth.io.copyToDirectory
+import io.sikorka.test_geth.io.copyToFile
 import org.ethereum.geth.*
 import java.io.File
 import java.util.*
@@ -20,9 +22,7 @@ class MyService : Service() {
   private lateinit var notificationManager: NotificationManager
   private lateinit var ethContext: Context
 
-  override fun onBind(intent: Intent): IBinder? {
-    return null
-  }
+  override fun onBind(intent: Intent): IBinder? = null
 
   override fun onCreate() {
     super.onCreate()
@@ -30,12 +30,16 @@ class MyService : Service() {
     notificationManager = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager
     val notification = createNotification("Starting...")
     startForeground(NOTIFICATION_ID, notification)
-    start()
   }
 
   override fun onDestroy() {
     super.onDestroy()
     stopForeground(true)
+  }
+
+  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    start()
+    return super.onStartCommand(intent, flags, startId)
   }
 
   private fun createNotification(message: String, count: Int = 0): Notification? {
@@ -90,7 +94,7 @@ class MyService : Service() {
     }
 
     val ec = node.ethereumClient
-    ec.subscribeNewHead(ethContext, handler, 16)
+    ec.subscribeNewHead(ethContext, handler, 32)
   }
 
   private fun syncProgress(ec: EthereumClient): String {

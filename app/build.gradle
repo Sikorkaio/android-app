@@ -1,18 +1,18 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-  compileSdkVersion 25
-  buildToolsVersion "25.0.3"
+  compileSdkVersion 26
+  buildToolsVersion "26.0.0"
   defaultConfig {
     applicationId "io.sikorka.test_geth"
-    minSdkVersion 21
-    targetSdkVersion 25
+    minSdkVersion 16
+    targetSdkVersion 26
     versionCode 1
-    versionName "1.0"
+    versionName "1.0.0"
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
   buildTypes {
@@ -31,7 +31,17 @@ dependencies {
   implementation 'org.ethereum:geth:1.6.7'
   implementation 'com.squareup.okio:okio:1.13.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-  implementation 'com.android.support:appcompat-v7:25.4.0'
-  testImplementation 'junit:junit:4.12'
+  implementation 'com.android.support:appcompat-v7:26.0.0'
+  implementation 'com.android.support:recyclerview-v7:26.0.0'
+
   implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+  //dependency injection
+  implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.0.7'
+  implementation 'com.github.stephanenicolas.toothpick:smoothie:1.0.7'
+  kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.0.7'
+
+  //Unit testing
+  testImplementation 'junit:junit:4.12'
+  testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.0.7'
 }
