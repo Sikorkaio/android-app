@@ -28,18 +28,24 @@ dependencies {
   androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
+
+  // Support libraries
+  implementation 'com.android.support:appcompat-v7:26.0.0'
+  implementation 'com.android.support:recyclerview-v7:26.0.0'
+  implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
   implementation 'org.ethereum:geth:1.6.7'
   implementation 'com.squareup.okio:okio:1.13.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-  implementation 'com.android.support:appcompat-v7:26.0.0'
-  implementation 'com.android.support:recyclerview-v7:26.0.0'
-
-  implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
   //dependency injection
   implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.0.7'
   implementation 'com.github.stephanenicolas.toothpick:smoothie:1.0.7'
   kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.0.7'
+
+  //view injection
+  implementation 'com.jakewharton:butterknife:8.7.0'
+  kapt 'com.jakewharton:butterknife-compiler:8.7.0'
 
   //Unit testing
   testImplementation 'junit:junit:4.12'

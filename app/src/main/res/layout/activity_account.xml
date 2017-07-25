@@ -5,12 +5,13 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:padding="16dp"
-  tools:context="io.sikorka.test_geth.accounts.AccountActivity">
+  tools:context="io.sikorka.test_geth.ui.accounts.AccountActivity">
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/accounts_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:listitem="@layout/item_account">
 
   </android.support.v7.widget.RecyclerView>
 
