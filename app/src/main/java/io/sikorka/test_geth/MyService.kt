@@ -47,7 +47,7 @@ class MyService : Service() {
 
     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
-    val notification = NotificationCompat.Builder(this)
+    val notification = NotificationCompat.Builder(this, "service")
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle("Geth Test")
         .setContentText(message)

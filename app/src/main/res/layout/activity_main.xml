@@ -7,19 +7,6 @@
   android:layout_height="match_parent"
   tools:context="io.sikorka.test_geth.MainActivity">
 
-  <android.support.design.widget.TextInputLayout
-    android:id="@+id/usernameWrapper"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <EditText
-      android:id="@+id/username"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:inputType="textEmailAddress"
-      android:hint="Username"/>
-
-  </android.support.design.widget.TextInputLayout>
 
   <TextView
     android:id="@+id/textbox"
