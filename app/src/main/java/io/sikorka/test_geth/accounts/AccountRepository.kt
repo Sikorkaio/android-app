@@ -1,6 +1,7 @@
 package io.sikorka.test_geth.accounts
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.sikorka.test_geth.di.qualifiers.KeystorePath
 import io.sikorka.test_geth.helpers.Lce
 import org.ethereum.geth.Account
@@ -26,4 +27,22 @@ class AccountRepository
         .onErrorReturn { Lce.failure(it) }
 
   }
+
+  fun exportAccount(account: Account, passphrase: String, keyPassphrase: String): Single<ByteArray> {
+    return Single.fromCallable { keystore.exportKey(account, passphrase, keyPassphrase) }
+  }
+
+  fun deleteAccount(account: Account, passphrase: String) {
+    keystore.deleteAccount(account, passphrase)
+  }
+
+  fun importAccount(key: ByteArray, keyPassphrase: String, passphrase: String) : Single<Account> {
+    return Single.fromCallable { keystore.importKey(key, keyPassphrase, passphrase) }
+  }
+
+  fun changePassphrase(account: Account, oldPassphrase: String, newPassphrase: String) {
+    keystore.updateAccount(account, oldPassphrase, newPassphrase)
+  }
+
+
 }
