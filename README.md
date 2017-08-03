@@ -1,0 +1,1 @@
+Experimenting around with light client and running an in process node in android

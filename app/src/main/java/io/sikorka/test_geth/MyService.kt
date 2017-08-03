@@ -188,5 +188,8 @@ class MyService : Service() {
 
   companion object {
     const val NOTIFICATION_ID = 1337
+    fun stop(context: android.content.Context) {
+      context.stopService(Intent(context, MyService::class.java))
+    }
   }
 }

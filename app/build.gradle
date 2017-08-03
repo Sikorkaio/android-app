@@ -55,6 +55,8 @@ dependencies {
   implementation 'com.jakewharton:butterknife:8.7.0'
   kapt 'com.jakewharton:butterknife-compiler:8.7.0'
 
+  implementation 'com.afollestad.material-dialogs:core:0.9.4.5'
+
   //Unit testing
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.0.7'

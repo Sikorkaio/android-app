@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">test-geth</string>
+    <string name="account__create_account">Create an Account</string>
+  <string name="account__passphrase">Passphrase</string>
 </resources>

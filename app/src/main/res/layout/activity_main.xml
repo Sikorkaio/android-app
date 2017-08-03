@@ -25,5 +25,15 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"/>
 
+  <Button
+      android:id="@+id/main__exit"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Exit"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginEnd="8dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_marginBottom="8dp" />
+
 
 </android.support.constraint.ConstraintLayout>

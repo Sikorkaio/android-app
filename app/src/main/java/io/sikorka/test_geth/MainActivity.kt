@@ -8,13 +8,27 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import butterknife.ButterKnife
+import butterknife.OnClick
+import io.sikorka.test_geth.ui.accounts.AccountActivity
 
 
 class MainActivity : AppCompatActivity() {
 
+  @OnClick(R.id.main__accounts)
+  internal fun openAccounts() {
+    AccountActivity.start(this)
+  }
+
+  @OnClick(R.id.main__exit)
+  internal fun onExit() {
+    MyService.stop(this)
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    ButterKnife.bind(this)
     val textbox = findViewById<TextView>(R.id.textbox)
     textbox.text = ""
 
