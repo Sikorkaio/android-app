@@ -2,4 +2,6 @@
   <string name="app_name">test-geth</string>
     <string name="account__create_account">Create an Account</string>
   <string name="account__passphrase">Passphrase</string>
+    <string name="account_creation__passphrase_missmatch">Passphrase confirmation doesn\'t match</string>
+  <string name="account_creation__passphrase_empty">Passphrase can\'t be empty</string>
 </resources>

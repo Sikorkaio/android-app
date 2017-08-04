@@ -16,6 +16,7 @@ import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
 import android.text.InputType
 import butterknife.ButterKnife
+import io.sikorka.test_geth.ui.accounts.creation_dialog.AccountCreationDialog
 
 
 class AccountActivity : AppCompatActivity(), AccountView {
@@ -50,12 +51,8 @@ class AccountActivity : AppCompatActivity(), AccountView {
 
   @OnClick(R.id.accounts__create_account)
   internal fun onCreateAccountClicked() {
-    MaterialDialog.Builder(this)
-        .title(R.string.account__create_account)
-        .content(R.string.account__passphrase)
-        .inputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
-        .show()
-
+    val dialog = AccountCreationDialog()
+    dialog.show()
   }
 
   override fun accountsLoaded(accounts: List<Account>) {
