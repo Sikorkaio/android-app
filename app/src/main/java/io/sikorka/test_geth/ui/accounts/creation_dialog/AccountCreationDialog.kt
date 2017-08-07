@@ -28,8 +28,6 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
   @Inject
   internal lateinit var presenter: AccountCreationDialogPresenter
-  @Inject
-  internal lateinit var fragmentManager: FragmentManager
 
   private lateinit var dialog: MaterialDialog
 
@@ -41,7 +39,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val scope = Toothpick.openScopes(context.applicationContext, this)
+    val scope = Toothpick.openScopes(context.applicationContext, context, this)
     scope.installModules(AccountCreationModule())
     Toothpick.inject(this, scope)
 
@@ -99,7 +97,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
     passphraseConfirmationInput.error = null
   }
 
-  fun show() {
+  fun show(fragmentManager: FragmentManager) {
     show(fragmentManager, TAG)
   }
 

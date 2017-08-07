@@ -9,7 +9,7 @@ android {
   buildToolsVersion "26.0.0"
   defaultConfig {
     applicationId "io.sikorka.test_geth"
-    minSdkVersion 16
+    minSdkVersion 17
     targetSdkVersion 26
     versionCode 1
     versionName "1.0.0"
@@ -60,4 +60,11 @@ dependencies {
   //Unit testing
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.0.7'
+}
+
+
+kapt {
+  arguments {
+    arg('toothpick_registry_package_name', 'io.sikorka.test_geth.di')
+  }
 }

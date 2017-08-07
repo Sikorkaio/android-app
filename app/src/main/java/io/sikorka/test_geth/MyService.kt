@@ -38,8 +38,13 @@ class MyService : Service() {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    start()
-    return super.onStartCommand(intent, flags, startId)
+    try {
+      start()
+      return START_STICKY
+    } catch(e: Exception) {
+      stopSelf()
+      return START_NOT_STICKY
+    }
   }
 
   private fun createNotification(message: String, count: Int = 0): Notification? {
@@ -74,16 +79,6 @@ class MyService : Service() {
     node.start()
 
     schedulerPeerCheck(node)
-
-
-    val info = node.nodeInfo
-    //create ethereum client
-
-    println("My name: " + info.name + "\n")
-    println("My address: " + info.listenerAddress + "\n")
-    println("My enode:" + info.enode + "\n")
-    println("My protocols: " + info.protocols + "\n\n")
-
 
     //print traffic of the node
     val handler = object : NewHeadHandler {

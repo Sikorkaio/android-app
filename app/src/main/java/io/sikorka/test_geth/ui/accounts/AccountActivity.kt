@@ -7,24 +7,21 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import butterknife.BindView
+import butterknife.ButterKnife
 import butterknife.OnClick
-import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.test_geth.R
+import io.sikorka.test_geth.ui.accounts.creation_dialog.AccountCreationDialog
 import org.ethereum.geth.Account
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
-import android.text.InputType
-import butterknife.ButterKnife
-import io.sikorka.test_geth.ui.accounts.creation_dialog.AccountCreationDialog
 
 
 class AccountActivity : AppCompatActivity(), AccountView {
   @BindView(R.id.accounts__recycler_view) internal lateinit var accountsRecycler: RecyclerView
 
-  @Inject internal lateinit var presenter: AccountPresenter
-
-  private lateinit var adapter: AccountAdapter
+  @Inject lateinit var presenter: AccountPresenter
+  @Inject lateinit var adapter: AccountAdapter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     val scope = Toothpick.openScopes(application, this)
@@ -33,9 +30,13 @@ class AccountActivity : AppCompatActivity(), AccountView {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_account)
     ButterKnife.bind(this)
-    adapter = AccountAdapter()
     accountsRecycler.adapter = adapter
     accountsRecycler.layoutManager = LinearLayoutManager(this)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    Toothpick.closeScope(this)
   }
 
   override fun onStart() {
@@ -52,7 +53,7 @@ class AccountActivity : AppCompatActivity(), AccountView {
   @OnClick(R.id.accounts__create_account)
   internal fun onCreateAccountClicked() {
     val dialog = AccountCreationDialog()
-    dialog.show()
+    dialog.show(supportFragmentManager)
   }
 
   override fun accountsLoaded(accounts: List<Account>) {
