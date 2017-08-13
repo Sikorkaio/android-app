@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    setContentView(R.layout.activity__main)
     ButterKnife.bind(this)
     val textbox = findViewById<TextView>(R.id.textbox)
     textbox.text = ""

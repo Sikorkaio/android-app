@@ -29,7 +29,7 @@ class AccountActivity : AppCompatActivity(), AccountView {
     scope.installModules(SmoothieSupportActivityModule(this), AccountModule())
     Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_account)
+    setContentView(R.layout.activity__account)
     ButterKnife.bind(this)
     accountsRecycler.adapter = adapter
     accountsRecycler.layoutManager = LinearLayoutManager(this)

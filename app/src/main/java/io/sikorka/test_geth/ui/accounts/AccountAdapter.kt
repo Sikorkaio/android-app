@@ -27,7 +27,7 @@ constructor(
 
   override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AccountViewHolder {
     val inflater = LayoutInflater.from(parent?.context ?: fail("null context"))
-    val view = inflater.inflate(R.layout.item_account, parent, false)
+    val view = inflater.inflate(R.layout.item__account, parent, false)
     return AccountViewHolder(view, accountAdapterPresenter)
   }
 

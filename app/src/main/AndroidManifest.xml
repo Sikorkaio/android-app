@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="io.sikorka.test_geth">
+  package="io.sikorka.test_geth">
 
-  <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
   <application
     android:name=".GethApplication"
@@ -16,20 +16,22 @@
     android:theme="@style/AppTheme">
     <activity android:name=".MainActivity">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
+        <action android:name="android.intent.action.MAIN" />
 
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
 
     <service
       android:name=".MyService"
       android:enabled="true"
-      android:exported="false">
-    </service>
+      android:exported="false" />
 
-    <activity android:name=".ui.accounts.AccountActivity"/>
-    <activity android:name=".ui.accounts.export.AccountExportActivity"/>
+    <activity android:name=".ui.accounts.AccountActivity" />
+    <activity android:name=".ui.accounts.export.AccountExportActivity" />
+    <activity
+      android:name=".ui.splash.SplashActivity"
+      android:theme="@style/AppTheme.NoActionBar" />
   </application>
 
 </manifest>

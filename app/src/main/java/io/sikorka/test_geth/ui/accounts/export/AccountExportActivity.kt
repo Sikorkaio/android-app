@@ -120,7 +120,7 @@ class AccountExportActivity : AppCompatActivity(),
     scope.installModules(SmoothieSupportActivityModule(this), AccountExportModule())
     Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_account_export)
+    setContentView(R.layout.activity__account_export)
     ButterKnife.bind(this)
   }
 
