@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
   compileSdkVersion 26
-  buildToolsVersion "26.0.0"
+  buildToolsVersion "26.0.1"
   defaultConfig {
     applicationId "io.sikorka.test_geth"
     minSdkVersion 17
@@ -30,9 +30,9 @@ dependencies {
   })
 
   // Support libraries
-  implementation 'com.android.support:appcompat-v7:26.0.0'
-  implementation 'com.android.support:recyclerview-v7:26.0.0'
-  implementation 'com.android.support:design:26.0.0'
+  implementation 'com.android.support:appcompat-v7:26.0.1'
+  implementation 'com.android.support:recyclerview-v7:26.0.1'
+  implementation 'com.android.support:design:26.0.1'
   implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
   implementation 'org.ethereum:geth:1.6.7'
@@ -56,6 +56,7 @@ dependencies {
   kapt 'com.jakewharton:butterknife-compiler:8.7.0'
 
   implementation 'com.afollestad.material-dialogs:core:0.9.4.5'
+  implementation 'com.afollestad.material-dialogs:commons:0.9.4.5'
 
   //Unit testing
   testImplementation 'junit:junit:4.12'

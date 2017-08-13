@@ -12,6 +12,8 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.test_geth.R
+import io.sikorka.test_geth.accounts.ValidationResult
+import io.sikorka.test_geth.ui.asString
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -19,10 +21,13 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
   @BindView(R.id.accounts__passphrase)
   internal lateinit var passphraseField: EditText
+
   @BindView(R.id.accounts__passphrase_confirmation)
   internal lateinit var passphraseConfirmationField: EditText
+
   @BindView(R.id.accounts__passphrase_input)
   internal lateinit var passphraseInput: TextInputLayout
+
   @BindView(R.id.accounts__passphrase_confirmation_input)
   internal lateinit var passphraseConfirmationInput: TextInputLayout
 
@@ -32,10 +37,12 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
   private lateinit var dialog: MaterialDialog
 
   private val passphrase: String
-    get() = passphraseField.text.toString()
+    get() = passphraseField.asString()
 
   private val passphraseConfirmation: String
-    get() = passphraseConfirmationField.text.toString()
+    get() = passphraseConfirmationField.asString()
+
+  private var onDismissAction: (() -> Unit)? = null
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -76,13 +83,13 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
     presenter.detach()
   }
 
-  override fun showError(@AccountCreationCodes.ErrorCode code: Long) {
+  override fun showError(@ValidationResult.Code code: Long) {
     clearErrors()
     when (code) {
-      AccountCreationCodes.CONFIRMATION_MISSMATCH -> {
+      ValidationResult.CONFIRMATION_MISSMATCH -> {
         passphraseConfirmationInput.error = getString(R.string.account_creation__passphrase_missmatch)
       }
-      AccountCreationCodes.EMPTY_PASSPHRASE -> {
+      ValidationResult.EMPTY_PASSPHRASE -> {
         passphraseInput.error = getString(R.string.account_creation__passphrase_empty)
       }
     }
@@ -90,11 +97,16 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
   override fun complete() {
     dialog.dismiss()
+    onDismissAction?.invoke()
   }
 
   private fun clearErrors() {
     passphraseInput.error = null
     passphraseConfirmationInput.error = null
+  }
+
+  override fun onDismiss(action: (() -> Unit)?) {
+    onDismissAction = action
   }
 
   fun show(fragmentManager: FragmentManager) {

@@ -14,15 +14,21 @@ constructor(
     private val accountAdapterPresenter: AccountAdapterPresenter
 ) : RecyclerView.Adapter<AccountViewHolder>() {
 
+  private var onDelete: AccountAction? = null
+  private var onExport: AccountAction? = null
+
   override fun onBindViewHolder(holder: AccountViewHolder?, position: Int) {
-    holder?.update()
+    holder?.let {
+      it.onExport = onExport
+      it.onDelete = onDelete
+      it.update()
+    }
   }
 
   override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AccountViewHolder {
     val inflater = LayoutInflater.from(parent?.context ?: fail("null context"))
     val view = inflater.inflate(R.layout.item_account, parent, false)
-    val holder = AccountViewHolder(view, accountAdapterPresenter)
-    return holder
+    return AccountViewHolder(view, accountAdapterPresenter)
   }
 
   override fun getItemCount(): Int = accountAdapterPresenter.size()
@@ -31,4 +37,10 @@ constructor(
     accountAdapterPresenter.setData(accounts)
     notifyDataSetChanged()
   }
+
+  fun setAccountActionListeners(onDelete: AccountAction? = null, onExport: AccountAction? = null) {
+    this.onDelete = onDelete
+    this.onExport = onExport
+  }
+
 }

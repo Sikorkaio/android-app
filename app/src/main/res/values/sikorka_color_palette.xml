@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="sikorka_50">#ebedf1</color>
+  <color name="sikorka_100">#cdd1db</color>
+  <color name="sikorka_200">#acb3c3</color>
+  <color name="sikorka_300">#8b95ab</color>
+  <color name="sikorka_400">#727e99</color>
+  <color name="sikorka_500">#596787</color>
+  <color name="sikorka_600">#515f7f</color>
+  <color name="sikorka_700">#485474</color>
+  <color name="sikorka_800">#3e4a6a</color>
+  <color name="sikorka_900">#2e3957</color>
+  <color name="sikorka_A100">#a3baff</color>
+  <color name="sikorka_A200">#7094ff</color>
+  <color name="sikorka_A400">#3d6eff</color>
+  <color name="sikorka_A700">#245bff</color>
+</resources>

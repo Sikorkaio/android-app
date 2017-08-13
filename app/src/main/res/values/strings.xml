@@ -6,4 +6,15 @@
   <string name="account_creation__passphrase_empty">Passphrase can\'t be empty</string>
     <string name="accounts__delete_account_dialog_title">Delete Account</string>
   <string name="account__delete_account_dialog_content">Are you sure you want to delete your account?</string>
+  <string name="account_export__export_account">Export your account</string>
+  <string name="account_export__path">Export Path</string>
+  <string name="account_export__account_passphrase_hint">Account Passphrase</string>
+  <string name="account_export__export_encryption_label">Export Encryption</string>
+  <string name="account_export__encryption_passphrase_hint">Encryption Passphrase</string>
+  <string name="account_export__encryption_passphrase_confirmation">Encryption Passphrase Confirmation</string>
+  <string name="account_export__export_complete">The account export was complete.</string>
+  <string name="account_export__failed_to_unlock">Unable to unlock account</string>
+  <string name="account_export__passphrase_empty">The passphrase is empty</string>
+  <string name="account_export__encryption_passphrase_empty">The encryption passphrase is empty.</string>
+  <string name="account_export__confirmation_missmatch">The encryption passphrase confirmation doesn\'t match.</string>
 </resources>

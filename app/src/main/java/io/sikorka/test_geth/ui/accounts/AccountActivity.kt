@@ -11,6 +11,7 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import io.sikorka.test_geth.R
 import io.sikorka.test_geth.ui.accounts.creation_dialog.AccountCreationDialog
+import io.sikorka.test_geth.ui.accounts.export.AccountExportActivity
 import org.ethereum.geth.Account
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -43,6 +44,11 @@ class AccountActivity : AppCompatActivity(), AccountView {
     super.onStart()
     presenter.attach(this)
     presenter.loadAccounts()
+    adapter.setAccountActionListeners({
+      presenter.deleteAccount(it)
+    }, {
+      AccountExportActivity.start(this, it.address.hex)
+    })
   }
 
   override fun onStop() {
@@ -54,6 +60,7 @@ class AccountActivity : AppCompatActivity(), AccountView {
   internal fun onCreateAccountClicked() {
     val dialog = AccountCreationDialog()
     dialog.show(supportFragmentManager)
+    dialog.onDismiss { presenter.loadAccounts() }
   }
 
   override fun accountsLoaded(accounts: List<Account>) {

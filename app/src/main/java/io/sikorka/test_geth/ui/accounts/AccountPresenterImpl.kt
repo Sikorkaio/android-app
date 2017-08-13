@@ -2,6 +2,7 @@ package io.sikorka.test_geth.ui.accounts
 
 import io.sikorka.test_geth.accounts.AccountRepository
 import io.sikorka.test_geth.mvp.BasePresenter
+import org.ethereum.geth.Account
 import javax.inject.Inject
 
 class AccountPresenterImpl
@@ -20,5 +21,10 @@ constructor(
       }
 
     }))
+  }
+
+  override fun deleteAccount(account: Account) {
+
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 }

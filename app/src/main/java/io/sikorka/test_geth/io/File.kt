@@ -1,6 +1,7 @@
 package io.sikorka.test_geth.io
 
 import okio.Okio
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 
@@ -61,4 +62,17 @@ fun InputStream.copyToFile(file: File) {
   bufferedSink.flush()
   bufferedSink.close()
   this.close()
+}
+
+
+fun ByteArray.toFile(file: File) {
+  val sink = Okio.sink(file)
+  val source = Okio.source(ByteArrayInputStream(this))
+  val bufferedSource = Okio.buffer(source)
+  val bufferedSink = Okio.buffer(sink)
+  bufferedSink.writeAll(bufferedSource)
+  bufferedSource.close()
+  bufferedSink.flush()
+  bufferedSink.close()
+
 }

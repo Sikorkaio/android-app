@@ -14,6 +14,10 @@ class AccountViewHolder(
     itemView: View,
     private val presenter: AccountAdapterPresenter
 ) : BaseViewHolder<Account>(itemView) {
+
+  var onDelete: AccountAction? = null
+  var onExport: AccountAction? = null
+
   @BindView(R.id.account_address) internal lateinit var accountAddress: TextView
 
   @OnClick(R.id.accounts__delete)
@@ -31,8 +35,6 @@ class AccountViewHolder(
     onExport?.invoke(presenter.item(adapterPosition))
   }
 
-  var onDelete: ((Account) -> Unit)? = null
-  var onExport: ((Account) -> Unit)? = null
 
   init {
     ButterKnife.bind(this, itemView)

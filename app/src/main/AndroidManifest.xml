@@ -29,6 +29,7 @@
     </service>
 
     <activity android:name=".ui.accounts.AccountActivity"/>
+    <activity android:name=".ui.accounts.export.AccountExportActivity"/>
   </application>
 
 </manifest>

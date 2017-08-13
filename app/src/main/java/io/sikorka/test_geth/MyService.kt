@@ -1,12 +1,10 @@
 package io.sikorka.test_geth
 
 import android.Manifest
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Environment
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
@@ -28,6 +26,7 @@ class MyService : Service() {
     super.onCreate()
     ethContext = Context()
     notificationManager = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager
+    createNotificationChannel()
     val notification = createNotification("Starting...")
     startForeground(NOTIFICATION_ID, notification)
   }
@@ -47,12 +46,21 @@ class MyService : Service() {
     }
   }
 
+  private fun createNotificationChannel() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      val channelId = "sikorka_geth_channel_01"
+      val channelName = "service"
+      val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
+      notificationManager.createNotificationChannel(channel)
+    }
+  }
+
   private fun createNotification(message: String, count: Int = 0): Notification? {
     val notificationIntent = Intent(this, MainActivity::class.java)
 
     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
-    val notification = NotificationCompat.Builder(this, "service")
+    val notification = NotificationCompat.Builder(this, "sikorka_geth_channel_01")
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle("Geth Test")
         .setContentText(message)

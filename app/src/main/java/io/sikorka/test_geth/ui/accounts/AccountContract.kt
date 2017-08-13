@@ -10,6 +10,8 @@ interface AccountPresenter : Presenter<AccountView> {
    */
   fun loadAccounts()
 
+  fun deleteAccount(account: Account)
+
 }
 
 interface AccountView : BaseView {
