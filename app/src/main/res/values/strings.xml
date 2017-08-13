@@ -1,10 +1,10 @@
 <resources>
-  <string name="app_name">test-geth</string>
-    <string name="account__create_account">Create an Account</string>
+  <string name="app_name">Sikorka Test</string>
+  <string name="account__create_account">Create an Account</string>
   <string name="account__passphrase">Passphrase</string>
-    <string name="account_creation__passphrase_missmatch">Passphrase confirmation doesn\'t match</string>
+  <string name="account_creation__passphrase_missmatch">Passphrase confirmation doesn\'t match</string>
   <string name="account_creation__passphrase_empty">Passphrase can\'t be empty</string>
-    <string name="accounts__delete_account_dialog_title">Delete Account</string>
+  <string name="accounts__delete_account_dialog_title">Delete Account</string>
   <string name="account__delete_account_dialog_content">Are you sure you want to delete your account?</string>
   <string name="account_export__export_account">Export your account</string>
   <string name="account_export__path">Export Path</string>
