@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
   @OnClick(R.id.main__exit)
   internal fun onExit() {
-    MyService.stop(this)
+    GethService.stop(this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     val textbox = findViewById<TextView>(R.id.textbox)
     textbox.text = ""
 
-    startService(Intent(this, MyService::class.java))
+    startService(Intent(this, GethService::class.java))
 
     val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     if (permission != PackageManager.PERMISSION_GRANTED) {

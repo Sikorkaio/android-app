@@ -1,28 +1,29 @@
 package io.sikorka.test_geth
 
-import android.Manifest
 import android.app.*
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Environment
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
-import io.sikorka.test_geth.io.copyToDirectory
-import io.sikorka.test_geth.io.copyToFile
+import io.sikorka.test_geth.configuration.ConfigurationFactory
+import io.sikorka.test_geth.configuration.Network
 import org.ethereum.geth.*
-import java.io.File
+import toothpick.Toothpick
 import java.util.*
+import javax.inject.Inject
 
-class MyService : Service() {
+class GethService : Service() {
 
   private lateinit var notificationManager: NotificationManager
   private lateinit var ethContext: Context
 
+  @Inject internal lateinit var configurationFactory: ConfigurationFactory
+
   override fun onBind(intent: Intent): IBinder? = null
 
   override fun onCreate() {
+    val scope = Toothpick.openScopes(application, this)
+    Toothpick.inject(this, scope)
     super.onCreate()
     ethContext = Context()
     notificationManager = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -33,6 +34,7 @@ class MyService : Service() {
 
   override fun onDestroy() {
     super.onDestroy()
+    Toothpick.closeScope(this)
     stopForeground(true)
   }
 
@@ -70,20 +72,12 @@ class MyService : Service() {
     return notification
   }
 
-
-  private fun canWriteToExternalStorage(): Boolean {
-    val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    return permission == PackageManager.PERMISSION_GRANTED
-  }
-
   fun start() {
-    val dataDir = prepareDataDir()
-    val nodeConfig = createConfig()
+    val configuration = configurationFactory.configuration(Network.ROPSTEN)
+    val dataDir = configuration.dataDir
+    val nodeConfig = configuration.nodeConfig
 
     val node = Geth.newNode(dataDir.absolutePath, nodeConfig)
-    node.start()
-    node.stop()
-    copyPeers("${dataDir.absolutePath}/GethDroid/static-nodes.json")
     node.start()
 
     schedulerPeerCheck(node)
@@ -110,67 +104,6 @@ class MyService : Service() {
     }
   }
 
-  private fun prepareDataDir(): File {
-    val internalDataDirPath = "$filesDir/.ethereum"
-    val internalDataDir = File(internalDataDirPath)
-    val internalDataDirExists = internalDataDir.exists()
-
-    if (!internalDataDirExists) {
-      internalDataDir.mkdir()
-    }
-
-    var dataDir = internalDataDir
-
-    val internalFiles = internalDataDir.listFiles()
-
-    if (canWriteToExternalStorage()) {
-      val externalDataDir = File(Environment.getExternalStorageDirectory(), "/.ethereum")
-      if (!externalDataDir.exists()) {
-        externalDataDir.mkdir()
-        if (internalFiles.isNotEmpty()) {
-          internalDataDir.copyToDirectory(externalDataDir)
-        }
-      }
-      val externalFiles = externalDataDir.listFiles()
-      if (externalFiles.isNotEmpty()) {
-        dataDir = externalDataDir
-      }
-    }
-    return dataDir
-  }
-
-  private fun createBootstrap(): Enodes {
-    val enode = Geth.newEnode("enode://20c9ad97c081d63397d7b685a412227a40e23c8bdc6688c6f37e97cfbc22d2b4d1db1510d8f61e6a8866ad7f0e17c02b14182d37ea7c3c8b9c2683aeb6b733a1@52.169.14.227:30303")
-    val enode2 = Geth.newEnode("enode://6ce05930c72abc632c58e2e4324f7c7ea478cec0ed4fa2528982cf34483094e9cbc9216e7aa349691242576d552a2a56aaeae426c5303ded677ce455ba1acd9d@13.84.180.240:30303")
-    val enodes = Geth.newEnodes(2)
-    enodes.set(0, enode)
-    enodes.set(1, enode2)
-    return enodes
-  }
-
-  private fun createConfig(): NodeConfig? {
-    val nodeConfig = Geth.newNodeConfig()
-    nodeConfig.ethereumEnabled = true
-    nodeConfig.whisperEnabled = true
-    nodeConfig.ethereumGenesis = Geth.testnetGenesis()
-    nodeConfig.ethereumNetworkID = 3
-    nodeConfig.maxPeers = 30
-    nodeConfig.ethereumDatabaseCache = 32
-    nodeConfig.bootstrapNodes = createBootstrap()
-    return nodeConfig
-  }
-
-  private fun copyPeers(peerFile: String) {
-    val file = File(peerFile)
-
-    val inputStream = assets.open("peers.json")
-    if (file.exists()) {
-      file.delete()
-      file.createNewFile()
-    }
-    inputStream.copyToFile(file)
-  }
-
   private fun schedulerPeerCheck(node: Node) {
     Timer().scheduleAtFixedRate(object : TimerTask() {
       override fun run() {
@@ -192,7 +125,7 @@ class MyService : Service() {
   companion object {
     const val NOTIFICATION_ID = 1337
     fun stop(context: android.content.Context) {
-      context.stopService(Intent(context, MyService::class.java))
+      context.stopService(Intent(context, GethService::class.java))
     }
   }
 }
