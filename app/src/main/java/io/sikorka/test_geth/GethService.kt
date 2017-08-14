@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
-import io.sikorka.test_geth.configuration.ConfigurationFactory
-import io.sikorka.test_geth.configuration.Network
+import io.sikorka.test_geth.node.configuration.ConfigurationFactory
+import io.sikorka.test_geth.node.configuration.Network
 import org.ethereum.geth.*
 import toothpick.Toothpick
 import java.util.*

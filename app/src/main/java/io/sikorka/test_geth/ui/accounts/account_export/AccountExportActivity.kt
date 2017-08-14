@@ -12,7 +12,7 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import io.sikorka.test_geth.R
-import io.sikorka.test_geth.accounts.ValidationResult
+import io.sikorka.test_geth.node.accounts.ValidationResult
 import io.sikorka.test_geth.helpers.fail
 import io.sikorka.test_geth.ui.dialogs.selectDirectory
 import io.sikorka.test_geth.ui.value

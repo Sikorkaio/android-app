@@ -1,6 +1,6 @@
 package io.sikorka.test_geth.ui.accounts
 
-import io.sikorka.test_geth.accounts.AccountRepository
+import io.sikorka.test_geth.node.accounts.AccountRepository
 import io.sikorka.test_geth.mvp.BasePresenter
 import org.ethereum.geth.Account
 import javax.inject.Inject

@@ -12,7 +12,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.test_geth.R
-import io.sikorka.test_geth.accounts.ValidationResult
+import io.sikorka.test_geth.node.accounts.ValidationResult
 import io.sikorka.test_geth.ui.asString
 import toothpick.Toothpick
 import javax.inject.Inject

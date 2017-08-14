@@ -1,6 +1,6 @@
 package io.sikorka.test_geth.ui.accounts.creation_dialog
 
-import io.sikorka.test_geth.accounts.ValidationResult
+import io.sikorka.test_geth.node.accounts.ValidationResult
 import io.sikorka.test_geth.mvp.BaseView
 import io.sikorka.test_geth.mvp.Presenter
 

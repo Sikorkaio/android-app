@@ -1,4 +1,4 @@
-package io.sikorka.test_geth.accounts
+package io.sikorka.test_geth.node.accounts
 
 import io.reactivex.Observable
 import io.reactivex.Single

@@ -1,4 +1,4 @@
-package io.sikorka.test_geth.accounts
+package io.sikorka.test_geth.node.accounts
 
 
 interface PassphraseValidator {

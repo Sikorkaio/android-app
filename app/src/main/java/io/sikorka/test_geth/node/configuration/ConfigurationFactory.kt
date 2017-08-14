@@ -1,4 +1,4 @@
-package io.sikorka.test_geth.configuration
+package io.sikorka.test_geth.node.configuration
 
 import android.app.Application
 import toothpick.Toothpick

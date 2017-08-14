@@ -1,7 +1,7 @@
 package io.sikorka.test_geth.di.modules
 
-import io.sikorka.test_geth.accounts.PassphraseValidator
-import io.sikorka.test_geth.accounts.PassphraseValidatorImpl
+import io.sikorka.test_geth.node.accounts.PassphraseValidator
+import io.sikorka.test_geth.node.accounts.PassphraseValidatorImpl
 import io.sikorka.test_geth.di.providers.KeystorePathProvider
 import io.sikorka.test_geth.di.qualifiers.KeystorePath
 import toothpick.config.Module

@@ -1,8 +1,8 @@
 package io.sikorka.test_geth.ui.accounts.import_account
 
-import io.sikorka.test_geth.accounts.AccountRepository
-import io.sikorka.test_geth.accounts.PassphraseValidator
-import io.sikorka.test_geth.accounts.ValidationResult
+import io.sikorka.test_geth.node.accounts.AccountRepository
+import io.sikorka.test_geth.node.accounts.PassphraseValidator
+import io.sikorka.test_geth.node.accounts.ValidationResult
 import io.sikorka.test_geth.io.toByteArray
 import io.sikorka.test_geth.mvp.BasePresenter
 import org.ethereum.geth.Account
