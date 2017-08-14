@@ -10,7 +10,7 @@ open class BasePresenter<T : BaseView> : Presenter<T> {
 
   private val compositeDisposable = CompositeDisposable()
 
-  override val isAttached: Boolean
+  internal val isAttached: Boolean
     get() = view != null
 
   override fun attach(view: T) {
@@ -34,6 +34,7 @@ open class BasePresenter<T : BaseView> : Presenter<T> {
   }
 
   protected class ViewNotAttachedException : RuntimeException(PRESENTER_NOT_ATTACHED)
+
   companion object {
     private const val PRESENTER_NOT_ATTACHED = "Please call Presenter.attach(BaseView) before calling a method on the presenter"
   }

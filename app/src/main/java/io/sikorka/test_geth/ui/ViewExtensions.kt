@@ -9,3 +9,7 @@ fun EditText.asString(): String = this.text.toString()
 fun TextInputLayout.value(): String = this.editText?.asString() ?: ""
 
 fun TextView.value(): String = this.text.toString()
+
+fun TextInputLayout.setValue(text: String) {
+  this.editText?.setText(text)
+}

@@ -23,7 +23,7 @@ class AccountViewHolder(
   @OnClick(R.id.accounts__delete)
   internal fun onDelete() {
     itemView.context.showConfirmation(
-        R.string.accounts__delete_account_dialog_title,
+        R.string.account__delete_account_dialog_title,
         R.string.account__delete_account_dialog_content
     ) {
       onDelete?.invoke(presenter.item(adapterPosition))

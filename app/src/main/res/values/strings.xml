@@ -1,20 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-  <string name="app_name">Sikorka Test</string>
   <string name="account__create_account">Create an Account</string>
-  <string name="account__passphrase">Passphrase</string>
-  <string name="account_creation__passphrase_missmatch">Passphrase confirmation doesn\'t match</string>
-  <string name="account_creation__passphrase_empty">Passphrase can\'t be empty</string>
-  <string name="accounts__delete_account_dialog_title">Delete Account</string>
   <string name="account__delete_account_dialog_content">Are you sure you want to delete your account?</string>
-  <string name="account_export__export_account">Export your account</string>
-  <string name="account_export__path">Export Path</string>
+  <string name="account__delete_account_dialog_title">Delete Account</string>
+  <string name="account__passphrase">Passphrase</string>
+
+  <string name="account_creation__passphrase_empty">Passphrase can\'t be empty</string>
+  <string name="account_creation__passphrase_missmatch">Passphrase confirmation doesn\'t match</string>
+
   <string name="account_export__account_passphrase_hint">Account Passphrase</string>
-  <string name="account_export__export_encryption_label">Export Encryption</string>
-  <string name="account_export__encryption_passphrase_hint">Encryption Passphrase</string>
+  <string name="account_export__confirmation_missmatch">The encryption passphrase confirmation doesn\'t match.</string>
   <string name="account_export__encryption_passphrase_confirmation">Encryption Passphrase Confirmation</string>
+  <string name="account_export__encryption_passphrase_empty">The encryption passphrase is empty.</string>
+  <string name="account_export__encryption_passphrase_hint">Encryption Passphrase</string>
+  <string name="account_export__export_account">Export your account</string>
   <string name="account_export__export_complete">The account export was complete.</string>
+  <string name="account_export__export_encryption_label">Export Encryption</string>
   <string name="account_export__failed_to_unlock">Unable to unlock account</string>
   <string name="account_export__passphrase_empty">The passphrase is empty</string>
-  <string name="account_export__encryption_passphrase_empty">The encryption passphrase is empty.</string>
-  <string name="account_export__confirmation_missmatch">The encryption passphrase confirmation doesn\'t match.</string>
+  <string name="account_export__path">Export Path</string>
+
+  <string name="account_import__account_credentials_label">Account Credentials</string>
+  <string name="account_import__account_file">Account File</string>
+  <string name="account_import__account_passphrase_confirmation_hint">Passphrase confirmation</string>
+  <string name="account_import__account_passphrase_description">Please choose a strong password for your account.</string>
+  <string name="account_import__account_passphrase_hint">Passphrase</string>
+  <string name="account_import__file_encryption_passphrase">File Passphrase</string>
+  <string name="account_import__import_account">Import Account</string>
+
+  <string name="app_name">Sikorka Test</string>
+  <string name="account_import__import_success">Account was imported successfully</string>
+  <string name="account_management__address_label">Account Address</string>
 </resources>

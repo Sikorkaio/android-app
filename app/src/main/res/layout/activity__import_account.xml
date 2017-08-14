@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/activity__import_account"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="io.sikorka.test_geth.ui.accounts.import_account.ImportAccountActivity">
+
+
+  <TextView
+    android:id="@+id/account_import__import_label"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:text="@string/account_import__import_account"
+    android:textStyle="bold"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"/>
+
+  <android.support.design.widget.TextInputLayout
+    android:id="@+id/account_import__file_path"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintEnd_toStartOf="@+id/account_import__select_file_button"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/account_import__import_label">
+
+    <android.support.design.widget.TextInputEditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/account_import__account_file"/>
+  </android.support.design.widget.TextInputLayout>
+
+  <ImageButton
+    android:id="@+id/account_import__select_file_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:padding="8dp"
+    android:tint="@color/colorAccent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/account_import__file_path"
+    app:layout_constraintTop_toTopOf="@+id/account_import__file_path"
+    app:srcCompat="@drawable/ic_insert_drive_file_black_24dp"/>
+
+
+  <android.support.design.widget.TextInputLayout
+    android:id="@+id/account_import__file_passphrase"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/account_import__file_path"
+    app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/account_import__file_encryption_passphrase"/>
+  </android.support.design.widget.TextInputLayout>
+
+
+  <TextView
+    android:id="@+id/account_import__account_credentials_label"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:text="@string/account_import__account_credentials_label"
+    android:textStyle="bold"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/account_import__file_passphrase"/>
+
+  <TextView
+    android:id="@+id/account_import__account_passphrase_description"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:fontFamily="sans-serif-condensed"
+    android:text="@string/account_import__account_passphrase_description"
+    android:textSize="14sp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/account_import__account_credentials_label"/>
+
+  <android.support.design.widget.TextInputLayout
+    android:id="@+id/account_import__account_passphrase"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/account_import__account_passphrase_description"
+    app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/account_import__account_passphrase_hint"/>
+  </android.support.design.widget.TextInputLayout>
+
+
+  <android.support.design.widget.TextInputLayout
+    android:id="@+id/account_import__account_passphrase_confirmation"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/account_import__account_passphrase"
+    app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/account_import__account_passphrase_confirmation_hint"/>
+  </android.support.design.widget.TextInputLayout>
+
+  <android.support.design.widget.FloatingActionButton
+    android:id="@+id/account_import__import_action"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:tint="@color/white"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:srcCompat="@drawable/ic_save_black_24dp"/>
+
+
+</android.support.constraint.ConstraintLayout>

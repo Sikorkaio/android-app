@@ -74,5 +74,13 @@ fun ByteArray.toFile(file: File) {
   bufferedSource.close()
   bufferedSink.flush()
   bufferedSink.close()
+}
 
+fun File.toByteArray(): ByteArray {
+  val source = Okio.source(this)
+  val bufferedSource = Okio.buffer(source)
+  val data = bufferedSource.readByteArray()
+  bufferedSource.close()
+  source.close()
+  return data
 }

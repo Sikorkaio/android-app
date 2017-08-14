@@ -1,4 +1,4 @@
-package io.sikorka.test_geth.ui.accounts.export
+package io.sikorka.test_geth.ui.accounts.account_export
 
 import io.sikorka.test_geth.mvp.BaseView
 import io.sikorka.test_geth.mvp.Presenter

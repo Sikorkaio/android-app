@@ -1,4 +1,4 @@
-package io.sikorka.test_geth.ui.accounts.export
+package io.sikorka.test_geth.ui.accounts.account_export
 
 import android.content.Context
 import android.content.Intent
