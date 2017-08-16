@@ -28,7 +28,12 @@
   <string name="account_import__file_encryption_passphrase">File Passphrase</string>
   <string name="account_import__import_account">Import Account</string>
 
-  <string name="app_name">Sikorka Test</string>
+  <string name="app_name">Sikorka</string>
   <string name="account_import__import_success">Account was imported successfully</string>
   <string name="account_management__address_label">Account Address</string>
+
+  <string name="network_selection__title">Select Network</string>
+  <string name="network_selection__select_ropsten">Use Ropsten Test Network</string>
+  <string name="network_selection__select_mainnet">Use the Main Network</string>
+  <string name="network_selection__select_rinkeby">Use Rinkeby Test Network</string>
 </resources>
