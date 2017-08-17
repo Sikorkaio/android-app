@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.github.paolorotolo.appintro.AppIntro2
-import io.sikorka.android.ui.wizard.slides.AccountManagementFragment
+import io.sikorka.android.ui.wizard.slides.AccountSetupFragment
 import io.sikorka.android.ui.wizard.slides.InformationFragment
 import io.sikorka.android.ui.wizard.slides.NetworkSelectionFragment
 
@@ -22,7 +22,7 @@ class WizardActivity : AppIntro2() {
 
     addSlide(InformationFragment.newInstance())
     addSlide(NetworkSelectionFragment.newInstance())
-    addSlide(AccountManagementFragment.newInstance())
+    addSlide(AccountSetupFragment.newInstance())
   }
 
   companion object {

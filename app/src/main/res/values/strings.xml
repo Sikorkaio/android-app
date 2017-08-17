@@ -36,4 +36,7 @@
   <string name="network_selection__select_ropsten">Use Ropsten Test Network</string>
   <string name="network_selection__select_mainnet">Use the Main Network</string>
   <string name="network_selection__select_rinkeby">Use Rinkeby Test Network</string>
+  <string name="setup_account__title_label">Setup an Account</string>
+  <string name="setup_account__import_existing">Import an Existing Account</string>
+  <string name="setup_account__create_new">Create New</string>
 </resources>
