@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
 
   <TextView
     android:id="@+id/account_export__label"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:fontFamily="@font/roboto_light"
     android:text="@string/account_export__export_account"
-    android:textSize="18sp"
-    android:textStyle="bold"
+    android:textSize="28sp"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toTopOf="parent"/>
 
   <TextView
     android:id="@+id/account_export__account_hex"
@@ -28,11 +29,10 @@
     android:layout_marginTop="16dp"
     android:fontFamily="sans-serif-condensed"
     android:textSize="14sp"
-    android:textStyle="bold"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/account_export__label"
-    tools:text="0x0000000000000000000000000000000000000001" />
+    tools:text="0x0000000000000000000000000000000000000001"/>
 
   <android.support.design.widget.TextInputLayout
     android:id="@+id/account_export__path_input"
@@ -48,7 +48,7 @@
     <android.support.design.widget.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/account_export__path" />
+      android:hint="@string/account_export__path"/>
   </android.support.design.widget.TextInputLayout>
 
   <ImageButton
@@ -59,9 +59,10 @@
     android:layout_marginTop="8dp"
     android:background="?attr/selectableItemBackground"
     android:padding="8dp"
+    android:tint="@color/colorAccent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="@+id/account_export__path_input"
-    app:srcCompat="@drawable/ic_folder_open_black_24dp" />
+    app:srcCompat="@drawable/ic_folder_open_black_24dp"/>
 
   <android.support.design.widget.TextInputLayout
     android:id="@+id/account_export__passphrase"
@@ -78,7 +79,7 @@
     <android.support.design.widget.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/account_export__account_passphrase_hint" />
+      android:hint="@string/account_export__account_passphrase_hint"/>
   </android.support.design.widget.TextInputLayout>
 
   <TextView
@@ -92,7 +93,7 @@
     android:textStyle="bold"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/account_export__passphrase" />
+    app:layout_constraintTop_toBottomOf="@+id/account_export__passphrase"/>
 
   <android.support.design.widget.TextInputLayout
     android:id="@+id/account_export__encryption_passphrase"
@@ -109,7 +110,7 @@
     <android.support.design.widget.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/account_export__encryption_passphrase_hint" />
+      android:hint="@string/account_export__encryption_passphrase_hint"/>
   </android.support.design.widget.TextInputLayout>
 
   <android.support.design.widget.TextInputLayout
@@ -126,7 +127,7 @@
     <android.support.design.widget.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/account_export__encryption_passphrase_confirmation" />
+      android:hint="@string/account_export__encryption_passphrase_confirmation"/>
   </android.support.design.widget.TextInputLayout>
 
   <android.support.design.widget.FloatingActionButton
@@ -138,6 +139,6 @@
     android:clickable="true"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:srcCompat="@drawable/ic_save_black_24dp" />
+    app:srcCompat="@drawable/ic_save_black_24dp"/>
 
 </android.support.constraint.ConstraintLayout>
