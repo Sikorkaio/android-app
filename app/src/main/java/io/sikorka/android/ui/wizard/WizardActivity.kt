@@ -7,7 +7,7 @@ import android.os.Bundle
 import com.github.paolorotolo.appintro.AppIntro2
 import io.sikorka.android.ui.wizard.slides.AccountSetupFragment
 import io.sikorka.android.ui.wizard.slides.InformationFragment
-import io.sikorka.android.ui.wizard.slides.NetworkSelectionFragment
+import io.sikorka.android.ui.wizard.slides.network_selection.NetworkSelectionFragment
 
 class WizardActivity : AppIntro2() {
 
@@ -23,6 +23,9 @@ class WizardActivity : AppIntro2() {
     addSlide(InformationFragment.newInstance())
     addSlide(NetworkSelectionFragment.newInstance())
     addSlide(AccountSetupFragment.newInstance())
+    progressButtonEnabled = true
+    setNextPageSwipeLock(false)
+    setSwipeLock(false)
   }
 
   companion object {

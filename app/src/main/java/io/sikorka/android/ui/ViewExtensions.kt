@@ -1,6 +1,9 @@
 package io.sikorka.android.ui
 
+import android.support.annotation.StringRes
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 
@@ -12,4 +15,8 @@ fun TextView.value(): String = this.text.toString()
 
 fun TextInputLayout.setValue(text: String) {
   this.editText?.setText(text)
+}
+
+fun View.showShortSnack(@StringRes resId: Int) {
+  Snackbar.make(this, resId, Snackbar.LENGTH_SHORT).show()
 }

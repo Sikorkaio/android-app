@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.import_account
+package io.sikorka.android.ui.accounts.account_import
 
 object AccountImportCodes {
   const val FILE_DOES_NOT_EXIST = 210L

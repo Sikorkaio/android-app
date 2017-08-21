@@ -1,9 +1,9 @@
-package io.sikorka.android.ui.accounts.creation_dialog
+package io.sikorka.android.ui.accounts.account_creation
 
-import io.sikorka.android.node.accounts.ValidationResult
+import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.PassphraseValidator
-import io.sikorka.android.mvp.BasePresenter
+import io.sikorka.android.node.accounts.ValidationResult
 import javax.inject.Inject
 
 class AccountCreationDialogPresenterImpl

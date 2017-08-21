@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.creation_dialog
+package io.sikorka.android.ui.accounts.account_creation
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -119,5 +119,9 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
   companion object {
     const val TAG = "account_creation_dialog"
+
+    fun newInstance(): AccountCreationDialog {
+      return AccountCreationDialog()
+    }
   }
 }

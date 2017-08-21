@@ -10,6 +10,8 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
+import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
 
 
 /**
@@ -21,12 +23,13 @@ class AccountSetupFragment : Fragment() {
 
   @OnClick(R.id.account_setup__create_new)
   internal fun onCreateNewPressed() {
-
+    val dialog = AccountCreationDialog.newInstance()
+    dialog.show(fragmentManager)
   }
 
   @OnClick(R.id.account_setup__import_account)
   internal fun onAccountImportPressed() {
-
+    AccountImportActivity.start(context)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

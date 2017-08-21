@@ -1,22 +1,22 @@
-package io.sikorka.android.ui.accounts.import_account
+package io.sikorka.android.ui.accounts.account_import
 
+import io.sikorka.android.io.toByteArray
+import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.PassphraseValidator
 import io.sikorka.android.node.accounts.ValidationResult
-import io.sikorka.android.io.toByteArray
-import io.sikorka.android.mvp.BasePresenter
 import org.ethereum.geth.Account
 import java.io.File
 import javax.inject.Inject
 
 
-class ImportAccountPresenterImpl
+class AccountImportPresenterImpl
 @Inject constructor(
     private val accountRepository: AccountRepository,
     private val passphraseValidator: PassphraseValidator
 ) :
-    BasePresenter<ImportAccountView>(),
-    ImportAccountPresenter {
+    BasePresenter<AccountImportView>(),
+    AccountImportPresenter {
 
   override fun import(filePath: String, filePassphrase: String, accountPassphrase: String, accountPassphraseConfirmation: String) {
 

@@ -1,5 +1,7 @@
-package io.sikorka.android.ui.accounts.import_account;
+package io.sikorka.android.ui.accounts.account_import;
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
@@ -18,8 +20,8 @@ import toothpick.smoothie.module.SmoothieActivityModule
 import java.io.File
 import javax.inject.Inject
 
-class ImportAccountActivity : AppCompatActivity(),
-    ImportAccountView,
+class AccountImportActivity : AppCompatActivity(),
+    AccountImportView,
     FileChooserDialog.FileCallback {
 
   @BindView(R.id.account_import__file_passphrase)
@@ -50,7 +52,7 @@ class ImportAccountActivity : AppCompatActivity(),
 
   private lateinit var scope: Scope
 
-  @Inject internal lateinit var presenter: ImportAccountPresenter
+  @Inject internal lateinit var presenter: AccountImportPresenter
 
 
   @OnClick(R.id.account_import__import_action)
@@ -81,10 +83,10 @@ class ImportAccountActivity : AppCompatActivity(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
-    scope.installModules(SmoothieActivityModule(this), ImportAccountModule())
+    scope.installModules(SmoothieActivityModule(this), AccountImportModule())
     Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity__import_account)
+    setContentView(R.layout.activity__account_import)
     ButterKnife.bind(this)
 
   }
@@ -102,5 +104,12 @@ class ImportAccountActivity : AppCompatActivity(),
   override fun onStop() {
     super.onStop()
     presenter.detach()
+  }
+
+  companion object {
+    fun start(context: Context) {
+      val intent = Intent(context, AccountImportActivity::class.java)
+      context.startActivity(intent)
+    }
   }
 }

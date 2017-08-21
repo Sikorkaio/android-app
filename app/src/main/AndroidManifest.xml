@@ -34,7 +34,7 @@
       </intent-filter>
     </activity>
     <activity
-      android:name="io.sikorka.android.ui.accounts.import_account.ImportAccountActivity">
+      android:name="io.sikorka.android.ui.accounts.account_import.AccountImportActivity">
     </activity>
     <activity
       android:name="io.sikorka.android.ui.wizard.WizardActivity"

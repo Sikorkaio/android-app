@@ -10,8 +10,8 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import io.sikorka.android.R
+import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
-import io.sikorka.android.ui.accounts.creation_dialog.AccountCreationDialog
 import org.ethereum.geth.Account
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule

@@ -37,6 +37,7 @@ fun <ActivityType> ActivityType.selectDirectory() where ActivityType : AppCompat
 fun <ActivityType> ActivityType.selectFile() where ActivityType : AppCompatActivity,
   ActivityType : FileChooserDialog.FileCallback {
   FileChooserDialog.Builder(this)
+      .extensionsFilter("*.*")
       .show()
 
 }

@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.creation_dialog
+package io.sikorka.android.ui.accounts.account_creation
 
 import toothpick.config.Module
 
