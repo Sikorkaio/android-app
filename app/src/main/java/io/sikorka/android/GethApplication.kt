@@ -2,6 +2,7 @@ package io.sikorka.android
 
 import android.app.Application
 import io.sikorka.android.di.modules.GethModule
+import timber.log.Timber
 import toothpick.Toothpick
 import toothpick.configuration.Configuration
 import toothpick.registries.FactoryRegistryLocator
@@ -22,5 +23,9 @@ class GethApplication : Application() {
 
     FactoryRegistryLocator.setRootRegistry(io.sikorka.android.di.FactoryRegistry())
     MemberInjectorRegistryLocator.setRootRegistry(io.sikorka.android.di.MemberInjectorRegistry())
+
+    if (BuildConfig.DEBUG) {
+      Timber.plant(Timber.DebugTree())
+    }
   }
 }

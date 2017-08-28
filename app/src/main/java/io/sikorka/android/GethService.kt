@@ -5,8 +5,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
+import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.configuration.ConfigurationFactory
-import io.sikorka.android.node.configuration.Network
+import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.*
 import toothpick.Toothpick
 import java.util.*
@@ -18,8 +19,11 @@ class GethService : Service() {
   private lateinit var ethContext: Context
 
   @Inject internal lateinit var configurationFactory: ConfigurationFactory
+  @Inject internal lateinit var appPreferences: AppPreferences
 
   override fun onBind(intent: Intent): IBinder? = null
+
+  private var node: Node? = null
 
   override fun onCreate() {
     val scope = Toothpick.openScopes(application, this)
@@ -39,12 +43,12 @@ class GethService : Service() {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    try {
+    return try {
       start()
-      return START_STICKY
-    } catch(e: Exception) {
+      START_STICKY
+    } catch (e: Exception) {
       stopSelf()
-      return START_NOT_STICKY
+      START_NOT_STICKY
     }
   }
 
@@ -62,22 +66,28 @@ class GethService : Service() {
 
     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
-    val notification = NotificationCompat.Builder(this, "sikorka_geth_channel_01")
+    return NotificationCompat.Builder(this, "sikorka_geth_channel_01")
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle("Geth Test")
         .setContentText(message)
         .setOngoing(true)
         .setNumber(count)
         .setContentIntent(pendingIntent).build()
-    return notification
   }
 
   fun start() {
-    val configuration = configurationFactory.configuration(Network.ROPSTEN)
+    if (node != null) {
+      return
+    }
+
+
+    val configuration = configurationFactory.configuration(appPreferences.selectedNetwork())
+    configuration.prepare()
     val dataDir = configuration.dataDir
     val nodeConfig = configuration.nodeConfig
 
-    val node = Geth.newNode(dataDir.absolutePath, nodeConfig)
+    node = Geth.newNode(dataDir.absolutePath, nodeConfig)
+    val node = node ?: fail("what node?")
     node.start()
 
     schedulerPeerCheck(node)
@@ -126,6 +136,14 @@ class GethService : Service() {
     const val NOTIFICATION_ID = 1337
     fun stop(context: android.content.Context) {
       context.stopService(Intent(context, GethService::class.java))
+    }
+
+    fun start(context: android.content.Context) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        context.startForegroundService(Intent(context, GethService::class.java))
+      } else {
+        context.startService(Intent(context, GethService::class.java))
+      }
     }
   }
 }

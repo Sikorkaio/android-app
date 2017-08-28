@@ -58,10 +58,13 @@ dependencies {
   implementation 'com.jakewharton:butterknife:8.8.1'
   kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
-  implementation 'com.afollestad.material-dialogs:core:0.9.4.5'
-  implementation 'com.afollestad.material-dialogs:commons:0.9.4.5'
+  implementation 'com.afollestad.material-dialogs:core:0.9.4.7'
+  implementation 'com.afollestad.material-dialogs:commons:0.9.4.7'
 
   implementation 'com.github.apl-devs:appintro:v4.2.2'
+
+  //Logging
+  implementation 'com.jakewharton.timber:timber:4.5.1'
 
   //Unit testing
   testImplementation 'junit:junit:4.12'

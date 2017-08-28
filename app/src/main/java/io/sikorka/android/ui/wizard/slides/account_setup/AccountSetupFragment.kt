@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.wizard.slides
+package io.sikorka.android.ui.wizard.slides.account_setup
 
 
 import android.os.Bundle
@@ -6,12 +6,16 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
+import toothpick.Toothpick
+import javax.inject.Inject
 
 
 /**
@@ -19,12 +23,20 @@ import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
  * Use the [AccountSetupFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AccountSetupFragment : Fragment() {
+class AccountSetupFragment : Fragment(), AccountSetupView {
+
+  @BindView(R.id.account_setup__account_address)
+  internal lateinit var accountAddress: TextView
+
+  @Inject internal lateinit var presenter: AccountSetupPresenter
 
   @OnClick(R.id.account_setup__create_new)
   internal fun onCreateNewPressed() {
     val dialog = AccountCreationDialog.newInstance()
     dialog.show(fragmentManager)
+    dialog.onDismiss {
+      presenter.loadAccount()
+    }
   }
 
   @OnClick(R.id.account_setup__import_account)
@@ -33,8 +45,15 @@ class AccountSetupFragment : Fragment() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    val scope = Toothpick.openScopes(context.applicationContext, this)
+    scope.installModules(AccountSetupModule())
+    Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
+  }
 
+  override fun onDestroy() {
+    super.onDestroy()
+    Toothpick.closeScope(this)
   }
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -45,6 +64,22 @@ class AccountSetupFragment : Fragment() {
     ButterKnife.bind(this, view)
     return view
   }
+
+  override fun onStart() {
+    super.onStart()
+    presenter.attach(this)
+  }
+
+  override fun onStop() {
+    super.onStop()
+    presenter.detach()
+  }
+
+
+  override fun setAccount(accountHex: String) {
+    accountAddress.text = accountHex
+  }
+
 
   companion object {
 

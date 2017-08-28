@@ -8,4 +8,8 @@ interface AppPreferences {
 
   @Network.Selection
   fun selectedNetwork(): Long
+
+  fun selectedAccount(): String
+
+  fun selectAccount(account: String)
 }

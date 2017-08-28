@@ -4,18 +4,24 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.helpers.Lce
+import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.Account
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
 import javax.inject.Inject
 
 class AccountRepository
-@Inject constructor(@KeystorePath private val keystorePath: String) {
+@Inject constructor(
+    @KeystorePath private val keystorePath: String,
+    private var appPreferences: AppPreferences
+) {
 
   private val keystore = KeyStore(keystorePath, Geth.LightScryptN, Geth.LightScryptP)
 
   fun createAccount(passphrase: String): Account {
-    return keystore.newAccount(passphrase)
+    val newAccount = keystore.newAccount(passphrase)
+    setDefault(newAccount.address.hex)
+    return newAccount
   }
 
   fun accounts(): Observable<Lce<List<Account>>> {
@@ -36,8 +42,18 @@ class AccountRepository
     keystore.deleteAccount(account, passphrase)
   }
 
-  fun importAccount(key: ByteArray, keyPassphrase: String, passphrase: String) : Single<Account> {
-    return Single.fromCallable { keystore.importKey(key, keyPassphrase, passphrase) }
+  fun importAccount(key: ByteArray, keyPassphrase: String, passphrase: String): Single<Account> {
+    return Single.fromCallable {
+      val account = keystore.importKey(key, keyPassphrase, passphrase)
+      setDefault(account.address.hex)
+      account
+    }
+  }
+
+  private fun setDefault(accountHex: String) {
+    if (appPreferences.selectedAccount().isBlank()) {
+      appPreferences.selectAccount(accountHex)
+    }
   }
 
   fun changePassphrase(account: Account, oldPassphrase: String, newPassphrase: String) {

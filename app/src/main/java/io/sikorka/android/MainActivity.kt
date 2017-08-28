@@ -1,6 +1,7 @@
 package io.sikorka.android
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -32,8 +33,6 @@ class MainActivity : AppCompatActivity() {
     val textbox = findViewById<TextView>(R.id.textbox)
     textbox.text = ""
 
-    startService(Intent(this, GethService::class.java))
-
     val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     if (permission != PackageManager.PERMISSION_GRANTED) {
       ActivityCompat.requestPermissions(this,
@@ -45,5 +44,8 @@ class MainActivity : AppCompatActivity() {
 
   companion object {
     const val MY_PERMISSIONS_REQUEST_STORAGE = 1245
+    fun start(context: Context) {
+      context.startActivity(Intent(context, MainActivity::class.java))
+    }
   }
 }

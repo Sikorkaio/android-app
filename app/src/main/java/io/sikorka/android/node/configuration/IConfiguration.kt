@@ -11,4 +11,5 @@ interface IConfiguration {
   val dataDir: File
   val nodeConfig: NodeConfig
   val bootstrapNodes: Enodes?
+  fun prepare()
 }

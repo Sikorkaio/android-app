@@ -30,14 +30,15 @@ fun <ActivityType> ActivityType.selectDirectory() where ActivityType : AppCompat
       .chooseButton(R.string.md_choose_label)
       .tag("optional-identifier")
       .goUpLabel("Up")
-      .show()
+      .show(this)
 }
 
 
 fun <ActivityType> ActivityType.selectFile() where ActivityType : AppCompatActivity,
   ActivityType : FileChooserDialog.FileCallback {
   FileChooserDialog.Builder(this)
-      .extensionsFilter("*.*")
-      .show()
+      .tag("file-selection")
+      .mimeType("application/octet-stream")
+      .show(this)
 
 }

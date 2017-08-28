@@ -63,6 +63,16 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
     Toothpick.closeScope(this)
   }
 
+  override fun onStart() {
+    super.onStart()
+    presenter.attach(this)
+  }
+
+  override fun onStop() {
+    super.onStop()
+    presenter.detach()
+  }
+
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
 
@@ -74,9 +84,9 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
   }
 
   override fun updateNetworkSelection(@Network.Selection network: Long) {
-    ropstenSelection.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
-    rinkebySelection.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
-    mainnetSelection.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
+    ropstenSelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+    rinkebySelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+    mainnetSelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
     val selection = when (network) {
       Network.ROPSTEN -> ropstenSelection
       Network.RINKEBY -> rinkebySelection
@@ -84,7 +94,7 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
       else -> null
     }
 
-    selection?.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_check_black_24dp, 0)
+    selection?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_black_24dp, 0)
   }
 
   companion object {

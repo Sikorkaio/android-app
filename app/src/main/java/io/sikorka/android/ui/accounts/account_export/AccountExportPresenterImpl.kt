@@ -48,7 +48,7 @@ class AccountExportPresenterImpl
           if (it.isEmpty()) {
             attachedView().showError(AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT)
           } else {
-            it.toFile(File(exportDirectory, "$accountHex.json"))
+            it.toFile(File(exportDirectory, accountHex))
             attachedView().exportComplete()
           }
         }) {
