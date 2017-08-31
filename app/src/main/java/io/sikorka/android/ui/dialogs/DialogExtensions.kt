@@ -1,6 +1,7 @@
 package io.sikorka.android.ui.dialogs
 
 import android.content.Context
+import android.os.Environment
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
@@ -28,6 +29,7 @@ fun <ActivityType> ActivityType.selectDirectory() where ActivityType : AppCompat
   ActivityType : FolderChooserDialog.FolderCallback {
   FolderChooserDialog.Builder(this)
       .chooseButton(R.string.md_choose_label)
+      .initialPath(Environment.getExternalStorageDirectory().absolutePath)
       .tag("optional-identifier")
       .goUpLabel("Up")
       .show(this)
@@ -36,9 +38,11 @@ fun <ActivityType> ActivityType.selectDirectory() where ActivityType : AppCompat
 
 fun <ActivityType> ActivityType.selectFile() where ActivityType : AppCompatActivity,
   ActivityType : FileChooserDialog.FileCallback {
-  FileChooserDialog.Builder(this)
+  val dialog = FileChooserDialog.Builder(this)
       .tag("file-selection")
-      .mimeType("application/octet-stream")
-      .show(this)
+      .mimeType("*/*")
+      .initialPath(Environment.getExternalStorageDirectory().absolutePath)
+      .build()
 
+  dialog.show(this)
 }
