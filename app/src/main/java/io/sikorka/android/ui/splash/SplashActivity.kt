@@ -5,9 +5,9 @@ import android.support.v7.app.AppCompatActivity
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.sikorka.android.GethService
-import io.sikorka.android.MainActivity
 import io.sikorka.android.R
 import io.sikorka.android.settings.AppPreferences
+import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.WizardActivity
 import toothpick.Toothpick
 import java.util.concurrent.TimeUnit

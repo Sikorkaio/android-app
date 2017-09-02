@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.MenuItem
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -33,6 +34,10 @@ class AccountActivity : AppCompatActivity(), AccountView {
     ButterKnife.bind(this)
     accountsRecycler.adapter = adapter
     accountsRecycler.layoutManager = LinearLayoutManager(this)
+    actionBar?.let {
+      it.setDisplayShowHomeEnabled(true)
+      it.setDisplayHomeAsUpEnabled(true)
+    }
   }
 
   override fun onDestroy() {
@@ -73,6 +78,16 @@ class AccountActivity : AppCompatActivity(), AccountView {
 
   override fun showError(message: String) {
 
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    return when (item?.itemId) {
+      android.R.id.home -> {
+        onBackPressed()
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
+    }
   }
 
   companion object {

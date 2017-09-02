@@ -6,14 +6,15 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import io.sikorka.android.R
-import io.sikorka.android.node.accounts.ValidationResult
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.node.accounts.ValidationResult
 import io.sikorka.android.ui.dialogs.selectDirectory
 import io.sikorka.android.ui.value
 import toothpick.Toothpick
@@ -122,6 +123,10 @@ class AccountExportActivity : AppCompatActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_export)
     ButterKnife.bind(this)
+    actionBar?.let {
+      it.setDisplayShowHomeEnabled(true)
+      it.setDisplayHomeAsUpEnabled(true)
+    }
   }
 
   override fun onDestroy() {
@@ -138,6 +143,16 @@ class AccountExportActivity : AppCompatActivity(),
   override fun onStop() {
     super.onStop()
     presenter.detach()
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    return when (item?.itemId) {
+      android.R.id.home -> {
+        onBackPressed()
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
+    }
   }
 
   companion object {

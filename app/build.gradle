@@ -22,7 +22,6 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
-
 }
 
 dependencies {
@@ -65,6 +64,15 @@ dependencies {
 
   //Logging
   implementation 'com.jakewharton.timber:timber:4.5.1'
+
+  //Location
+  implementation 'com.google.android.gms:play-services-gcm:11.2.0'
+  implementation 'com.google.android.gms:play-services-location:11.2.0'
+  implementation 'com.google.android.gms:play-services-maps:11.2.0'
+
+
+  debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+  releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 
   //Unit testing
   testImplementation 'junit:junit:4.12'

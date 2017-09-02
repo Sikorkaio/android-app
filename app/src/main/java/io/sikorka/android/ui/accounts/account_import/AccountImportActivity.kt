@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -88,7 +89,10 @@ class AccountImportActivity : AppCompatActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_import)
     ButterKnife.bind(this)
-
+    actionBar?.let {
+      it.setDisplayShowHomeEnabled(true)
+      it.setDisplayHomeAsUpEnabled(true)
+    }
   }
 
   override fun onDestroy() {
@@ -104,6 +108,16 @@ class AccountImportActivity : AppCompatActivity(),
   override fun onStop() {
     super.onStop()
     presenter.detach()
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    return when (item?.itemId) {
+      android.R.id.home -> {
+        onBackPressed()
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
+    }
   }
 
   companion object {

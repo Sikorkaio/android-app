@@ -8,7 +8,12 @@ import android.support.v4.app.NotificationCompat
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.configuration.ConfigurationFactory
 import io.sikorka.android.settings.AppPreferences
-import org.ethereum.geth.*
+import io.sikorka.android.ui.main.MainActivity
+import org.ethereum.geth.Context
+import org.ethereum.geth.EthereumClient
+import org.ethereum.geth.Geth
+import org.ethereum.geth.Node
+import timber.log.Timber
 import toothpick.Toothpick
 import java.util.*
 import javax.inject.Inject
@@ -43,6 +48,7 @@ class GethService : Service() {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    Timber.v("Starting Geth service")
     return try {
       start()
       START_STICKY
@@ -67,8 +73,8 @@ class GethService : Service() {
     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
     return NotificationCompat.Builder(this, "sikorka_geth_channel_01")
-        .setSmallIcon(R.mipmap.ic_launcher)
-        .setContentTitle("Geth Test")
+        .setSmallIcon(R.drawable.ic_stat_ic_launcher)
+        .setContentTitle(getString(R.string.notification__sikorka_node_title))
         .setContentText(message)
         .setOngoing(true)
         .setNumber(count)
@@ -86,22 +92,12 @@ class GethService : Service() {
     val dataDir = configuration.dataDir
     val nodeConfig = configuration.nodeConfig
 
+    Timber.v("node data directory will be in $dataDir")
     node = Geth.newNode(dataDir.absolutePath, nodeConfig)
     val node = node ?: fail("what node?")
     node.start()
 
     schedulerPeerCheck(node)
-
-    //print traffic of the node
-    val handler = object : NewHeadHandler {
-      override fun onError(error: String) {}
-      override fun onNewHead(header: Header) {
-        println("#" + header.number + ": " + header.hash.hex.substring(0, 10) + "…\n")
-      }
-    }
-
-    val ec = node.ethereumClient
-    ec.subscribeNewHead(ethContext, handler, 32)
   }
 
   private fun syncProgress(ec: EthereumClient): String {

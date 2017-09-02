@@ -29,8 +29,7 @@ class InformationFragment : Fragment() {
 
   companion object {
     fun newInstance(): InformationFragment {
-      val fragment = InformationFragment()
-      return fragment
+      return InformationFragment()
     }
   }
 
