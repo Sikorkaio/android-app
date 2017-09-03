@@ -10,7 +10,7 @@ interface AccountPresenter : Presenter<AccountView> {
    */
   fun loadAccounts()
 
-  fun deleteAccount(account: Account)
+  fun deleteAccount(account: Account, passphrase: String)
 
 }
 

@@ -13,6 +13,7 @@ import butterknife.OnClick
 import io.sikorka.android.R
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
+import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import org.ethereum.geth.Account
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -49,8 +50,8 @@ class AccountActivity : AppCompatActivity(), AccountView {
     super.onStart()
     presenter.attach(this)
     presenter.loadAccounts()
-    adapter.setAccountActionListeners({
-      presenter.deleteAccount(it)
+    adapter.setAccountActionListeners({ account ->
+      verifyPassphraseDialog { presenter.deleteAccount(account, it) }
     }, {
       AccountExportActivity.start(this, it.address.hex)
     })

@@ -48,7 +48,7 @@ class GethService : Service() {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    Timber.v("Starting Geth service")
+    Timber.v("Starting Node")
     return try {
       start()
       START_STICKY
@@ -86,7 +86,6 @@ class GethService : Service() {
       return
     }
 
-
     val configuration = configurationFactory.configuration(appPreferences.selectedNetwork())
     configuration.prepare()
     val dataDir = configuration.dataDir
@@ -96,8 +95,8 @@ class GethService : Service() {
     node = Geth.newNode(dataDir.absolutePath, nodeConfig)
     val node = node ?: fail("what node?")
     node.start()
-
     schedulerPeerCheck(node)
+
   }
 
   private fun syncProgress(ec: EthereumClient): String {
@@ -105,7 +104,7 @@ class GethService : Service() {
       val syncProgress = ec.syncProgress(ethContext)
       "block: ${ec.getBlockByNumber(ethContext, -1).number} of ${syncProgress.highestBlock}"
     } catch (ex: Exception) {
-      println(ex.message)
+      Timber.v(ex)
       ""
     }
   }
@@ -120,7 +119,7 @@ class GethService : Service() {
         if (syncProgress.isNotBlank()) {
           message = "$message - $syncProgress"
         }
-        println(message)
+        Timber.v("checking sync progress $message")
         val notification = createNotification(message, peerInfos.size().toInt())
         notificationManager.notify(NOTIFICATION_ID, notification)
       }

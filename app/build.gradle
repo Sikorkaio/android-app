@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
+// load api key from properties file
+def properties = new Properties()
+file("$rootDir/api-keys.properties").withInputStream { properties.load(it) }
+
 android {
   compileSdkVersion 26
   buildToolsVersion "26.0.1"
@@ -15,11 +19,13 @@ android {
     versionName "1.0.0-alpha.1"
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     vectorDrawables.useSupportLibrary = true
+
+    resValue "string", "maps_key", properties["google_maps_key"]
   }
 
   signingConfigs {
     debug {
-      storeFile file("$projectDir/debug.keystore")
+      storeFile file("$rootDir/debug.keystore")
     }
   }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Environment
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
+import android.text.InputType
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
@@ -26,7 +27,7 @@ fun Context.showConfirmation(
 }
 
 fun <ActivityType> ActivityType.selectDirectory() where ActivityType : AppCompatActivity,
-  ActivityType : FolderChooserDialog.FolderCallback {
+                                                        ActivityType : FolderChooserDialog.FolderCallback {
   FolderChooserDialog.Builder(this)
       .chooseButton(R.string.md_choose_label)
       .initialPath(Environment.getExternalStorageDirectory().absolutePath)
@@ -37,7 +38,7 @@ fun <ActivityType> ActivityType.selectDirectory() where ActivityType : AppCompat
 
 
 fun <ActivityType> ActivityType.selectFile() where ActivityType : AppCompatActivity,
-  ActivityType : FileChooserDialog.FileCallback {
+                                                   ActivityType : FileChooserDialog.FileCallback {
   val dialog = FileChooserDialog.Builder(this)
       .tag("file-selection")
       .mimeType("*/*")
@@ -45,4 +46,19 @@ fun <ActivityType> ActivityType.selectFile() where ActivityType : AppCompatActiv
       .build()
 
   dialog.show(this)
+}
+
+fun Context.verifyPassphraseDialog(onInput: (input: String) -> Unit) {
+  MaterialDialog.Builder(this)
+      .title(R.string.dialog__passphrase_title)
+      .content(R.string.dialog__passphrase_content)
+      .inputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+      .input(
+          R.string.dialog__input_hint,
+          R.string.dialog_passphrase__input_prefill,
+          { dialog, input ->
+            onInput.invoke(input.toString())
+            dialog.dismiss()
+          }
+      ).show()
 }
