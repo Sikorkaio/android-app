@@ -80,6 +80,7 @@ class AccountImportActivity : AppCompatActivity(),
 
   override fun importSuccess() {
     Snackbar.make(filePathInput, R.string.account_import__import_success, Snackbar.LENGTH_SHORT).show()
+    finish()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +90,7 @@ class AccountImportActivity : AppCompatActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_import)
     ButterKnife.bind(this)
-    actionBar?.let {
+    supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)
       it.setDisplayHomeAsUpEnabled(true)
     }

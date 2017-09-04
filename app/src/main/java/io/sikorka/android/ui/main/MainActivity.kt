@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity(),
   override fun onStart() {
     super.onStart()
     presenter.attach(this)
+    presenter.loadAccountInfo()
   }
 
   override fun onStop() {

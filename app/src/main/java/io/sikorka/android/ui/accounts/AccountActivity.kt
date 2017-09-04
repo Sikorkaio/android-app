@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
 import android.view.MenuItem
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -13,6 +14,7 @@ import butterknife.OnClick
 import io.sikorka.android.R
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
+import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import org.ethereum.geth.Account
 import toothpick.Toothpick
@@ -35,11 +37,13 @@ class AccountActivity : AppCompatActivity(), AccountView {
     ButterKnife.bind(this)
     accountsRecycler.adapter = adapter
     accountsRecycler.layoutManager = LinearLayoutManager(this)
-    actionBar?.let {
+    supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)
       it.setDisplayHomeAsUpEnabled(true)
+      it.setHomeButtonEnabled(true)
     }
   }
+
 
   override fun onDestroy() {
     super.onDestroy()
@@ -87,8 +91,17 @@ class AccountActivity : AppCompatActivity(), AccountView {
         onBackPressed()
         true
       }
+      R.id.account_management__import_menu -> {
+        AccountImportActivity.start(this)
+        true
+      }
       else -> super.onOptionsItemSelected(item)
     }
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.activity_accounts__menu, menu)
+    return super.onCreateOptionsMenu(menu)
   }
 
   companion object {

@@ -1,7 +1,6 @@
 package io.sikorka.android
 
 import android.app.Application
-import com.squareup.leakcanary.LeakCanary
 import io.sikorka.android.di.modules.GethModule
 import timber.log.Timber
 import toothpick.Toothpick
@@ -13,12 +12,12 @@ import toothpick.smoothie.module.SmoothieApplicationModule
 class GethApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-    if (LeakCanary.isInAnalyzerProcess(this)) {
-      // This process is dedicated to LeakCanary for heap analysis.
-      // You should not init your app in this process.
-      return
-    }
-    LeakCanary.install(this)
+//    if (LeakCanary.isInAnalyzerProcess(this)) {
+//      // This process is dedicated to LeakCanary for heap analysis.
+//      // You should not init your app in this process.
+//      return
+//    }
+//    LeakCanary.install(this)
 
     val scope = Toothpick.openScope(this)
     scope.installModules(SmoothieApplicationModule(this), GethModule())

@@ -10,6 +10,7 @@ interface MainView : BaseView {
 
 
 interface MainPresenter : Presenter<MainView> {
+  fun loadAccountInfo()
 
 }
 

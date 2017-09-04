@@ -9,12 +9,11 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.configuration.ConfigurationFactory
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.main.MainActivity
-import org.ethereum.geth.Context
-import org.ethereum.geth.EthereumClient
-import org.ethereum.geth.Geth
-import org.ethereum.geth.Node
+import org.ethereum.geth.*
 import timber.log.Timber
+import toothpick.Scope
 import toothpick.Toothpick
+import toothpick.config.Module
 import java.util.*
 import javax.inject.Inject
 
@@ -29,12 +28,13 @@ class GethService : Service() {
   override fun onBind(intent: Intent): IBinder? = null
 
   private var node: Node? = null
+  private lateinit var scope: Scope
 
   override fun onCreate() {
-    val scope = Toothpick.openScopes(application, this)
+    scope = Toothpick.openScopes(application, this)
     Toothpick.inject(this, scope)
     super.onCreate()
-    ethContext = Context()
+    ethContext = Geth.newContext()
     notificationManager = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager
     createNotificationChannel()
     val notification = createNotification("Starting...")
@@ -78,6 +78,8 @@ class GethService : Service() {
         .setContentText(message)
         .setOngoing(true)
         .setNumber(count)
+        .setGroup("")
+        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
         .setContentIntent(pendingIntent).build()
   }
 
@@ -96,6 +98,22 @@ class GethService : Service() {
     val node = node ?: fail("what node?")
     node.start()
     schedulerPeerCheck(node)
+    node.ethereumClient.subscribeFilterLogs(ethContext, Geth.newFilterQuery(), object : FilterLogsHandler {
+      override fun onError(error: String?) {
+        Timber.v(error)
+      }
+
+      override fun onFilterLogs(log: Log?) {
+        Timber.v("${log?.address?.hex}")
+      }
+    }, 0)
+
+    scope.installModules(object : Module() {
+      init {
+        bind(EthereumClient::class.java).toInstance(node.ethereumClient)
+        bind(Context::class.java).toInstance(ethContext)
+      }
+    })
 
   }
 
