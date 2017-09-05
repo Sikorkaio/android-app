@@ -53,4 +53,6 @@
   <string name="dialog__passphrase_content">In order to process you need to insert the passphrase for this account.</string>
   <string name="dialog__input_hint">Passphrase</string>
   <string name="dialog_passphrase__input_prefill"/>
+  <string name="main__no_balance_available">No balance information</string>
+  <string name="main_balance_eth">%d eth</string>
 </resources>

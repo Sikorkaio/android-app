@@ -4,17 +4,19 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.helpers.Lce
+import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.toEther
 import io.sikorka.android.settings.AppPreferences
-import org.ethereum.geth.*
+import org.ethereum.geth.Account
+import org.ethereum.geth.Geth
+import org.ethereum.geth.KeyStore
 import javax.inject.Inject
 
 class AccountRepository
 @Inject constructor(
     @KeystorePath private val keystorePath: String,
     private val appPreferences: AppPreferences,
-    private val ethereumClient: EthereumClient,
-    private val context: Context
+    private val gethNode: GethNode
 ) {
 
   private val keystore = KeyStore(keystorePath, Geth.LightScryptN, Geth.LightScryptP)
@@ -38,8 +40,11 @@ class AccountRepository
   fun selectedAccount(): Single<AccountModel> = Single.fromCallable {
     val account = appPreferences.selectedAccount()
     val address = Geth.newAddressFromHex(account)
-    val balance = ethereumClient.getBalanceAt(context, address, -1)
+    val balance = gethNode.getBalance(address)
     return@fromCallable AccountModel(account, balance.toEther())
+  }.onErrorReturn {
+    val account = appPreferences.selectedAccount()
+    return@onErrorReturn AccountModel(account, -1)
   }
 
   fun exportAccount(account: Account, passphrase: String, keyPassphrase: String): Single<ByteArray> {

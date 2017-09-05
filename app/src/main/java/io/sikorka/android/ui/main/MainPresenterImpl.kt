@@ -17,9 +17,10 @@ constructor(
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe({
+          attachedView().updateAccountInfo(it)
           Timber.v(it.toString())
         }) {
-
+          Timber.v(it)
         }
     )
   }

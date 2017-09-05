@@ -33,6 +33,8 @@ class SplashActivity : AppCompatActivity() {
             WizardActivity.start(this)
           }
 
+          finish()
+
         }
   }
 }

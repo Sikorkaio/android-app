@@ -24,9 +24,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.GethService
 import io.sikorka.android.R
+import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.ui.accounts.AccountActivity
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
+import kotlinx.android.synthetic.main.nav_header__main.*
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -85,9 +87,18 @@ class MainActivity : AppCompatActivity(),
         return@addOnCompleteListener
       }
       val map = map ?: return@addOnCompleteListener
-      val location = it.result
+      val location = it.result ?: return@addOnCompleteListener
       updateMyMarker(location, map)
     })
+  }
+
+  override fun updateAccountInfo(model: AccountModel) {
+    main__header_account.text = model.account
+    main__header_balance.text = if (model.ethBalance < 0) {
+      getString(R.string.main__no_balance_available)
+    } else {
+      getString(R.string.main_balance_eth, model.ethBalance)
+    }
   }
 
   private fun updateMyMarker(location: Location, map: GoogleMap) {
