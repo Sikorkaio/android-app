@@ -123,7 +123,7 @@ class AccountExportActivity : AppCompatActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_export)
     ButterKnife.bind(this)
-    actionBar?.let {
+    supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)
       it.setDisplayHomeAsUpEnabled(true)
     }

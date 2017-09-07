@@ -21,6 +21,32 @@
     android:layout_gravity="start"
     android:fitsSystemWindows="true"
     app:headerLayout="@layout/nav_header__main"
-    app:menu="@menu/activity_main__drawer"/>
+    app:menu="@menu/activity_main__drawer">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:clickable="true"
+      android:focusable="true"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/main__nav_network_statistics"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_rss_feed_black_24dp"
+        android:fontFamily="@font/roboto_light"
+        android:gravity="start|center_vertical"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:textSize="13sp"
+        tools:text="0 Peers | 10205003 blocks"/>
+
+    </LinearLayout>
+
+
+  </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

@@ -1,5 +1,7 @@
 package io.sikorka.android.node
 
+import io.sikorka.android.events.RxBus
+import io.sikorka.android.events.UpdateSyncStatusEvent
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.configuration.ConfigurationFactory
 import io.sikorka.android.settings.AppPreferences
@@ -14,7 +16,8 @@ class GethNode
 @Inject
 constructor(
     private val configurationFactory: ConfigurationFactory,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val rxBus: RxBus
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
@@ -46,14 +49,14 @@ constructor(
     return ethNode.ethereumClient.getBalanceAt(ethContext, address, -1)
   }
 
-  private fun syncProgress(ec: EthereumClient): String {
-    return try {
-      val syncProgress = ec.syncProgress(ethContext)
-      "block: ${ec.getBlockByNumber(ethContext, -1).number} of ${syncProgress.highestBlock}"
-    } catch (ex: Exception) {
-      Timber.v(ex)
-      ""
-    }
+  private fun syncProgress(ec: EthereumClient): Pair<Long, Long> = try {
+    val syncProgress = ec.syncProgress(ethContext)
+    val currentBlock = ec.getBlockByNumber(ethContext, -1)
+    val highestBlock = syncProgress?.highestBlock ?: currentBlock.number
+    Pair(currentBlock.number, highestBlock)
+  } catch (ex: Exception) {
+    Timber.v(ex)
+    Pair(0, 0)
   }
 
   private fun schedulerPeerCheck(node: Node) {
@@ -61,13 +64,16 @@ constructor(
       override fun run() {
 
         val peerInfos = node.peersInfo
-        var message = "Peers: ${peerInfos.size()}"
-        val syncProgress = syncProgress(node.ethereumClient)
-        if (syncProgress.isNotBlank()) {
-          message = "$message - $syncProgress"
+        val peers = peerInfos.size().toInt()
+        var message = "Peers: $peers"
+        val (current, highest) = syncProgress(node.ethereumClient)
+        if (highest > 0) {
+          message = "$message | Block $current of $highest"
         }
         Timber.v("checking sync progress $message")
-        listener?.invoke(message, peerInfos.size().toInt())
+        listener?.invoke(message, peers)
+        val status = SyncStatus(peers, current, highest)
+        rxBus.post(UpdateSyncStatusEvent(status))
       }
 
     }, 0, 30000)//put here time 1000 milliseconds=1 second

@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.GethService
 import io.sikorka.android.R
+import io.sikorka.android.node.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.ui.accounts.AccountActivity
 import kotlinx.android.synthetic.main.activity__main.*
@@ -90,6 +91,16 @@ class MainActivity : AppCompatActivity(),
       val location = it.result ?: return@addOnCompleteListener
       updateMyMarker(location, map)
     })
+  }
+
+  override fun updateSyncStatus(status: SyncStatus) {
+    val statusMessage = getString(
+        R.string.main__nav_network_statistics,
+        status.peers,
+        status.currentBlock,
+        status.highestBlock
+    )
+    main__nav_network_statistics.text = statusMessage
   }
 
   override fun updateAccountInfo(model: AccountModel) {
