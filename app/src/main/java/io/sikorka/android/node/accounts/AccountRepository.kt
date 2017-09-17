@@ -44,7 +44,7 @@ class AccountRepository
     return@fromCallable AccountModel(account, balance.toEther())
   }.onErrorReturn {
     val account = appPreferences.selectedAccount()
-    return@onErrorReturn AccountModel(account, -1)
+    return@onErrorReturn AccountModel(account)
   }
 
   fun exportAccount(account: Account, passphrase: String, keyPassphrase: String): Single<ByteArray> {

@@ -20,6 +20,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.GethService
@@ -117,6 +118,14 @@ class MainActivity : AppCompatActivity(),
 
     val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black_24dp)
 
+    val position = CameraPosition.builder()
+        .target(me)
+        .zoom(16f)
+        .bearing(0.0f)
+        .tilt(0.0f)
+        .build()
+
+    map.animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
     map.moveCamera(CameraUpdateFactory.newLatLng(me))
     map.addMarker(MarkerOptions().position(me)
         .title("Me"))

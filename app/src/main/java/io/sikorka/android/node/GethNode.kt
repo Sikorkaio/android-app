@@ -45,9 +45,19 @@ constructor(
   }
 
   fun getBalance(address: Address): BigInt {
-    val ethNode = node ?: fail("no node")
-    return ethNode.ethereumClient.getBalanceAt(ethContext, address, -1)
+    return ethereumClient.getBalanceAt(ethContext, address, -1)
   }
+
+  fun suggestedGasPrice(): BigInt {
+    return ethereumClient.suggestGasPrice(ethContext)
+  }
+
+  private val ethereumClient: EthereumClient
+    get() {
+      val ethNode = node ?: fail("no node")
+      val ethereumClient = ethNode.ethereumClient
+      return ethereumClient ?: fail("no client")
+    }
 
   private fun syncProgress(ec: EthereumClient): Pair<Long, Long> = try {
     val syncProgress = ec.syncProgress(ethContext)
