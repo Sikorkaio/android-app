@@ -56,8 +56,12 @@
   <string name="dialog__input_hint">Passphrase</string>
   <string name="dialog_passphrase__input_prefill"/>
   <string name="main__no_balance_available">No balance information</string>
-  <string name="main_balance_eth">%d Ether</string>
-    <string name="deploy_contract__title">Deploy your Contract</string>
-    <string name="deploy_contract__question">Question</string>
-  <string name="deploy_contract__answer">Answwer</string>
+  <string name="main_balance_eth">%.2f ether</string>
+  <string name="deploy_contract__title">Deploy your Contract</string>
+  <string name="deploy_contract__question">Question</string>
+  <string name="deploy_contract__answer">Answer</string>
+  <string name="deploy_contract__gas_price">Gas Price</string>
+  <string name="deploy_contract__gas_price_value">%.10f</string>
+  <string name="deploy_contract__gas_price_currency">ether</string>
+  <string name="deploy_contract__gas_limit">Gas Limit</string>
 </resources>

@@ -5,11 +5,12 @@ import io.sikorka.android.mvp.Presenter
 import toothpick.config.Module
 
 interface DeployContractView : BaseView {
+  fun setSuggestedGasPrice(gasPrice: Double)
 
 }
 
 interface DeployContractPresenter : Presenter<DeployContractView> {
-
+  fun load()
 }
 
 

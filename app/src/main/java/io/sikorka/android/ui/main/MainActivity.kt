@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -28,6 +27,7 @@ import io.sikorka.android.R
 import io.sikorka.android.node.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.ui.accounts.AccountActivity
+import io.sikorka.android.ui.contracts.DeployContractActivity
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
 import kotlinx.android.synthetic.main.nav_header__main.*
@@ -47,21 +47,22 @@ class MainActivity : AppCompatActivity(),
   private lateinit var scope: Scope
   private var map: GoogleMap? = null
 
+  private var latitude: Double = 0.0
+  private var longitude: Double = 0.0
+
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
     scope.installModules(SmoothieSupportActivityModule(this), MainModule())
     Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__main)
-    val mapFragment = supportFragmentManager
-        .findFragmentById(R.id.map) as SupportMapFragment
+    val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
     mapFragment.getMapAsync(this)
 
     setSupportActionBar(toolbar)
 
-    fab.setOnClickListener { view ->
-      Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-          .setAction("Action", null).show()
+    main__deploy_fab.setOnClickListener {
+      DeployContractActivity.start(this, latitude, longitude)
     }
 
     val toggle = ActionBarDrawerToggle(
@@ -90,6 +91,8 @@ class MainActivity : AppCompatActivity(),
       }
       val map = map ?: return@addOnCompleteListener
       val location = it.result ?: return@addOnCompleteListener
+      longitude = location.longitude
+      latitude = location.latitude
       updateMyMarker(location, map)
     })
   }
@@ -126,9 +129,8 @@ class MainActivity : AppCompatActivity(),
         .build()
 
     map.animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
-    map.moveCamera(CameraUpdateFactory.newLatLng(me))
-    map.addMarker(MarkerOptions().position(me)
-        .title("Me"))
+    map.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+    map.addMarker(MarkerOptions().position(me).title("Me"))
   }
 
   private fun startLocationPermissionRequest() {

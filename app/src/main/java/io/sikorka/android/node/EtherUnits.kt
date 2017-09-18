@@ -20,8 +20,11 @@ private var unitMap = mapOf(
     ETHER to 1000000000000000000L
 )
 
-fun BigInt.toEther(): Double {
-  return this.int64.toDouble() / (unitMap[ETHER] ?: 1)
-}
+fun BigInt.toEther(): Double = toUnit(ETHER)
+
+private fun BigInt.toUnit(unit: String): Double = this.int64.toDouble() / unitToValue(unit)
+
+private fun unitToValue(unit: String): Long = unitMap.getOrDefault(ETHER, 1L)
+
 
 

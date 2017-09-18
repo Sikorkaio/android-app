@@ -1,5 +1,6 @@
 package io.sikorka.android.node
 
+import io.reactivex.Single
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.UpdateSyncStatusEvent
 import io.sikorka.android.helpers.fail
@@ -48,8 +49,28 @@ constructor(
     return ethereumClient.getBalanceAt(ethContext, address, -1)
   }
 
-  fun suggestedGasPrice(): BigInt {
-    return ethereumClient.suggestGasPrice(ethContext)
+  fun createTransactOpts(
+      addressHex: String,
+      gasPrice: Long,
+      gasLimit: Long,
+      signer: TransactionSigner): Single<TransactOpts> {
+    return Single.fromCallable {
+      val opts = TransactOpts()
+      opts.setContext(ethContext)
+      opts.from = Geth.newAddressFromHex(addressHex)
+      opts.setSigner({ address, transaction -> signer.invoke(address, transaction) })
+      opts.gasLimit = gasLimit
+      opts.gasPrice = Geth.newBigInt(gasPrice)
+      return@fromCallable opts
+    }
+  }
+
+  fun suggestedGasPrice(): Single<BigInt> {
+    return Single.fromCallable { ethereumClient.suggestGasPrice(ethContext) }
+  }
+
+  fun ethereumClient(): Single<EthereumClient> {
+    return Single.fromCallable { ethereumClient }
   }
 
   private val ethereumClient: EthereumClient
@@ -89,3 +110,5 @@ constructor(
     }, 0, 30000)//put here time 1000 milliseconds=1 second
   }
 }
+
+typealias TransactionSigner = (address: Address, transaction: Transaction) -> Transaction
