@@ -39,18 +39,19 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'com.android.support:support-v4:26.0.1'
+  implementation 'com.android.support:support-v4:26.0.2'
+  implementation 'com.android.support:support-v13:26.0.2'
   androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
 
   // Support libraries
-  implementation 'com.android.support:appcompat-v7:26.0.1'
-  implementation 'com.android.support:recyclerview-v7:26.0.1'
-  implementation 'com.android.support:design:26.0.1'
+  implementation 'com.android.support:appcompat-v7:26.0.2'
+  implementation 'com.android.support:recyclerview-v7:26.0.2'
+  implementation 'com.android.support:design:26.0.2'
   implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
-  implementation 'org.ethereum:geth:1.6.7'
+  implementation 'org.ethereum:geth:1.7.0'
   implementation 'com.squareup.okio:okio:1.13.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
@@ -81,9 +82,9 @@ dependencies {
   implementation 'com.jakewharton.timber:timber:4.5.1'
 
   //Location
-  implementation 'com.google.android.gms:play-services-gcm:11.2.0'
-  implementation 'com.google.android.gms:play-services-location:11.2.0'
-  implementation 'com.google.android.gms:play-services-maps:11.2.0'
+  implementation 'com.google.android.gms:play-services-gcm:11.2.2'
+  implementation 'com.google.android.gms:play-services-location:11.2.2'
+  implementation 'com.google.android.gms:play-services-maps:11.2.2'
 
 
   debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
