@@ -5,6 +5,7 @@ import io.sikorka.android.di.qualifiers.IoScheduler
 import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.GethNode
+import io.sikorka.android.node.etherToWei
 import io.sikorka.android.node.toEther
 import javax.inject.Inject
 
@@ -27,6 +28,15 @@ constructor(
         }
     )
 
+
+  }
+
+  override fun checkValues(gasPrice: Double, gasLimit: Double) {
+
+    val gasPriceWei = etherToWei(gasPrice)
+    val gasLimitWei = etherToWei(gasLimit)
+
+    view?.requestDeployAuthorization(gasPriceWei, gasLimitWei)
 
   }
 

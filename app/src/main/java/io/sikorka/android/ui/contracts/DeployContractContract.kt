@@ -6,11 +6,13 @@ import toothpick.config.Module
 
 interface DeployContractView : BaseView {
   fun setSuggestedGasPrice(gasPrice: Double)
+  fun requestDeployAuthorization(gasPrice: Long, gasLimit: Long)
 
 }
 
 interface DeployContractPresenter : Presenter<DeployContractView> {
   fun load()
+  fun checkValues(gasPrice: Double, gasLimit: Double)
 }
 
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,7 +34,31 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     setContentView(R.layout.activity__deploy_contract)
     val mapFragment = supportFragmentManager.findFragmentById(R.id.deploy_contract__map) as SupportMapFragment
     mapFragment.getMapAsync(this)
+    deploy_contract__deploy_fab.setOnClickListener {
+      presenter.checkValues(gasPrice, gasLimit)
+    }
+
   }
+
+  override fun requestDeployAuthorization(gasPrice: Long, gasLimit: Long) {
+    MaterialDialog.Builder(this)
+        .content(" gas price $gasPrice wei, $gasLimit wei")
+        .show()
+  }
+
+  private val gasPrice: Double
+    get() {
+      val gasField = deploy_contract__gas_price.editText
+      val value = gasField?.text.toString()
+      return value.toDoubleOrNull() ?: 0.0
+    }
+
+  private val gasLimit: Double
+    get() {
+      val gasLimitField = deploy_contract__gas_limit.editText
+      val value = gasLimitField?.text.toString()
+      return value.toDoubleOrNull() ?: 0.0
+    }
 
   override fun onDestroy() {
     super.onDestroy()
