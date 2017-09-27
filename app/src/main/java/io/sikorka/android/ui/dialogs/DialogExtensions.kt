@@ -26,6 +26,22 @@ fun Context.showConfirmation(
       }.show()
 }
 
+fun Context.showInfo(
+    @StringRes title: Int,
+    @StringRes content: Int,
+    contentMessage: String,
+    action: () -> Unit
+) {
+  MaterialDialog.Builder(this)
+      .title(title)
+      .content(getString(content, contentMessage))
+      .positiveText(android.R.string.ok)
+      .onPositive { dialog, _ ->
+        action.invoke()
+        dialog.dismiss()
+      }.show()
+}
+
 fun <ActivityType> ActivityType.selectDirectory() where ActivityType : AppCompatActivity,
                                                         ActivityType : FolderChooserDialog.FolderCallback {
   FolderChooserDialog.Builder(this)

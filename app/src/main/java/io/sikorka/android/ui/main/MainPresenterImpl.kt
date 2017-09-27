@@ -25,6 +25,7 @@ constructor(
 
   override fun detach() {
     super.detach()
+    bus.unregister(this)
   }
 
   override fun loadAccountInfo() {

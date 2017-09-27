@@ -7,9 +7,7 @@ import io.sikorka.android.helpers.Lce
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.toEther
 import io.sikorka.android.settings.AppPreferences
-import org.ethereum.geth.Account
-import org.ethereum.geth.Geth
-import org.ethereum.geth.KeyStore
+import org.ethereum.geth.*
 import javax.inject.Inject
 
 class AccountRepository
@@ -71,6 +69,31 @@ class AccountRepository
 
   fun changePassphrase(account: Account, oldPassphrase: String, newPassphrase: String) {
     keystore.updateAccount(account, oldPassphrase, newPassphrase)
+  }
+
+  fun sign(address: String, passphrase: String, transaction: Transaction, chainId: BigInt): Transaction? {
+    val account = keystore.accounts
+        .filter { it.address.hex == address }
+        .first()
+    return keystore.signTxPassphrase(account, passphrase, transaction, chainId)
+  }
+
+  private operator fun Accounts.iterator(): Iterator<Account> = object : Iterator<Account> {
+    private var current = 0
+
+    override fun hasNext(): Boolean = current < size()
+
+    override fun next(): Account = get(current++.toLong())
+  }
+
+  private fun Accounts.filter(predicate: (account: Account) -> Boolean): List<Account> {
+    val accounts = mutableListOf<Account>()
+    for (account in this) {
+      if (predicate(account)) {
+        accounts.add(account)
+      }
+    }
+    return accounts
   }
 
 

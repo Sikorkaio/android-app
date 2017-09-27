@@ -41,20 +41,25 @@ public class SikorkaBasicInterface {
     public static SikorkaBasicInterface deploy(TransactOpts auth, EthereumClient client, String _name, BigInt _latitude, BigInt _longtitude, String _question, byte[] _answer_hash) throws Exception {
         Interfaces args = Geth.newInterfaces(5);
 
-        args.set(0, Geth.newInterface());
-        args.get(0).setString(_name);
+        Interface name = Geth.newInterface();
+        name.setString(_name);
+        args.set(0, name);
 
-        args.set(1, Geth.newInterface());
-        args.get(1).setBigInt(_latitude);
+        Interface lat = Geth.newInterface();
+        lat.setBigInt(_latitude);
+        args.set(1, lat);
 
-        args.set(2, Geth.newInterface());
-        args.get(2).setBigInt(_longtitude);
+        Interface longi = Geth.newInterface();
+        longi.setBigInt(_longtitude);
+        args.set(2, longi);
 
-        args.set(3, Geth.newInterface());
-        args.get(3).setString(_question);
+        Interface quest = Geth.newInterface();
+        quest.setString(_question);
+        args.set(3, quest);
 
-        args.set(4, Geth.newInterface());
-        args.get(4).setBinary(_answer_hash);
+        Interface hash = Geth.newInterface();
+        hash.setBinary(_answer_hash);
+        args.set(4, hash);
 
         return new SikorkaBasicInterface(Geth.deployContract(auth, ABI, BYTECODE, client, args));
     }

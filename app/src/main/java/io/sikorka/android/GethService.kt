@@ -72,6 +72,8 @@ class GethService : Service() {
         .setContentTitle(getString(R.string.notification__sikorka_node_title))
         .setContentText(message)
         .setOngoing(true)
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setNumber(count)
         .setGroup("")
         .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)

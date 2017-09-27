@@ -39,16 +39,16 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'com.android.support:support-v4:26.0.2'
-  implementation 'com.android.support:support-v13:26.0.2'
+  implementation 'com.android.support:support-v4:26.1.0'
+  implementation 'com.android.support:support-v13:26.1.0'
   androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
 
   // Support libraries
-  implementation 'com.android.support:appcompat-v7:26.0.2'
-  implementation 'com.android.support:recyclerview-v7:26.0.2'
-  implementation 'com.android.support:design:26.0.2'
+  implementation 'com.android.support:appcompat-v7:26.1.0'
+  implementation 'com.android.support:recyclerview-v7:26.1.0'
+  implementation 'com.android.support:design:26.1.0'
   implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
   implementation 'org.ethereum:geth:1.7.0'
@@ -65,9 +65,9 @@ dependencies {
   compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
 
   //dependency injection
-  implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.0.7'
-  implementation 'com.github.stephanenicolas.toothpick:smoothie:1.0.7'
-  kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.0.7'
+  implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.0.8'
+  implementation 'com.github.stephanenicolas.toothpick:smoothie:1.0.8'
+  kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.0.8'
 
   //view injection
   implementation 'com.jakewharton:butterknife:8.8.1'
@@ -82,17 +82,17 @@ dependencies {
   implementation 'com.jakewharton.timber:timber:4.5.1'
 
   //Location
-  implementation 'com.google.android.gms:play-services-gcm:11.2.2'
-  implementation 'com.google.android.gms:play-services-location:11.2.2'
-  implementation 'com.google.android.gms:play-services-maps:11.2.2'
+  implementation 'com.google.android.gms:play-services-gcm:11.4.0'
+  implementation 'com.google.android.gms:play-services-location:11.4.0'
+  implementation 'com.google.android.gms:play-services-maps:11.4.0'
 
 
-  debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-  releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+  debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
+  releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.3'
 
   //Unit testing
   testImplementation 'junit:junit:4.12'
-  testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.0.7'
+  testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.0.8'
 }
 
 

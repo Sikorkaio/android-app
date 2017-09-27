@@ -64,4 +64,14 @@
   <string name="deploy_contract__gas_price_value">%.10f</string>
   <string name="deploy_contract__gas_price_currency">ether</string>
   <string name="deploy_contract__gas_limit">Gas Limit</string>
+  <string name="confirm_deploy__gas_limit">Gas Limit</string>
+  <string name="confirm_deploy__gas_price">Gas Price</string>
+  <string name="confirm_deploy__header_text">You are about to deploy a contract\nYour account passphrase is needed in order to proceed.</string>
+  <string name="confirm_deploy__passphrase">Passphrase</string>
+  <string name="confirm_deploy__positive_button">Deploy</string>
+  <string name="confirm_deploy__dialog_title">Deploy a sikorka contract</string>
+  <string name="confirm_deploy__empty_passphrase">Passphrase can\'t be empty</string>
+  <string name="deploy_contract__question_empty">Question can\'t be empty</string>
+  <string name="deploy_contract__answer_empty">Answer is empty.</string>
+  <string name="deploy_contract_deployed_successfully">Deployed successfully at %s</string>
 </resources>

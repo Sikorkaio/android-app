@@ -12,14 +12,16 @@ constructor(private val assetManager: AssetManager) {
   fun prepareStaticNodes(peerFile: String, assetFilename: String) {
     val file = File(peerFile)
 
-    val inputStream = assetManager.open(assetFilename)
     if (file.exists()) {
-      file.delete()
-      file.createNewFile()
+      return
     } else {
-      file.mkdirs()
+      val parentFile = file.parentFile
+      if (!parentFile.exists()) {
+        parentFile.mkdirs()
+      }
+      file.createNewFile()
     }
 
-    inputStream.copyToFile(file)
+    assetManager.open(assetFilename).copyToFile(file)
   }
 }

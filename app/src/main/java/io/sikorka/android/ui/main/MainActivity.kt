@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import io.sikorka.android.BuildConfig
 import io.sikorka.android.GethService
 import io.sikorka.android.R
 import io.sikorka.android.node.SyncStatus
@@ -91,8 +92,13 @@ class MainActivity : AppCompatActivity(),
       }
       val map = map ?: return@addOnCompleteListener
       val location = it.result ?: return@addOnCompleteListener
-      longitude = location.longitude
-      latitude = location.latitude
+      if (BuildConfig.DEBUG) {
+        latitude = 40.6264
+        longitude = 22.9484
+      } else {
+        longitude = location.longitude
+        latitude = location.latitude
+      }
       updateMyMarker(location, map)
     })
   }
@@ -117,7 +123,11 @@ class MainActivity : AppCompatActivity(),
   }
 
   private fun updateMyMarker(location: Location, map: GoogleMap) {
-    val me = LatLng(location.latitude, location.longitude)
+    val me = if (BuildConfig.DEBUG) {
+      LatLng(40.6264, 22.9484)
+    } else {
+      LatLng(location.latitude, location.longitude)
+    }
 
     val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black_24dp)
 

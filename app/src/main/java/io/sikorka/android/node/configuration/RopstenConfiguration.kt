@@ -17,16 +17,14 @@ constructor(private val peerHelper: PeerHelper) : IConfiguration {
   }
 
   override val nodeConfig: NodeConfig
-    get() {
-      val nodeConfig = Geth.newNodeConfig()
-      nodeConfig.ethereumEnabled = true
-      nodeConfig.whisperEnabled = true
-      nodeConfig.ethereumGenesis = Geth.testnetGenesis()
-      nodeConfig.ethereumNetworkID = 3
-      nodeConfig.maxPeers = 30
-      nodeConfig.ethereumDatabaseCache = 32
-      nodeConfig.bootstrapNodes = bootstrapNodes
-      return nodeConfig
+    get() = Geth.newNodeConfig().apply {
+      ethereumEnabled = true
+      whisperEnabled = true
+      ethereumGenesis = Geth.testnetGenesis()
+      ethereumNetworkID = 3
+      maxPeers = 30
+      ethereumDatabaseCache = 32
+      bootstrapNodes = bootstrapNodes
     }
 
   override val bootstrapNodes: Enodes?

@@ -3,8 +3,8 @@ package io.sikorka.android.ui.contracts
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -14,6 +14,10 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.R
+import io.sikorka.android.node.contracts.ContractData
+import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
+import io.sikorka.android.ui.dialogs.showInfo
 import kotlinx.android.synthetic.main.activity__deploy_contract.*
 import toothpick.Scope
 import toothpick.Toothpick
@@ -35,15 +39,40 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     val mapFragment = supportFragmentManager.findFragmentById(R.id.deploy_contract__map) as SupportMapFragment
     mapFragment.getMapAsync(this)
     deploy_contract__deploy_fab.setOnClickListener {
+      deploy_contract__answer.error = null
+      deploy_contract__question.error = null
+
+      if (question.isBlank()) {
+        deploy_contract__question.error = getString(R.string.deploy_contract__question_empty)
+        return@setOnClickListener
+      }
+
+      if (answer.isBlank()) {
+        deploy_contract__answer.error = getString(R.string.deploy_contract__answer_empty)
+        return@setOnClickListener
+      }
+
       presenter.checkValues(gasPrice, gasLimit)
     }
 
   }
 
-  override fun requestDeployAuthorization(gasPrice: Long, gasLimit: Long) {
-    MaterialDialog.Builder(this)
-        .content(" gas price $gasPrice wei, $gasLimit wei")
-        .show()
+  override fun requestDeployAuthorization(gas: ContractGas) {
+    val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
+      val contractInfo = ContractData(gas, question, answer, latitude, longitude)
+      presenter.deployContract(passphrase, contractInfo)
+    }
+    dialog.show()
+  }
+
+  override fun showError(message: String?) {
+    Snackbar.make(deploy_contract__deploy_fab, message ?: "error", Snackbar.LENGTH_LONG)
+  }
+
+  override fun complete(hex: String?) {
+    showInfo(R.string.app_name, R.string.deploy_contract_deployed_successfully, hex.orEmpty()) {
+      finish()
+    }
   }
 
   private val gasPrice: Double
@@ -58,6 +87,18 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
       val gasLimitField = deploy_contract__gas_limit.editText
       val value = gasLimitField?.text.toString()
       return value.toDoubleOrNull() ?: 0.0
+    }
+
+  private val question: String
+    get() {
+      val editText = deploy_contract__question.editText
+      return editText?.text.toString()
+    }
+
+  private val answer: String
+    get() {
+      val editText = deploy_contract__answer.editText
+      return editText?.text.toString()
     }
 
   override fun onDestroy() {
@@ -104,10 +145,10 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
   }
 
   private val latitude: Double
-    get() = intent.getDoubleExtra(LONGITUDE, 0.0)
+    get() = intent.getDoubleExtra(LATITUDE, 0.0)
 
   private val longitude: Double
-    get() = intent.getDoubleExtra(LATITUDE, 0.0)
+    get() = intent.getDoubleExtra(LONGITUDE, 0.0)
 
   companion object {
     private const val LONGITUDE = "io.sikorka.android.extras.LONGITUDE"
