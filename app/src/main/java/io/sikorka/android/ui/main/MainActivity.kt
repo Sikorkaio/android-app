@@ -32,6 +32,7 @@ import io.sikorka.android.ui.contracts.DeployContractActivity
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
 import kotlinx.android.synthetic.main.nav_header__main.*
+import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity(),
 
   override fun updateSyncStatus(status: SyncStatus) {
     val statusMessage = getString(
-        R.string.main__nav_network_statistics,
+        R.string.main_nav__network_statistics,
         status.peers,
         status.currentBlock,
         status.highestBlock
@@ -114,11 +115,15 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun updateAccountInfo(model: AccountModel) {
-    main__header_account.text = model.account
+    if (main__header_account == null) {
+      Timber.v("no header")
+      return
+    }
+    main__header_account.text = model.addressHex
     main__header_balance.text = if (model.ethBalance < 0) {
-      getString(R.string.main__no_balance_available)
+      getString(R.string.main_nav__header_no_balance)
     } else {
-      getString(R.string.main_balance_eth, model.ethBalance)
+      getString(R.string.main_nav_balance_eth, model.ethBalance)
     }
   }
 

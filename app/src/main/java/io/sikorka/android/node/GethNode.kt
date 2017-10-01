@@ -4,6 +4,7 @@ import io.reactivex.Single
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.UpdateSyncStatusEvent
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationFactory
 import io.sikorka.android.node.configuration.IConfiguration
 import io.sikorka.android.settings.AppPreferences
@@ -12,7 +13,6 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-
 
 
 @Singleton
@@ -55,14 +55,17 @@ constructor(
   }
 
   fun createTransactOpts(
-      addressHex: String,
+      account: AccountModel,
       gasPrice: Long,
       gasLimit: Long,
       signer: TransactionSigner): Single<TransactOpts> {
     return Single.fromCallable {
+      val signerAccount = account.ethAccount
+      val signerAddress = signerAccount.address
       val opts = TransactOpts()
       opts.setContext(ethContext)
-      opts.from = Geth.newAddressFromHex(addressHex)
+      opts.from = signerAddress
+      opts.nonce = ethereumClient.getPendingNonceAt(ethContext, signerAddress)
       opts.setSigner({ address, transaction -> signer(address, transaction, chainId()) })
       opts.gasLimit = gasLimit
       opts.gasPrice = Geth.newBigInt(gasPrice)
@@ -114,13 +117,15 @@ constructor(
         listener?.invoke(message, peers)
         val status = SyncStatus(peers, current, highest)
         rxBus.post(UpdateSyncStatusEvent(status))
+        val pendingTransactionCount = ethereumClient.getPendingTransactionCount(ethContext)
+        Timber.v("pending transactions $pendingTransactionCount")
       }
 
       private fun logPeers(peerInfos: PeerInfos?) {
         if (peerInfos == null) {
           return
         }
-        for(peer in peerInfos) {
+        for (peer in peerInfos) {
           Timber.v("Connected to ${peer.name} on ${peer.remoteAddress} (${peer.id})")
         }
       }

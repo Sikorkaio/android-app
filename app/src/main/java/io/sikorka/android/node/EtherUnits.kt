@@ -28,3 +28,5 @@ private fun unitToValue(unit: String): Long = unitMap.getOrDefault(unit, 1L)
 
 fun etherToWei(ether: Double): Long = (ether * unitToValue(ETHER).toDouble()).toLong()
 
+fun weiToEther(wei: Long): Double = (wei.toDouble() / unitToValue(ETHER))
+

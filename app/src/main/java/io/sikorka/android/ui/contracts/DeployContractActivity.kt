@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.node.contracts.ContractData
 import io.sikorka.android.node.contracts.ContractGas
@@ -55,6 +56,11 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
       presenter.checkValues(gasPrice, gasLimit)
     }
 
+    gasLimit = 4000000
+    if (BuildConfig.DEBUG) {
+      deploy_contract__question.editText?.setText("Expiremental Question")
+      deploy_contract__answer.editText?.setText("Expiremental Answer")
+    }
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
@@ -75,18 +81,26 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     }
   }
 
-  private val gasPrice: Double
+  private var gasPrice: Long
     get() {
       val gasField = deploy_contract__gas_price.editText
       val value = gasField?.text.toString()
-      return value.toDoubleOrNull() ?: 0.0
+      return value.toLongOrNull() ?: 0
+    }
+    set(value) {
+      val gasField = deploy_contract__gas_price.editText
+      gasField?.setText(value.toString())
     }
 
-  private val gasLimit: Double
+  private var gasLimit: Long
     get() {
       val gasLimitField = deploy_contract__gas_limit.editText
       val value = gasLimitField?.text.toString()
-      return value.toDoubleOrNull() ?: 0.0
+      return value.toLongOrNull() ?: 0
+    }
+    set(value) {
+      val gasLimitField = deploy_contract__gas_limit.editText
+      gasLimitField?.setText(value.toString())
     }
 
   private val question: String
@@ -117,9 +131,8 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     presenter.detach()
   }
 
-  override fun setSuggestedGasPrice(gasPrice: Double) {
-    val gasField = deploy_contract__gas_price.editText
-    gasField?.setText(getString(R.string.deploy_contract__gas_price_value, gasPrice))
+  override fun setSuggestedGasPrice(gasPrice: Long) {
+    this.gasPrice = if (BuildConfig.DEBUG) 200L * 1000 * 1000 * 1000 else gasPrice
   }
 
   private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {

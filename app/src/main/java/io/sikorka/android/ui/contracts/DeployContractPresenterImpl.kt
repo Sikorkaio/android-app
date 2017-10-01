@@ -8,8 +8,6 @@ import io.sikorka.android.node.ContractManager
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.contracts.ContractData
 import io.sikorka.android.node.contracts.ContractGas
-import io.sikorka.android.node.etherToWei
-import io.sikorka.android.node.toEther
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -27,7 +25,7 @@ constructor(
         .subscribeOn(ioScheduler)
         .observeOn(mainThreadScheduler)
         .subscribe({
-          attachedView().setSuggestedGasPrice(it.toEther())
+          attachedView().setSuggestedGasPrice(it.int64)
         }) {
 
         }
@@ -36,10 +34,8 @@ constructor(
 
   }
 
-  override fun checkValues(gasPrice: Double, gasLimit: Double) {
-    val gasPriceWei = etherToWei(gasPrice)
-    val gasLimitWei = etherToWei(gasLimit)
-    val contractGas = ContractGas(gasPriceWei, gasLimitWei)
+  override fun checkValues(gasPrice: Long, gasLimit: Long) {
+    val contractGas = ContractGas(gasPrice, gasLimit)
     view?.requestDeployAuthorization(contractGas)
   }
 

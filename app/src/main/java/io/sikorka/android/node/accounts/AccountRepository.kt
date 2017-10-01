@@ -8,6 +8,7 @@ import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.toEther
 import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class AccountRepository
@@ -36,13 +37,20 @@ class AccountRepository
   }
 
   fun selectedAccount(): Single<AccountModel> = Single.fromCallable {
-    val account = appPreferences.selectedAccount()
-    val address = Geth.newAddressFromHex(account)
-    val balance = gethNode.getBalance(address)
-    return@fromCallable AccountModel(account, balance.toEther())
+    val addressHex = appPreferences.selectedAccount()
+    val account = getAccountByHex(addressHex)
+    val balance = gethNode.getBalance(account.address)
+    return@fromCallable AccountModel(addressHex, account, balance.toEther())
   }.onErrorReturn {
-    val account = appPreferences.selectedAccount()
-    return@onErrorReturn AccountModel(account)
+    val addressHex = appPreferences.selectedAccount()
+    val account = getAccountByHex(addressHex)
+    return@onErrorReturn AccountModel(addressHex, account)
+  }
+
+  private fun getAccountByHex(addressHex: String): Account {
+    return keystore.accounts
+        .filter { it.address.hex.equals(addressHex, ignoreCase = true) }
+        .first()
   }
 
   fun exportAccount(account: Account, passphrase: String, keyPassphrase: String): Single<ByteArray> {
@@ -73,8 +81,9 @@ class AccountRepository
 
   fun sign(address: String, passphrase: String, transaction: Transaction, chainId: BigInt): Transaction? {
     val account = keystore.accounts
-        .filter { it.address.hex == address }
+        .filter { it.address.hex.equals(address, ignoreCase = true) }
         .first()
+    Timber.v("Signing ${account.address.hex} - ${transaction.hash.hex} - chain: ${chainId.int64}")
     return keystore.signTxPassphrase(account, passphrase, transaction, chainId)
   }
 

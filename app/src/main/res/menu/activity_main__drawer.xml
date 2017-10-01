@@ -7,14 +7,14 @@
     <item
       android:id="@+id/main__nav_accounts"
       android:icon="@drawable/ic_vpn_key_black_24dp"
-      android:title="@string/main__nav_accounts"/>
+      android:title="@string/main_nav__accounts"/>
   </group>
 
   <item android:title="">
     <menu>
       <item
         android:id="@+id/main__nav_exit"
-        android:title="@string/main__nav_exit"/>
+        android:title="@string/main_nav__exit"/>
     </menu>
   </item>
 

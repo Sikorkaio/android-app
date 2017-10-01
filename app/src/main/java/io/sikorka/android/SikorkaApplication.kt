@@ -9,7 +9,7 @@ import toothpick.registries.FactoryRegistryLocator
 import toothpick.registries.MemberInjectorRegistryLocator
 import toothpick.smoothie.module.SmoothieApplicationModule
 
-class GethApplication : Application() {
+class SikorkaApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 //    if (LeakCanary.isInAnalyzerProcess(this)) {

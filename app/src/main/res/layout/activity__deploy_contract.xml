@@ -93,7 +93,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:hint="@string/deploy_contract__gas_price"
-          android:inputType="numberDecimal"/>
+          android:inputType="number"/>
     </android.support.design.widget.TextInputLayout>
 
     <TextView
@@ -124,7 +124,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:hint="@string/deploy_contract__gas_limit"
-          android:inputType="numberDecimal"/>
+          android:inputType="number"/>
     </android.support.design.widget.TextInputLayout>
 
     <TextView
