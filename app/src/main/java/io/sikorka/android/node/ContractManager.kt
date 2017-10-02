@@ -4,9 +4,8 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.sikorka.android.contract.SikorkaBasicInterface
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.helpers.sha3.HexUtils
-import io.sikorka.android.helpers.sha3.Keccak
-import io.sikorka.android.helpers.sha3.Parameters
+import io.sikorka.android.helpers.hexStringToByteArray
+import io.sikorka.android.helpers.sha3.kekkac256
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.InvalidPassphraseException
 import io.sikorka.android.node.contracts.ContractData
@@ -39,9 +38,10 @@ class ContractManager
       Single.fromCallable {
         val lat = Geth.newBigInt((contractData.latitude * 10000).toLong())
         val long = Geth.newBigInt((contractData.longitude * 10000).toLong())
-
         val answerHash = contractData.answer.kekkac256()
-        val basicInterface = SikorkaBasicInterface.deploy(it.transactOpts, it.ec, "sikorka experiment", lat, long, contractData.question, answerHash.toByteArray())
+        val contractName = "sikorka experiment"
+        val basicInterface = SikorkaBasicInterface.deploy(it.transactOpts, it.ec, contractName, lat, long, contractData.question, answerHash.hexStringToByteArray())
+        Timber.v("preparing to deploy contract: {$contractName} with lat: ${lat.int64}, long ${long.int64} question: ${contractData.question} => answer hash: $answerHash")
         Timber.v("pending: ${basicInterface.Address.hex} -> ${basicInterface.Deployer.hash.hex}")
         basicInterface
       }.onErrorResumeNext {
@@ -54,13 +54,6 @@ class ContractManager
       }
     }
 
-  }
-
-  //Todo: I am not sure this works at all..
-  private fun String.kekkac256(): String {
-    val keccak = Keccak()
-    return keccak.getHash(HexUtils.getHex(this.toByteArray()), Parameters.KECCAK_256)
-        .substring(0, Parameters.KECCAK_256.outputLength)
   }
 
   private data class DeployData(val transactOpts: TransactOpts, val ec: EthereumClient)

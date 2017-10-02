@@ -41,7 +41,7 @@
   <string name="setup_account__create_new">Create New</string>
   <string name="network_selection__network_not_available">This network is currently not available</string>
   <string name="notification__sikorka_node_title">Sikorka</string>
-  <string name="main_screen__title">MainActivity</string>
+  <string name="main_screen__title">Sikorka</string>
 
   <string name="navigation_drawer_open">Open navigation drawer</string>
   <string name="navigation_drawer_close">Close navigation drawer</string>

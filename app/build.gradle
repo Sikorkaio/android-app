@@ -69,6 +69,14 @@ dependencies {
   implementation 'com.github.stephanenicolas.toothpick:smoothie:1.0.8'
   kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.0.8'
 
+  //android persistance (SQLite)
+
+  // Database
+  def roomVersion = "1.0.0-alpha9-1"
+  compile "android.arch.persistence.room:runtime:$roomVersion"
+  kapt "android.arch.persistence.room:compiler:$roomVersion"
+  compile "android.arch.persistence.room:rxjava2:$roomVersion"
+
   //view injection
   implementation 'com.jakewharton:butterknife:8.8.1'
   kapt 'com.jakewharton:butterknife-compiler:8.8.1'

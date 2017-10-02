@@ -1,6 +1,7 @@
 package io.sikorka.android.ui.main
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -85,23 +86,25 @@ class MainActivity : AppCompatActivity(),
   }
 
 
+  @SuppressLint("MissingPermission")
   private fun getLocation() {
-    val client = LocationServices.getFusedLocationProviderClient(this)
-    client.lastLocation.addOnCompleteListener(this, {
-      if (!it.isSuccessful) {
-        return@addOnCompleteListener
-      }
-      val map = map ?: return@addOnCompleteListener
-      val location = it.result ?: return@addOnCompleteListener
-      if (BuildConfig.DEBUG) {
-        latitude = 40.6264
-        longitude = 22.9484
-      } else {
-        longitude = location.longitude
-        latitude = location.latitude
-      }
-      updateMyMarker(location, map)
-    })
+    LocationServices.getFusedLocationProviderClient(this)
+        .lastLocation
+        .addOnCompleteListener(this, {
+          if (!it.isSuccessful) {
+            return@addOnCompleteListener
+          }
+          val map = map ?: return@addOnCompleteListener
+          val location = it.result ?: return@addOnCompleteListener
+          if (BuildConfig.DEBUG) {
+            latitude = 40.6264
+            longitude = 22.9484
+          } else {
+            longitude = location.longitude
+            latitude = location.latitude
+          }
+          updateMyMarker(location, map)
+        })
   }
 
   override fun updateSyncStatus(status: SyncStatus) {
@@ -160,15 +163,6 @@ class MainActivity : AppCompatActivity(),
         Manifest.permission.ACCESS_FINE_LOCATION
     )
     return permissionState == PackageManager.PERMISSION_GRANTED
-  }
-
-
-  override fun onRequestPermissionsResult(
-      requestCode: Int,
-      permissions: Array<out String>,
-      grantResults: IntArray
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
   }
 
 

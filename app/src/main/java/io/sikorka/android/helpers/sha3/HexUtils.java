@@ -16,7 +16,7 @@ public class HexUtils {
     return new String(outData);
   }
 
-  public static String getReverseHex(byte[] data) {
+  static String getReverseHex(byte[] data) {
     return getHex(reverse(data));
   }
 
