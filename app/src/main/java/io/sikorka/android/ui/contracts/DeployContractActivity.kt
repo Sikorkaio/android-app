@@ -58,8 +58,8 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
 
     gasLimit = 4000000
     if (BuildConfig.DEBUG) {
-      deploy_contract__question.editText?.setText("Expiremental Question")
-      deploy_contract__answer.editText?.setText("Expiremental Answer")
+      deploy_contract__question.editText?.setText("Experimental Question")
+      deploy_contract__answer.editText?.setText("Experimental Answer")
     }
   }
 
