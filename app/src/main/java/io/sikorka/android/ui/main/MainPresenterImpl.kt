@@ -1,11 +1,13 @@
 package io.sikorka.android.ui.main
 
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Scheduler
+import io.sikorka.android.di.qualifiers.IoScheduler
+import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.UpdateSyncStatusEvent
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
+import io.sikorka.android.node.contracts.ContractRepository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -13,7 +15,10 @@ class MainPresenterImpl
 @Inject
 constructor(
     private val accountRepository: AccountRepository,
-    private val bus: RxBus
+    private val contractRepository: ContractRepository,
+    private val bus: RxBus,
+    @IoScheduler private val ioScheduler: Scheduler,
+    @MainScheduler private val mainScheduler: Scheduler
 ) : MainPresenter, BasePresenter<MainView>() {
 
   override fun attach(view: MainView) {
@@ -21,6 +26,7 @@ constructor(
     bus.register(this, UpdateSyncStatusEvent::class.java, true) {
       this.view?.updateSyncStatus(it.syncStatus)
     }
+    f()
   }
 
   override fun detach() {
@@ -30,12 +36,22 @@ constructor(
 
   override fun loadAccountInfo() {
     addDisposable(accountRepository.selectedAccount()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(ioScheduler)
+        .observeOn(mainScheduler)
         .subscribe({
           attachedView().updateAccountInfo(it)
           Timber.v(it.toString())
         }) {
+          Timber.v(it)
+        }
+    )
+  }
+
+  private fun f() {
+    addDisposable(contractRepository.getDeployedContracts()
+        .subscribeOn(ioScheduler)
+        .observeOn(mainScheduler)
+        .subscribe({}) {
           Timber.v(it)
         }
     )

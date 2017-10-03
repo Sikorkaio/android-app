@@ -76,7 +76,7 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
   }
 
   override fun complete(hex: String?) {
-    showInfo(R.string.app_name, R.string.deploy_contract_deployed_successfully, hex.orEmpty()) {
+    showInfo(R.string.app_name, R.string.deploy_contract__contract_creation_submitted, hex.orEmpty()) {
       finish()
     }
   }

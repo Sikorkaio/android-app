@@ -1,25 +1,54 @@
-package io.sikorka.android.node
+package io.sikorka.android.node.contracts
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.sikorka.android.contract.SikorkaBasicInterface
+import io.sikorka.android.contract.SikorkaRegistry
+import io.sikorka.android.helpers.Lce
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.helpers.sha3.kekkac256
+import io.sikorka.android.node.ExceedsBlockGasLimit
+import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.InvalidPassphraseException
-import io.sikorka.android.node.contracts.ContractData
 import org.ethereum.geth.EthereumClient
 import org.ethereum.geth.Geth
 import org.ethereum.geth.TransactOpts
 import timber.log.Timber
 import javax.inject.Inject
 
-class ContractManager
-@Inject constructor(
+
+class ContractRepository
+@Inject
+constructor(
     private val gethNode: GethNode,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val pendingContractDataSource: PendingContractDataSource
 ) {
+
+  fun getDeployedContracts(): Single<Lce<DeployedContractModel>> = gethNode.ethereumClient()
+      .flatMap { ethereumClient ->
+        return@flatMap Single.fromCallable {
+          val sikorkaRegistry = SikorkaRegistry.bind(ethereumClient)
+
+          val contractCoordinates = sikorkaRegistry.getContractCoordinates()
+          val contractAddresses = sikorkaRegistry.getContractAddresses()
+
+          val contractList = ArrayList<DeployedContract>()
+
+          for (i in 0 until contractCoordinates.size() step 2) {
+            val address = contractAddresses[i / 2]
+            val latitude = contractCoordinates[i].int64 / 10000.0
+            val longitude = contractCoordinates[i + 1].int64 / 10000.0
+            val deployedContract = DeployedContract(address.hex, latitude, longitude)
+            contractList.add(deployedContract)
+          }
+
+          return@fromCallable Lce.success(DeployedContractModel(contractList))
+        }
+      }
+
 
   fun deployContract(passphrase: String, contractData: ContractData): Single<SikorkaBasicInterface> {
     val sign = accountRepository.selectedAccount().flatMap {
@@ -42,7 +71,10 @@ class ContractManager
         val contractName = "sikorka experiment"
         val basicInterface = SikorkaBasicInterface.deploy(it.transactOpts, it.ec, contractName, lat, long, contractData.question, answerHash.hexStringToByteArray())
         Timber.v("preparing to deploy contract: {$contractName} with lat: ${lat.int64}, long ${long.int64} question: ${contractData.question} => answer hash: $answerHash")
-        Timber.v("pending: ${basicInterface.Address.hex} -> ${basicInterface.Deployer.hash.hex}")
+        val pendingContract = PendingContract(basicInterface.Address.hex, basicInterface.Deployer.hash.hex)
+        Timber.v("pending contract: $pendingContract")
+        pendingContractDataSource.insert(pendingContract)
+
         basicInterface
       }.onErrorResumeNext {
         val message = it.message ?: ""
@@ -58,5 +90,3 @@ class ContractManager
 
   private data class DeployData(val transactOpts: TransactOpts, val ec: EthereumClient)
 }
-
-class ExceedsBlockGasLimit(cause: Throwable) : Exception(cause)

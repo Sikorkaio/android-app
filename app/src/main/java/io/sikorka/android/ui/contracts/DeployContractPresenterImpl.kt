@@ -4,10 +4,10 @@ import io.reactivex.Scheduler
 import io.sikorka.android.di.qualifiers.IoScheduler
 import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.node.ContractManager
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.contracts.ContractData
 import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.node.contracts.ContractRepository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ class DeployContractPresenterImpl
 @Inject
 constructor(
     private val gethNode: GethNode,
-    private val contractManager: ContractManager,
+    private val contractRepository: ContractRepository,
     @IoScheduler private val ioScheduler: Scheduler,
     @MainScheduler private val mainThreadScheduler: Scheduler
 ) : DeployContractPresenter, BasePresenter<DeployContractView>() {
@@ -40,7 +40,7 @@ constructor(
   }
 
   override fun deployContract(passphrase: String, contractInfo: ContractData) {
-    contractManager.deployContract(passphrase, contractInfo)
+    contractRepository.deployContract(passphrase, contractInfo)
         .subscribeOn(ioScheduler)
         .observeOn(mainThreadScheduler)
         .subscribe({

@@ -1,5 +1,6 @@
 package io.sikorka.android.node
 
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.UpdateSyncStatusEvent
@@ -13,6 +14,8 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+
+
 
 
 @Singleton
@@ -99,6 +102,16 @@ constructor(
   } catch (ex: Exception) {
     Timber.v(ex)
     Pair(0, 0)
+  }
+
+  private fun headers(): Observable<Header> = Observable.create<Header> {
+    val handler = object : NewHeadHandler {
+      override fun onError(error: String) { Timber.v(error)}
+      override fun onNewHead(header: Header) {
+        it.onNext(header)
+      }
+    }
+    ethereumClient.subscribeNewHead(ethContext, handler, 16)
   }
 
   private fun schedulerPeerCheck(node: Node) {
