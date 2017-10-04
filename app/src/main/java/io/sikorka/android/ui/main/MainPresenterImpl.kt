@@ -5,6 +5,7 @@ import io.sikorka.android.di.qualifiers.IoScheduler
 import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.UpdateSyncStatusEvent
+import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.contracts.ContractRepository
@@ -34,7 +35,7 @@ constructor(
     bus.unregister(this)
   }
 
-  override fun loadAccountInfo() {
+  override fun load() {
     addDisposable(accountRepository.selectedAccount()
         .subscribeOn(ioScheduler)
         .observeOn(mainScheduler)
@@ -45,18 +46,29 @@ constructor(
           Timber.v(it)
         }
     )
-  }
 
-  private fun f() {
     addDisposable(contractRepository.getDeployedContracts()
+        .toObservable()
+        .startWith(Lce.loading())
+        .onErrorReturn { Lce.failure(it) }
         .subscribeOn(ioScheduler)
         .observeOn(mainScheduler)
-        .subscribe({}) {
+        .subscribe({
+          when {
+            it.success() -> attachedView().update(it.data())
+            it.failure() -> attachedView().error(it.error())
+            it.loading() -> attachedView().loading(true)
+          }
+        }) {
           Timber.v(it)
         }
     )
+  }
 
+  private fun f() {
     contractRepository.bindSikorkaInterface("0xDBdbf53199Ce386Ddc88185Ee7ec54c658703419")
   }
+
+
 
 }

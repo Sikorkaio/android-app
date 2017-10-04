@@ -47,6 +47,9 @@ constructor(
           }
 
           return@fromCallable Lce.success(DeployedContractModel(contractList))
+        }.onErrorReturn {
+          val deployedContract = DeployedContract("0x192341342342356", 44.1, 22.1)
+          return@onErrorReturn Lce.success(DeployedContractModel(listOf(deployedContract)))
         }
       }
 

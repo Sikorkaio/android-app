@@ -5,15 +5,23 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.DrawableRes
 import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,10 +36,12 @@ import io.sikorka.android.GethService
 import io.sikorka.android.R
 import io.sikorka.android.node.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
+import io.sikorka.android.node.contracts.DeployedContractModel
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
+import kotlinx.android.synthetic.main.content__main.*
 import kotlinx.android.synthetic.main.nav_header__main.*
 import timber.log.Timber
 import toothpick.Scope
@@ -151,6 +161,7 @@ class MainActivity : AppCompatActivity(),
     map.addMarker(MarkerOptions().position(me).title("Me"))
   }
 
+
   private fun startLocationPermissionRequest() {
     ActivityCompat.requestPermissions(this@MainActivity,
         arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -174,7 +185,7 @@ class MainActivity : AppCompatActivity(),
   override fun onStart() {
     super.onStart()
     presenter.attach(this)
-    presenter.loadAccountInfo()
+    presenter.load()
   }
 
   override fun onStop() {
@@ -229,6 +240,58 @@ class MainActivity : AppCompatActivity(),
       getLocation()
     }
   }
+
+  override fun error(error: Throwable) {
+    loading(false)
+    val message = error.message ?: getString(R.string.errors__generic_error)
+    Snackbar.make(main__overlay, message, Snackbar.LENGTH_SHORT).show()
+  }
+
+  override fun loading(loading: Boolean) {
+    if (loading) {
+      main__deploy_fab.hide()
+      main__progress_group.visibility = View.VISIBLE
+    } else {
+      main__deploy_fab.show()
+      main__progress_group.visibility = View.GONE
+    }
+  }
+
+  override fun update(model: DeployedContractModel) {
+    loading(false)
+    val googleMap = map ?: return
+
+    val bitmap = getBitmapFromVectorDrawable(this, R.drawable.ic_ethereum_24dp)
+    val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
+
+    model.data.map {
+      MarkerOptions()
+          .snippet(it.addressHex)
+          .position(LatLng(it.latitude, it.longitude))
+          .title(it.addressHex.substring(0, 6))
+          .icon(icon)
+    }.forEach { googleMap.addMarker(it) }
+  }
+
+  private fun getBitmapFromVectorDrawable(context: Context, @DrawableRes drawableId: Int): Bitmap {
+    var drawable = ContextCompat.getDrawable(context, drawableId);
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+      drawable = (DrawableCompat.wrap(drawable)).mutate()
+    }
+
+    val bitmap = Bitmap.createBitmap(
+        drawable.intrinsicWidth,
+        drawable.intrinsicHeight,
+        Bitmap.Config.ARGB_8888
+    )
+    val canvas = Canvas(bitmap)
+    drawable.run {
+      setBounds(0, 0, canvas.width, canvas.height)
+      draw(canvas)
+    }
+    return bitmap
+  }
+
 
   companion object {
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 34

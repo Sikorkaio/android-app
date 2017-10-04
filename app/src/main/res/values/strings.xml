@@ -78,5 +78,7 @@
   <string name="confirm_deploy__dialog_title">Deploy a sikorka contract</string>
   <string name="confirm_deploy__empty_passphrase">Passphrase can\'t be empty</string>
   <string name="contract_interact__question_label">Question</string>
+  <string name="main__loading_message">Please wait...</string>
+  <string name="errors__generic_error">An error occurred.</string>
 
 </resources>
