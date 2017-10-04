@@ -55,6 +55,8 @@ constructor(
           Timber.v(it)
         }
     )
+
+    contractRepository.bindSikorkaInterface("0xDBdbf53199Ce386Ddc88185Ee7ec54c658703419")
   }
 
 }

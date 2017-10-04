@@ -77,5 +77,6 @@
   <string name="confirm_deploy__positive_button">Deploy</string>
   <string name="confirm_deploy__dialog_title">Deploy a sikorka contract</string>
   <string name="confirm_deploy__empty_passphrase">Passphrase can\'t be empty</string>
+  <string name="contract_interact__question_label">Question</string>
 
 </resources>

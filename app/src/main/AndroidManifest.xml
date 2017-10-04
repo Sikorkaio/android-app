@@ -48,6 +48,7 @@
       android:theme="@style/AppTheme.NoActionBar">
     </activity>
       <activity android:name=".ui.contracts.DeployContractActivity" />
+    <activity android:name=".ui.contracts.interact.ContractInteractActivity"/>
   </application>
 
 </manifest>

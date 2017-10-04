@@ -2,6 +2,7 @@ package io.sikorka.android.node.contracts
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.contract.SikorkaBasicInterface
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.helpers.Lce
@@ -85,7 +86,22 @@ constructor(
         }
       }
     }
+  }
 
+  fun bindSikorkaInterface(addressHex: String) {
+    gethNode.ethereumClient().flatMap { ethereumClient ->
+      Single.fromCallable {
+        val address = Geth.newAddressFromHex(addressHex)
+        val boundContract = SikorkaBasicInterface(address, ethereumClient)
+        Timber.v("Question ${boundContract.question(null)} -> name ${boundContract.name(null)}")
+        boundContract
+      }
+    }.subscribeOn(Schedulers.io())
+        .subscribe({
+
+        }) {
+          Timber.v(it)
+        }
   }
 
   private data class DeployData(val transactOpts: TransactOpts, val ec: EthereumClient)
