@@ -3,6 +3,8 @@ package io.sikorka.android.ui.wizard.slides.network_selection
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +68,7 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
   override fun onStart() {
     super.onStart()
     presenter.attach(this)
+    presenter.updateSelected()
   }
 
   override fun onStop() {
@@ -94,7 +97,11 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
       else -> null
     }
 
-    selection?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_black_24dp, 0)
+    var drawable = ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp)
+    drawable = DrawableCompat.wrap(drawable)
+    DrawableCompat.setTint(drawable, ContextCompat.getColor(context, R.color.colorAccent))
+    selection?.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
+    selection?.compoundDrawablePadding = 8
   }
 
   companion object {

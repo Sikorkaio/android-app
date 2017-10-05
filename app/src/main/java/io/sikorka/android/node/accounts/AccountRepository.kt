@@ -105,5 +105,6 @@ class AccountRepository
     return accounts
   }
 
+  fun accountsExist() : Single<Boolean> = Single.fromCallable { keystore.accounts.size() > 0 }
 
 }

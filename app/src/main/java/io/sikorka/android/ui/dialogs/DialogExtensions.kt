@@ -17,7 +17,26 @@ fun Context.showConfirmation(
 ) {
   MaterialDialog.Builder(this)
       .title(title)
+      .titleColorRes(R.color.colorAccent)
       .content(content)
+      .positiveText(android.R.string.ok)
+      .negativeText(android.R.string.cancel)
+      .onPositive { dialog, _ ->
+        action.invoke()
+        dialog.dismiss()
+      }.show()
+}
+
+fun Context.showConfirmation(
+    @StringRes title: Int,
+    @StringRes content: Int,
+    contentMessage: String,
+    action: () -> Unit
+) {
+  MaterialDialog.Builder(this)
+      .title(title)
+      .titleColorRes(R.color.colorAccent)
+      .content(getString(content, contentMessage))
       .positiveText(android.R.string.ok)
       .negativeText(android.R.string.cancel)
       .onPositive { dialog, _ ->
@@ -34,10 +53,25 @@ fun Context.showInfo(
 ) {
   MaterialDialog.Builder(this)
       .title(title)
+      .titleColorRes(R.color.colorAccent)
       .content(getString(content, contentMessage))
       .positiveText(android.R.string.ok)
       .onPositive { dialog, _ ->
         action.invoke()
+        dialog.dismiss()
+      }.show()
+}
+
+fun Context.showInfo(
+    @StringRes title: Int,
+    @StringRes content: Int
+) {
+  MaterialDialog.Builder(this)
+      .title(title)
+      .titleColorRes(R.color.colorAccent)
+      .content(content)
+      .positiveText(android.R.string.ok)
+      .onPositive { dialog, _ ->
         dialog.dismiss()
       }.show()
 }
@@ -66,6 +100,7 @@ fun <ActivityType> ActivityType.selectFile() where ActivityType : AppCompatActiv
 
 fun Context.verifyPassphraseDialog(onInput: (input: String) -> Unit) {
   MaterialDialog.Builder(this)
+      .titleColorRes(R.color.colorAccent)
       .title(R.string.dialog__passphrase_title)
       .content(R.string.dialog__passphrase_content)
       .inputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)

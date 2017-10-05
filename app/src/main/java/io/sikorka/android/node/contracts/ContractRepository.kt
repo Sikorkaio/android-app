@@ -2,7 +2,7 @@ package io.sikorka.android.node.contracts
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
+import io.sikorka.android.contract.ISikorkaBasicInterface
 import io.sikorka.android.contract.SikorkaBasicInterface
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.helpers.Lce
@@ -47,9 +47,6 @@ constructor(
           }
 
           return@fromCallable Lce.success(DeployedContractModel(contractList))
-        }.onErrorReturn {
-          val deployedContract = DeployedContract("0x192341342342356", 44.1, 22.1)
-          return@onErrorReturn Lce.success(DeployedContractModel(listOf(deployedContract)))
         }
       }
 
@@ -75,9 +72,9 @@ constructor(
         val contractName = "sikorka experiment"
         val basicInterface = SikorkaBasicInterface.deploy(it.transactOpts, it.ec, contractName, lat, long, contractData.question, answerHash.hexStringToByteArray())
         Timber.v("preparing to deploy contract: {$contractName} with lat: ${lat.int64}, long ${long.int64} question: ${contractData.question} => answer hash: $answerHash")
-        val pendingContract = PendingContract(basicInterface.Address.hex, basicInterface.Deployer.hash.hex)
+        val pendingContract = PendingContract(basicInterface.address.hex, basicInterface.deployer!!.hash.hex)
         Timber.v("pending contract: $pendingContract")
-        pendingContractDataSource.insert(pendingContract)
+        //pendingContractDataSource.insert(pendingContract)
 
         basicInterface
       }.onErrorResumeNext {
@@ -91,21 +88,15 @@ constructor(
     }
   }
 
-  fun bindSikorkaInterface(addressHex: String) {
-    gethNode.ethereumClient().flatMap { ethereumClient ->
-      Single.fromCallable {
-        val address = Geth.newAddressFromHex(addressHex)
-        val boundContract = SikorkaBasicInterface(address, ethereumClient)
-        Timber.v("Question ${boundContract.question(null)} -> name ${boundContract.name(null)}")
-        boundContract
-      }
-    }.subscribeOn(Schedulers.io())
-        .subscribe({
-
-        }) {
-          Timber.v(it)
+  fun bindSikorkaInterface(addressHex: String): Single<ISikorkaBasicInterface> =
+      gethNode.ethereumClient().flatMap { ethereumClient ->
+        Single.fromCallable {
+          val address = Geth.newAddressFromHex(addressHex)
+          val boundContract = SikorkaBasicInterface(address, ethereumClient)
+          Timber.v("Question ${boundContract.question(null)} -> name ${boundContract.name(null)}")
+          boundContract
         }
-  }
+      }
 
   private data class DeployData(val transactOpts: TransactOpts, val ec: EthereumClient)
 }

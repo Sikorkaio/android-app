@@ -18,7 +18,7 @@ interface MainView : BaseView {
 
 
 interface MainPresenter : Presenter<MainView> {
-  fun load()
+  fun load(latitude: Double, longitude: Double)
 
 }
 

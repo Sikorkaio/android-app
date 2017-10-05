@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -61,6 +62,19 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
       deploy_contract__question.editText?.setText("Experimental Question")
       deploy_contract__answer.editText?.setText("Experimental Answer")
     }
+
+    supportActionBar?.apply {
+      setDisplayHomeAsUpEnabled(true)
+      setHomeButtonEnabled(true)
+    }
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    if (item?.itemId == android.R.id.home) {
+      onBackPressed()
+      return true
+    }
+    return super.onOptionsItemSelected(item)
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
@@ -147,9 +161,11 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
         .tilt(0.0f)
         .build()
 
-    map.animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
-    map.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-    map.addMarker(MarkerOptions().position(me).title("Me"))
+    map.run {
+      animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
+      moveCamera(CameraUpdateFactory.newCameraPosition(position))
+      addMarker(MarkerOptions().position(me).title("Me"))
+    }
   }
 
   override fun onMapReady(map: GoogleMap?) {

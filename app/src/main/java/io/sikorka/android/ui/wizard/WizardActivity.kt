@@ -7,15 +7,28 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.github.paolorotolo.appintro.AppIntro2
 import io.sikorka.android.GethService
+import io.sikorka.android.R
+import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.slides.InformationFragment
 import io.sikorka.android.ui.wizard.slides.account_setup.AccountSetupFragment
 import io.sikorka.android.ui.wizard.slides.network_selection.NetworkSelectionFragment
+import toothpick.Scope
+import toothpick.Toothpick
+import toothpick.smoothie.module.SmoothieSupportActivityModule
+import javax.inject.Inject
 
-class WizardActivity : AppIntro2() {
+class WizardActivity : AppIntro2(), WizardView {
+
+  @Inject lateinit var presenter: WizardPresenter
+
+  private lateinit var scope: Scope
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    scope = Toothpick.openScopes(application, this)
+    scope.installModules(SmoothieSupportActivityModule(this), WizardModule())
     super.onCreate(savedInstanceState)
+    Toothpick.inject(this, scope)
 
     askForPermissions(arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -23,17 +36,46 @@ class WizardActivity : AppIntro2() {
         Manifest.permission.ACCESS_FINE_LOCATION
     ), 2)
 
+    setNavBarColor(R.color.colorPrimaryDark)
 
     addSlide(InformationFragment.newInstance())
     addSlide(NetworkSelectionFragment.newInstance())
     addSlide(AccountSetupFragment.newInstance())
     progressButtonEnabled = true
+    skipButtonEnabled = false
     setNextPageSwipeLock(false)
     setSwipeLock(false)
+    setIndicatorColor(R.color.colorAccent, R.color.colorAccentLight)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    Toothpick.closeScope(this)
+  }
+
+  override fun onStart() {
+    super.onStart()
+    presenter.attach(this)
+  }
+
+  override fun onStop() {
+    super.onStop()
+    presenter.detach()
   }
 
   override fun onDonePressed(currentFragment: Fragment?) {
-    super.onDonePressed(currentFragment)
+    presenter.checkForDefaultAccount()
+  }
+
+  override fun accountsExists(exists: Boolean) {
+    if (exists) {
+      done()
+    } else {
+      showInfo(R.string.wizard__no_accounts_title, R.string.wizard__no_accounts_content)
+    }
+  }
+
+  private fun done() {
     GethService.start(this)
     MainActivity.start(this)
   }

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.DrawableRes
@@ -39,6 +38,8 @@ import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.contracts.DeployedContractModel
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
+import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
+import io.sikorka.android.ui.dialogs.showConfirmation
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
 import kotlinx.android.synthetic.main.content__main.*
@@ -47,6 +48,7 @@ import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
+import java.util.*
 import javax.inject.Inject
 
 
@@ -93,8 +95,15 @@ class MainActivity : AppCompatActivity(),
     if (!checkPermissions()) {
       startLocationPermissionRequest()
     }
-  }
 
+    main__nav_exit.setOnClickListener {
+      GethService.stop(this)
+      finish()
+      drawer_layout.closeDrawer(GravityCompat.START)
+    }
+
+    main__nav_network_statistics.setText(R.string.main__no_peers_available)
+  }
 
   @SuppressLint("MissingPermission")
   private fun getLocation() {
@@ -106,14 +115,27 @@ class MainActivity : AppCompatActivity(),
           }
           val map = map ?: return@addOnCompleteListener
           val location = it.result ?: return@addOnCompleteListener
+
           if (BuildConfig.DEBUG) {
-            latitude = 40.6264
-            longitude = 22.9484
+            val random = Random()
+            val longAdd = random.nextBoolean()
+            val latAdd = random.nextBoolean()
+            val latAdj = random.nextInt(10)
+            val longAdj = random.nextInt(10)
+
+            fun Double.randomize(boolean: Boolean, adjust: Int): Double {
+              val extra = adjust / 100.0
+              return if (boolean) this + extra else this - extra
+            }
+
+            longitude = location.longitude.randomize(longAdd, longAdj)
+            latitude = location.latitude.randomize(latAdd, latAdj)
           } else {
             longitude = location.longitude
             latitude = location.latitude
           }
-          updateMyMarker(location, map)
+
+          updateMyMarker(latitude, longitude, map)
         })
   }
 
@@ -140,14 +162,11 @@ class MainActivity : AppCompatActivity(),
     }
   }
 
-  private fun updateMyMarker(location: Location, map: GoogleMap) {
-    val me = if (BuildConfig.DEBUG) {
-      LatLng(40.6264, 22.9484)
-    } else {
-      LatLng(location.latitude, location.longitude)
-    }
+  private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {
+    val me = LatLng(latitude, longitude)
 
-    val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black_24dp)
+    val bitmap = getBitmapFromVectorDrawable(this, R.drawable.ic_person_pin_circle_black_24dp)
+    val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
     val position = CameraPosition.builder()
         .target(me)
@@ -156,9 +175,24 @@ class MainActivity : AppCompatActivity(),
         .tilt(0.0f)
         .build()
 
-    map.animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
-    map.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-    map.addMarker(MarkerOptions().position(me).title("Me"))
+    map.run {
+      animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
+      moveCamera(CameraUpdateFactory.newCameraPosition(position))
+      addMarker(MarkerOptions().position(me).title("Me").icon(icon))
+    }
+
+    map.setOnInfoWindowClickListener { marker ->
+      val contractAddress = marker.tag as String? ?: return@setOnInfoWindowClickListener
+
+      showConfirmation(
+          R.string.main__contract_intration_dialog_title,
+          R.string.main__contract_intration_dialog_content,
+          contractAddress
+      ) {
+        ContractInteractActivity.start(this, contractAddress)
+      }
+
+    }
   }
 
 
@@ -185,7 +219,7 @@ class MainActivity : AppCompatActivity(),
   override fun onStart() {
     super.onStart()
     presenter.attach(this)
-    presenter.load()
+    presenter.load(latitude, longitude)
   }
 
   override fun onStop() {
@@ -222,10 +256,6 @@ class MainActivity : AppCompatActivity(),
     when (item.itemId) {
       R.id.main__nav_accounts -> {
         AccountActivity.start(this)
-      }
-      R.id.main__nav_exit -> {
-        GethService.stop(this)
-        finish()
       }
     }
 
@@ -264,13 +294,15 @@ class MainActivity : AppCompatActivity(),
     val bitmap = getBitmapFromVectorDrawable(this, R.drawable.ic_ethereum_24dp)
     val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
-    model.data.map {
-      MarkerOptions()
-          .snippet(it.addressHex)
+    model.data.forEach {
+      val markerOptions = MarkerOptions()
           .position(LatLng(it.latitude, it.longitude))
-          .title(it.addressHex.substring(0, 6))
+          .title(it.addressHex)
           .icon(icon)
-    }.forEach { googleMap.addMarker(it) }
+
+      val marker = googleMap.addMarker(markerOptions)
+      marker.tag = it.addressHex
+    }
   }
 
   private fun getBitmapFromVectorDrawable(context: Context, @DrawableRes drawableId: Int): Bitmap {

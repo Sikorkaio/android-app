@@ -6,10 +6,12 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.sikorka.android.GethService
 import io.sikorka.android.R
+import io.sikorka.android.di.modules.GethModule
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.WizardActivity
 import toothpick.Toothpick
+import toothpick.smoothie.module.SmoothieApplicationModule
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -19,9 +21,10 @@ class SplashActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     val scope = Toothpick.openScope(application)
-    Toothpick.inject(this, scope)
+    scope.installModules(SmoothieApplicationModule(application), GethModule())
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__splash)
+    Toothpick.inject(this, scope)
 
     Completable.timer(400, TimeUnit.MILLISECONDS)
         .observeOn(AndroidSchedulers.mainThread())

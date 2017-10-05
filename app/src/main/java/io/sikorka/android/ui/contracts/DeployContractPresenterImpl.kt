@@ -44,7 +44,7 @@ constructor(
         .subscribeOn(ioScheduler)
         .observeOn(mainThreadScheduler)
         .subscribe({
-          attachedView().complete(it.Address.hex)
+          attachedView().complete(it.address.hex)
         }) {
           attachedView().showError(it.message)
           Timber.v(it)

@@ -10,12 +10,4 @@
       android:title="@string/main_nav__accounts"/>
   </group>
 
-  <item android:title="">
-    <menu>
-      <item
-        android:id="@+id/main__nav_exit"
-        android:title="@string/main_nav__exit"/>
-    </menu>
-  </item>
-
 </menu>

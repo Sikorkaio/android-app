@@ -5,10 +5,17 @@ import io.sikorka.android.mvp.Presenter
 import toothpick.config.Module
 
 
-interface ContractInteractView : BaseView
+interface ContractInteractView : BaseView {
+  fun showError()
+  fun update(question: String, name: String)
+  fun showConfirmationResult(confirmAnswer: Boolean)
+}
 
 
-interface ContractInteractPresenter : Presenter<ContractInteractView>
+interface ContractInteractPresenter : Presenter<ContractInteractView> {
+  fun load(contractAddress: String)
+  fun confirmAnswer(answer: String)
+}
 
 
 class ContractInteractModule : Module() {

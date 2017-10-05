@@ -24,7 +24,7 @@ fun BigInt.toEther(): Double = toUnit(ETHER)
 
 private fun BigInt.toUnit(unit: String): Double = this.int64.toDouble() / unitToValue(unit)
 
-private fun unitToValue(unit: String): Long = unitMap.getOrDefault(unit, 1L)
+private fun unitToValue(unit: String): Long = unitMap[unit] ?: 1L
 
 fun etherToWei(ether: Double): Long = (ether * unitToValue(ETHER).toDouble()).toLong()
 

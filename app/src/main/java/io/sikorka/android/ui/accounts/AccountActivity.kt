@@ -3,6 +3,7 @@ package io.sikorka.android.ui.accounts
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -12,6 +13,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import io.sikorka.android.R
+import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
@@ -101,6 +103,12 @@ class AccountActivity : AppCompatActivity(), AccountView {
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     menuInflater.inflate(R.menu.activity_accounts__menu, menu)
+    menu?.let {
+      MenuTint.on(it)
+          .setMenuItemIconColor(ContextCompat.getColor(this, R.color.white))
+          .apply(this)
+    }
+
     return super.onCreateOptionsMenu(menu)
   }
 

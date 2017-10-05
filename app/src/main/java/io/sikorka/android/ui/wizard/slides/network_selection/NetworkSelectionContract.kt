@@ -11,4 +11,5 @@ interface NetworkSelectionView : BaseView {
 
 interface NetworkSelectionPresenter : Presenter<NetworkSelectionView> {
   fun selectNetwork(@Network.Selection network: Long)
+  fun updateSelected()
 }

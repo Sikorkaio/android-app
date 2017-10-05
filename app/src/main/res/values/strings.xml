@@ -78,7 +78,17 @@
   <string name="confirm_deploy__dialog_title">Deploy a sikorka contract</string>
   <string name="confirm_deploy__empty_passphrase">Passphrase can\'t be empty</string>
   <string name="contract_interact__question_label">Question</string>
-  <string name="main__loading_message">Please wait...</string>
+  <string name="main__loading_message">Please wait…</string>
   <string name="errors__generic_error">An error occurred.</string>
+  <string name="main__contract_intration_dialog_title">Start contract interaction</string>
+  <string name="main__contract_intration_dialog_content">Are you sure you want to interact with %s?</string>
+  <string name="contract_interact__answer_success">Answer was correct</string>
+  <string name="contract_interact__answer_wrong">Answer was wrong</string>
+  <string name="contract_interact__generic_error">There was some error during the operation.</string>
+  <string name="contract_interact__contract_address">Deployed at\n%s</string>
+  <string name="main__no_peers_available">No peers available</string>
+
+  <string name="wizard__no_accounts_title">No accounts available</string>
+  <string name="wizard__no_accounts_content">In order to proceed you have to either create or import an account.</string>
 
 </resources>
