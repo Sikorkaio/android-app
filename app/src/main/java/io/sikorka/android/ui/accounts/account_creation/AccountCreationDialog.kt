@@ -59,6 +59,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
         .customView(view, false)
         .positiveText(android.R.string.ok)
         .negativeText(android.R.string.cancel)
+        .autoDismiss(false)
         .onNegative { dialog, _ -> dialog.dismiss() }
         .onPositive { _, _ ->
           presenter.createAccount(passphrase, passphraseConfirmation)
@@ -91,6 +92,9 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
       }
       ValidationResult.EMPTY_PASSPHRASE -> {
         passphraseInput.error = getString(R.string.account_creation__passphrase_empty)
+      }
+      ValidationResult.PASSWORD_SHORT -> {
+        passphraseInput.error = getString(R.string.account_creation__password_short, 8)
       }
     }
   }
