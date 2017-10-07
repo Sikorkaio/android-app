@@ -10,8 +10,7 @@ class AccountCreationDialogPresenterImpl
 @Inject constructor(
     private val accountRepository: AccountRepository,
     private val passphraseValidator: PassphraseValidator
-)
-  : AccountCreationDialogPresenter,
+) : AccountCreationDialogPresenter,
     BasePresenter<AccountCreationDialogView>() {
 
   override fun createAccount(passphrase: String, passphraseConfirmation: String) {
@@ -25,5 +24,6 @@ class AccountCreationDialogPresenterImpl
     }
 
     accountRepository.createAccount(passphrase)
+    view.complete()
   }
 }
