@@ -8,6 +8,14 @@ apply plugin: 'kotlin-android-extensions'
 def properties = new Properties()
 file("$rootDir/api-keys.properties").withInputStream { properties.load(it) }
 
+static def version() {
+  return 'git rev-parse --short HEAD'.execute().text.trim()
+}
+
+static def revision() {
+  return 'git rev-list --count HEAD'.execute().text.trim()
+}
+
 android {
   compileSdkVersion 26
   buildToolsVersion '26.0.2'
@@ -21,6 +29,9 @@ android {
     vectorDrawables.useSupportLibrary = true
 
     resValue "string", "maps_key", properties["google_maps_key"]
+
+    buildConfigField "String", "GIT_HASH", "\"${version()}\""
+    buildConfigField "String", "REVISION", "\"${revision()}\""
   }
 
   signingConfigs {
