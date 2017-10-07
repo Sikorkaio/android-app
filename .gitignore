@@ -8,3 +8,4 @@
 /captures
 .externalNativeBuild
 /api-keys.properties
+.idea/modules.xml
