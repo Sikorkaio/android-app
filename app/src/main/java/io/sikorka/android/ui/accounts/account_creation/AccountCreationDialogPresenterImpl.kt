@@ -1,15 +1,21 @@
 package io.sikorka.android.ui.accounts.account_creation
 
+import io.reactivex.Scheduler
+import io.sikorka.android.di.qualifiers.IoScheduler
+import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.PassphraseValidator
 import io.sikorka.android.node.accounts.ValidationResult
+import timber.log.Timber
 import javax.inject.Inject
 
 class AccountCreationDialogPresenterImpl
 @Inject constructor(
     private val accountRepository: AccountRepository,
-    private val passphraseValidator: PassphraseValidator
+    private val passphraseValidator: PassphraseValidator,
+    @IoScheduler private val ioScheduler: Scheduler,
+    @MainScheduler private val mainScheduler: Scheduler
 ) : AccountCreationDialogPresenter,
     BasePresenter<AccountCreationDialogView>() {
 
@@ -23,7 +29,16 @@ class AccountCreationDialogPresenterImpl
       return
     }
 
-    accountRepository.createAccount(passphrase)
-    view.complete()
+    addDisposable(accountRepository.createAccount(passphrase)
+        .subscribeOn(ioScheduler)
+        .observeOn(mainScheduler)
+        .subscribe({
+          Timber.v("account created")
+          view.complete()
+        }) {
+
+        })
+
+
   }
 }

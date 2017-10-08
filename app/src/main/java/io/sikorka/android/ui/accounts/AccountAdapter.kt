@@ -16,11 +16,13 @@ constructor(
 
   private var onDelete: AccountAction? = null
   private var onExport: AccountAction? = null
+  private var onSetDefault: AccountAction? = null
 
   override fun onBindViewHolder(holder: AccountViewHolder?, position: Int) {
     holder?.let {
       it.onExport = onExport
       it.onDelete = onDelete
+      it.onSetDefault = onSetDefault
       it.update()
     }
   }
@@ -38,9 +40,14 @@ constructor(
     notifyDataSetChanged()
   }
 
-  fun setAccountActionListeners(onDelete: AccountAction? = null, onExport: AccountAction? = null) {
+  fun setAccountActionListeners(
+      onDelete: AccountAction? = null,
+      onExport: AccountAction? = null,
+      onSetDefault: AccountAction? = null
+  ) {
     this.onDelete = onDelete
     this.onExport = onExport
+    this.onSetDefault = onSetDefault
   }
 
 }

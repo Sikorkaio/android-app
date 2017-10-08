@@ -7,7 +7,6 @@ import io.sikorka.android.node.accounts.ValidationResult
 interface AccountCreationDialogView : BaseView {
   fun showError(@ValidationResult.Code code: Long)
   fun complete()
-  fun onDismiss(action: (() -> Unit)? = null)
 }
 
 interface AccountCreationDialogPresenter : Presenter<AccountCreationDialogView> {

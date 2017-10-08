@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/account_management__action_delete"
+      android:title="@string/account_management__action_delete" />
+  <item
+      android:id="@+id/account_management__action_export"
+      android:title="@string/account_management__action_export" />
+  <item
+      android:id="@+id/account_management__action_default"
+      android:title="@string/account_management__action_default" />
+
+</menu>

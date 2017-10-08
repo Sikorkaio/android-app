@@ -32,11 +32,10 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
 
   @OnClick(R.id.account_setup__create_new)
   internal fun onCreateNewPressed() {
-    val dialog = AccountCreationDialog.newInstance()
-    dialog.show(fragmentManager)
-    dialog.onDismiss {
+    val dialog = AccountCreationDialog.newInstance(fragmentManager) {
       presenter.loadAccount()
     }
+    dialog.show()
   }
 
   @OnClick(R.id.account_setup__import_account)

@@ -1,5 +1,6 @@
 package io.sikorka.android.node.accounts
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.sikorka.android.di.qualifiers.KeystorePath
@@ -21,10 +22,10 @@ class AccountRepository
 
   private val keystore = KeyStore(keystorePath, Geth.LightScryptN, Geth.LightScryptP)
 
-  fun createAccount(passphrase: String): Account {
+  fun createAccount(passphrase: String): Single<Account> = Single.fromCallable {
     val newAccount = keystore.newAccount(passphrase)
     setDefault(newAccount.address.hex)
-    return newAccount
+    return@fromCallable newAccount
   }
 
   fun accounts(): Observable<Lce<AccountsModel>> = Observable.fromCallable {
@@ -56,8 +57,15 @@ class AccountRepository
     return Single.fromCallable { keystore.exportKey(account, passphrase, keyPassphrase) }
   }
 
-  fun deleteAccount(account: Account, passphrase: String) {
+  fun deleteAccount(account: Account, passphrase: String): Completable = Completable.fromCallable {
     keystore.deleteAccount(account, passphrase)
+  }.onErrorResumeNext {
+    val message = it.message ?: ""
+    if (message.contains("could not decrypt key with given passphrase")) {
+      return@onErrorResumeNext Completable.error(InvalidPassphraseException(it))
+    } else {
+      return@onErrorResumeNext Completable.error(it)
+    }
   }
 
   fun importAccount(key: ByteArray, keyPassphrase: String, passphrase: String): Single<Account> {
@@ -87,5 +95,10 @@ class AccountRepository
 
 
   fun accountsExist(): Single<Boolean> = Single.fromCallable { keystore.accounts.size() > 0 }
+
+  fun setDefaultAccount(account: Account): Completable = Completable.fromCallable {
+    val accountHex = account.address.hex
+    appPreferences.selectAccount(accountHex)
+  }
 
 }

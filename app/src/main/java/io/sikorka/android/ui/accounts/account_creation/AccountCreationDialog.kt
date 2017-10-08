@@ -11,10 +11,16 @@ import android.widget.EditText
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.sikorka.android.R
 import io.sikorka.android.node.accounts.ValidationResult
+import io.sikorka.android.node.accounts.ValidationResult.Code
 import io.sikorka.android.ui.asString
+import timber.log.Timber
 import toothpick.Toothpick
+import toothpick.smoothie.provider.SupportFragmentManagerProvider
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
@@ -42,7 +48,8 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
   private val passphraseConfirmation: String
     get() = passphraseConfirmationField.asString()
 
-  private var onDismissAction: (() -> Unit)? = null
+  private lateinit var onDismissAction: (() -> Unit)
+  private lateinit var fm: FragmentManager
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -59,8 +66,8 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
         .customView(view, false)
         .positiveText(android.R.string.ok)
         .negativeText(android.R.string.cancel)
+        .dismissListener { presenter.detach() }
         .autoDismiss(false)
-        .dismissListener { onDismissAction?.invoke() }
         .onNegative { dialog, _ -> dialog.dismiss() }
         .onPositive { _, _ ->
           presenter.createAccount(passphrase, passphraseConfirmation)
@@ -80,12 +87,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
     presenter.attach(this)
   }
 
-  override fun onStop() {
-    super.onStop()
-    presenter.detach()
-  }
-
-  override fun showError(@ValidationResult.Code code: Long) {
+  override fun showError(@Code code: Long) {
     clearErrors()
     when (code) {
       ValidationResult.CONFIRMATION_MISSMATCH -> {
@@ -101,8 +103,8 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
   }
 
   override fun complete() {
+    onDismissAction.invoke()
     dialog.dismiss()
-    onDismissAction?.invoke()
   }
 
   private fun clearErrors() {
@@ -110,12 +112,8 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
     passphraseConfirmationInput.error = null
   }
 
-  override fun onDismiss(action: (() -> Unit)?) {
-    onDismissAction = action
-  }
-
-  fun show(fragmentManager: FragmentManager) {
-    show(fragmentManager, TAG)
+  fun show() {
+    show(fm, TAG)
   }
 
   override fun dismiss() {
@@ -125,8 +123,11 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
   companion object {
     const val TAG = "account_creation_dialog"
 
-    fun newInstance(): AccountCreationDialog {
-      return AccountCreationDialog()
+    fun newInstance(fm: FragmentManager, action: (() -> Unit)): AccountCreationDialog {
+      val creationDialog = AccountCreationDialog()
+      creationDialog.fm = fm
+      creationDialog.onDismissAction = action
+      return creationDialog
     }
   }
 }

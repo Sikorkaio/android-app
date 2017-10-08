@@ -19,6 +19,7 @@ import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
+import timber.log.Timber
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
@@ -60,7 +61,9 @@ class AccountActivity : AppCompatActivity(), AccountView {
       verifyPassphraseDialog { presenter.deleteAccount(account, it) }
     }, {
       AccountExportActivity.start(this, it.address.hex)
-    })
+    }) {
+      presenter.setDefault(it)
+    }
   }
 
   override fun onStop() {
@@ -69,13 +72,15 @@ class AccountActivity : AppCompatActivity(), AccountView {
   }
 
   @OnClick(R.id.accounts__create_account)
-  internal fun onCreateAccountClicked() {
-    val dialog = AccountCreationDialog()
-    dialog.show(supportFragmentManager)
-    dialog.onDismiss { presenter.loadAccounts() }
+  internal fun onCreateAccountClicked(){
+    val dialog = AccountCreationDialog.newInstance(supportFragmentManager) {
+      presenter.loadAccounts()
+    }
+    dialog.show()
   }
 
   override fun accountsLoaded(accounts: AccountsModel) {
+    Timber.v("Accounts ${accounts.accounts.size}")
     adapter.update(accounts)
   }
 
