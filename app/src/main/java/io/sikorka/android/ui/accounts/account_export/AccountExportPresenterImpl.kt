@@ -1,6 +1,5 @@
 package io.sikorka.android.ui.accounts.account_export
 
-import io.reactivex.rxkotlin.toObservable
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.toFile
 import io.sikorka.android.mvp.BasePresenter
@@ -38,12 +37,8 @@ class AccountExportPresenterImpl
       return
     }
 
-    accountRepository.accounts()
-        .filter { it.success() }
-        .flatMap { it.data().toObservable() }
-        .filter { it.address.hex == accountHex }
-        .firstElement()
-        .flatMapSingle { account -> accountRepository.exportAccount(account, passphrase, encryptionPass) }
+    accountRepository.accountByHex(accountHex)
+        .flatMap { account -> accountRepository.exportAccount(account, passphrase, encryptionPass) }
         .subscribe({
           if (it.isEmpty()) {
             attachedView().showError(AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT)

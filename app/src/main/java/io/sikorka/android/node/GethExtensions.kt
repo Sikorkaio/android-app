@@ -1,9 +1,6 @@
 package io.sikorka.android.node
 
-import org.ethereum.geth.Address
-import org.ethereum.geth.Addresses
-import org.ethereum.geth.BigInt
-import org.ethereum.geth.BigInts
+import org.ethereum.geth.*
 
 fun Addresses.all() = object : Iterable<Address> {
   override fun iterator() = object : Iterator<Address> {
@@ -24,5 +21,15 @@ fun BigInts.values() = object : Iterable<BigInt> {
 
     override fun next(): BigInt = get(current++)
   }
+}
 
+fun Accounts.all() = object : Iterable<Account> {
+  override fun iterator() = object : Iterator<Account> {
+    private var current = 0
+
+    override fun hasNext(): Boolean = current < size()
+
+    override fun next(): Account = get(current++.toLong())
+
+  }
 }

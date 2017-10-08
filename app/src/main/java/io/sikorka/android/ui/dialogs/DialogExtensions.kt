@@ -103,7 +103,9 @@ fun Context.verifyPassphraseDialog(onInput: (input: String) -> Unit) {
       .titleColorRes(R.color.colorAccent)
       .title(R.string.dialog__passphrase_title)
       .content(R.string.dialog__passphrase_content)
+      .negativeText(android.R.string.cancel)
       .inputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+      .onNegative { dialog, _ -> dialog.dismiss() }
       .input(
           R.string.dialog__input_hint,
           R.string.dialog_passphrase__input_prefill,

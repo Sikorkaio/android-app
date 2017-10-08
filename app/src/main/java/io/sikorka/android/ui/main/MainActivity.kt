@@ -96,6 +96,10 @@ class MainActivity : AppCompatActivity(),
       startLocationPermissionRequest()
     }
 
+    if (!checkWritePermissions()) {
+      startWritePermissionRequest()
+    }
+
     main__nav_exit.setOnClickListener {
       GethService.stop(this)
       finish()
@@ -202,11 +206,26 @@ class MainActivity : AppCompatActivity(),
         REQUEST_PERMISSIONS_REQUEST_CODE)
   }
 
+  private fun startWritePermissionRequest() {
+    ActivityCompat.requestPermissions(this@MainActivity,
+        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+        REQUEST_PERMISSIONS_REQUEST_CODE)
+  }
+
   private fun checkPermissions(): Boolean {
     val permissionState = ActivityCompat.checkSelfPermission(
         this,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
+    return permissionState == PackageManager.PERMISSION_GRANTED
+  }
+
+  private fun checkWritePermissions(): Boolean {
+    val permissionState = ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
     return permissionState == PackageManager.PERMISSION_GRANTED
   }
 

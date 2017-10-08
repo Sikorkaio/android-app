@@ -60,6 +60,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
         .positiveText(android.R.string.ok)
         .negativeText(android.R.string.cancel)
         .autoDismiss(false)
+        .dismissListener { onDismissAction?.invoke() }
         .onNegative { dialog, _ -> dialog.dismiss() }
         .onPositive { _, _ ->
           presenter.createAccount(passphrase, passphraseConfirmation)

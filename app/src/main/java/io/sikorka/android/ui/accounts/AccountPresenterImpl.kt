@@ -27,5 +27,6 @@ constructor(
       view.showError("")
     }
     accountRepository.deleteAccount(account, passphrase)
+    loadAccounts()
   }
 }

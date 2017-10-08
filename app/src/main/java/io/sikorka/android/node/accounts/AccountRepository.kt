@@ -5,6 +5,7 @@ import io.reactivex.Single
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.node.GethNode
+import io.sikorka.android.node.all
 import io.sikorka.android.node.toEther
 import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.*
@@ -26,15 +27,11 @@ class AccountRepository
     return newAccount
   }
 
-  fun accounts(): Observable<Lce<List<Account>>> {
-    return Observable.fromCallable {
-      val accounts = keystore.accounts
-      val accountList = (0 until accounts.size()).map { accounts[it] }
-      return@fromCallable Lce.success(accountList)
-    }.startWith(Lce.loading())
-        .onErrorReturn { Lce.failure(it) }
-
-  }
+  fun accounts(): Observable<Lce<AccountsModel>> = Observable.fromCallable {
+    val accounts = keystore.accounts.all()
+    val accountsModel = AccountsModel(appPreferences.selectedAccount(), accounts.toList())
+    return@fromCallable Lce.success(accountsModel)
+  }.startWith(Lce.loading()).onErrorReturn { Lce.failure(it) }
 
   fun selectedAccount(): Single<AccountModel> = Single.fromCallable {
     val addressHex = appPreferences.selectedAccount()
@@ -48,9 +45,11 @@ class AccountRepository
   }
 
   private fun getAccountByHex(addressHex: String): Account {
-    return keystore.accounts
-        .filter { it.address.hex.equals(addressHex, ignoreCase = true) }
-        .first()
+    return keystore.accounts.all().first { it.address.hex.equals(addressHex, ignoreCase = true) }
+  }
+
+  fun accountByHex(addressHex: String): Single<Account> = Single.fromCallable {
+    return@fromCallable getAccountByHex(addressHex)
   }
 
   fun exportAccount(account: Account, passphrase: String, keyPassphrase: String): Single<ByteArray> {
@@ -80,31 +79,13 @@ class AccountRepository
   }
 
   fun sign(address: String, passphrase: String, transaction: Transaction, chainId: BigInt): Transaction? {
-    val account = keystore.accounts
-        .filter { it.address.hex.equals(address, ignoreCase = true) }
-        .first()
+    val account = keystore.accounts.all()
+        .first { it.address.hex.equals(address, ignoreCase = true) }
     Timber.v("Signing ${account.address.hex} - ${transaction.hash.hex} - chain: ${chainId.int64}")
     return keystore.signTxPassphrase(account, passphrase, transaction, chainId)
   }
 
-  private operator fun Accounts.iterator(): Iterator<Account> = object : Iterator<Account> {
-    private var current = 0
 
-    override fun hasNext(): Boolean = current < size()
-
-    override fun next(): Account = get(current++.toLong())
-  }
-
-  private fun Accounts.filter(predicate: (account: Account) -> Boolean): List<Account> {
-    val accounts = mutableListOf<Account>()
-    for (account in this) {
-      if (predicate(account)) {
-        accounts.add(account)
-      }
-    }
-    return accounts
-  }
-
-  fun accountsExist() : Single<Boolean> = Single.fromCallable { keystore.accounts.size() > 0 }
+  fun accountsExist(): Single<Boolean> = Single.fromCallable { keystore.accounts.size() > 0 }
 
 }

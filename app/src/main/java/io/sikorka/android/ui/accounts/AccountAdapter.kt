@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
-import org.ethereum.geth.Account
+import io.sikorka.android.node.accounts.AccountsModel
 import javax.inject.Inject
 
 class AccountAdapter
@@ -33,7 +33,7 @@ constructor(
 
   override fun getItemCount(): Int = accountAdapterPresenter.size()
 
-  fun update(accounts: List<Account>) {
+  fun update(accounts: AccountsModel) {
     accountAdapterPresenter.setData(accounts)
     notifyDataSetChanged()
   }

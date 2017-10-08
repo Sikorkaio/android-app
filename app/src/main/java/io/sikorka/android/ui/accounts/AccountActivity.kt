@@ -13,12 +13,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import io.sikorka.android.R
+import io.sikorka.android.node.accounts.AccountsModel
 import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
-import org.ethereum.geth.Account
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
@@ -75,7 +75,7 @@ class AccountActivity : AppCompatActivity(), AccountView {
     dialog.onDismiss { presenter.loadAccounts() }
   }
 
-  override fun accountsLoaded(accounts: List<Account>) {
+  override fun accountsLoaded(accounts: AccountsModel) {
     adapter.update(accounts)
   }
 

@@ -91,5 +91,6 @@
   <string name="wizard__no_accounts_title">No accounts available</string>
   <string name="wizard__no_accounts_content">In order to proceed you have to either create or import an account.</string>
   <string name="account_creation__password_short">You passphrase is short passphrase should be at least %d characters long.</string>
+  <string name="account_management__delete_last_account_content">You must have at least one account. You cannot delete this account.</string>
 
 </resources>

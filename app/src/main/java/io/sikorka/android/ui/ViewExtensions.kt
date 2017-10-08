@@ -20,3 +20,15 @@ fun TextInputLayout.setValue(text: String) {
 fun View.showShortSnack(@StringRes resId: Int) {
   Snackbar.make(this, resId, Snackbar.LENGTH_SHORT).show()
 }
+
+fun View.show() {
+  visibility = View.VISIBLE
+}
+
+fun View.hide() {
+  visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+  visibility = View.GONE
+}
