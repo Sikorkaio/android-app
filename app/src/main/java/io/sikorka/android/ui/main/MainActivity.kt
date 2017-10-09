@@ -184,19 +184,6 @@ class MainActivity : AppCompatActivity(),
       moveCamera(CameraUpdateFactory.newCameraPosition(position))
       addMarker(MarkerOptions().position(me).title("Me").icon(icon))
     }
-
-    map.setOnInfoWindowClickListener { marker ->
-      val contractAddress = marker.tag as String? ?: return@setOnInfoWindowClickListener
-
-      showConfirmation(
-          R.string.main__contract_intration_dialog_title,
-          R.string.main__contract_intration_dialog_content,
-          contractAddress
-      ) {
-        ContractInteractActivity.start(this, contractAddress)
-      }
-
-    }
   }
 
 
@@ -284,6 +271,19 @@ class MainActivity : AppCompatActivity(),
 
   override fun onMapReady(googleMap: GoogleMap?) {
     map = googleMap
+
+    map?.setOnInfoWindowClickListener { marker ->
+      val contractAddress = marker.tag as String? ?: return@setOnInfoWindowClickListener
+
+      showConfirmation(
+          R.string.main__contract_intration_dialog_title,
+          R.string.main__contract_intration_dialog_content,
+          contractAddress
+      ) {
+        ContractInteractActivity.start(this, contractAddress)
+      }
+
+    }
 
     if (checkPermissions()) {
       getLocation()
