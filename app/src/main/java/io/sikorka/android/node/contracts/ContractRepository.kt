@@ -33,8 +33,8 @@ constructor(
         return@flatMap Single.fromCallable {
           val sikorkaRegistry = SikorkaRegistry.bind(ethereumClient)
 
-          val contractCoordinates = sikorkaRegistry.getContractCoordinates()
           val contractAddresses = sikorkaRegistry.getContractAddresses()
+          val contractCoordinates = sikorkaRegistry.getContractCoordinates()
 
           val contractList = ArrayList<DeployedContract>()
 

@@ -9,8 +9,6 @@ import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.contracts.ContractRepository
-import io.sikorka.android.node.contracts.DeployedContract
-import io.sikorka.android.node.contracts.DeployedContractModel
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -47,10 +45,10 @@ constructor(
           Timber.v(it)
         }
     )
-    loadDeployed(latitude, longitude)
+    loadDeployed()
   }
 
-  fun loadDeployed(latitude: Double, longitude: Double) {
+  private fun loadDeployed() {
     addDisposable(contractRepository.getDeployedContracts()
         .toObservable()
         .startWith(Lce.loading())
@@ -60,23 +58,17 @@ constructor(
         .subscribe({
           Timber.v("Completed retrieving deployed contracts")
           when {
-            it.success() -> attachedView().update(mockData(latitude, longitude))
-            it.failure() -> attachedView().update(mockData(latitude, longitude))//attachedView().error(it.error())
+            it.success() -> attachedView().update(it.data())
+            it.failure() -> {
+              attachedView().error(it.error())
+              Timber.v(it.error())
+            }
             it.loading() -> attachedView().loading(true)
           }
         }) {
           Timber.v(it)
         }
     )
-  }
-
-  private fun mockData(latitude: Double, longitude: Double): DeployedContractModel {
-    val deployedContracts = listOf(DeployedContract("0x1218418b656cb5b4a818275b7d7dc0948a4eb2ca", latitude - 0.004, longitude - 0.002),
-        DeployedContract("0xfc69b76de6300d72237a643579b3216b3deee1ef", latitude - 0.006, longitude + 0.005),
-        DeployedContract("0x567c98f000e88c477e87567f412b13ead25e8c90", latitude + 0.001, longitude - 0.008),
-        DeployedContract("0xd438e5deb358c74e7b10251ee61694bc2436ed2f", latitude + 0.007, longitude + 0.002)
-    )
-    return DeployedContractModel(deployedContracts)
   }
 
 }

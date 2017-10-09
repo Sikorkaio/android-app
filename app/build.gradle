@@ -68,7 +68,9 @@ dependencies {
   implementation 'com.android.support:design:26.1.0'
   implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta2'
 
-  implementation 'org.ethereum:geth:1.7.1'
+  // Custom build of master with an addition to an unmarshal issue
+  // https://github.com/ethereum/go-ethereum/issues/14832#issuecomment-322965627
+  implementation 'geth-android:geth:1.7.2-unstable'
   implementation 'com.squareup.okio:okio:1.13.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 

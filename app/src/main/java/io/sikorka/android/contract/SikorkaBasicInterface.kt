@@ -70,8 +70,9 @@ private constructor(
   override fun confirmAnswer(opts: CallOpts?, _answer: String): Boolean {
     var callOpts = opts
     val args = Geth.newInterfaces(1)
-    args.set(0, Geth.newInterface())
-    args.get(0).string = _answer
+    val answer = Geth.newInterface()
+    answer.string = _answer
+    args.set(0, answer)
 
 
     val results = Geth.newInterfaces(1)
