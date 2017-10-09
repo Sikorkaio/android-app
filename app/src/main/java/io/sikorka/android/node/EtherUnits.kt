@@ -1,6 +1,8 @@
 package io.sikorka.android.node
 
 import org.ethereum.geth.BigInt
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 private const val WEI = "wei"
 private const val KWEI = "kwei"
@@ -21,6 +23,13 @@ private var unitMap = mapOf(
 )
 
 fun BigInt.toEther(): Double = toUnit(ETHER)
+
+fun BigDecimal.toEther(): Double {
+  val value = unitToValue(ETHER)
+  val divisor = BigDecimal(value)
+  val division = this.divide(divisor)
+  return division.setScale(2, RoundingMode.DOWN).toDouble()
+}
 
 private fun BigInt.toUnit(unit: String): Double = this.int64.toDouble() / unitToValue(unit)
 

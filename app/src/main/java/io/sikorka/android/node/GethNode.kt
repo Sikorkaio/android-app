@@ -11,6 +11,7 @@ import io.sikorka.android.node.configuration.IConfiguration
 import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.*
 import timber.log.Timber
+import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -53,8 +54,9 @@ constructor(
   }
 
 
-  fun getBalance(address: Address): BigInt {
-    return ethereumClient.getBalanceAt(ethContext, address, -1)
+  fun getBalance(address: Address): BigDecimal {
+    val bigIntBalance = ethereumClient.getBalanceAt(ethContext, address, -1)
+    return BigDecimal(bigIntBalance.getString(10))
   }
 
   fun createTransactOpts(
