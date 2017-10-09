@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
@@ -310,7 +311,7 @@ class MainActivity : AppCompatActivity(),
     loading(false)
     val googleMap = map ?: return
 
-    val bitmap = getBitmapFromVectorDrawable(this, R.drawable.ic_ethereum_24dp)
+    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_ethereum_icon)
     val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
     model.data.forEach {
