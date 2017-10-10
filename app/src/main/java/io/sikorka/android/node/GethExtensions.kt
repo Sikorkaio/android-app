@@ -25,11 +25,22 @@ fun BigInts.values() = object : Iterable<BigInt> {
 
 fun Accounts.all() = object : Iterable<Account> {
   override fun iterator() = object : Iterator<Account> {
-    private var current = 0
+    private var current = 0L
 
     override fun hasNext(): Boolean = current < size()
 
-    override fun next(): Account = get(current++.toLong())
+    override fun next(): Account = get(current++)
 
   }
 }
+
+fun PeerInfos.all(): Iterable<PeerInfo> = object : Iterable<PeerInfo> {
+  override fun iterator() = object : Iterator<PeerInfo> {
+    var current = 0L
+    override fun hasNext(): Boolean = current < size()
+
+    override fun next(): PeerInfo = get(current++)
+  }
+}
+
+

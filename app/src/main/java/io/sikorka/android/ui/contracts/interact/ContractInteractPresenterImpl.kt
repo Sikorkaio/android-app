@@ -1,11 +1,9 @@
 package io.sikorka.android.ui.contracts.interact
 
-import io.reactivex.Scheduler
 import io.sikorka.android.contract.ISikorkaBasicInterface
-import io.sikorka.android.di.qualifiers.IoScheduler
-import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.Address
 import org.ethereum.geth.CallOpts
 import org.ethereum.geth.TransactOpts
@@ -16,16 +14,15 @@ class ContractInteractPresenterImpl
 @Inject
 constructor(
     private val contractRepository: ContractRepository,
-    @IoScheduler private val ioScheduler: Scheduler,
-    @MainScheduler private val mainScheduler: Scheduler
+    private val schedulerProvider: SchedulerProvider
 ) : ContractInteractPresenter, BasePresenter<ContractInteractView>() {
 
   private lateinit var boundInterface: ISikorkaBasicInterface
 
   override fun load(contractAddress: String) {
     addDisposable(contractRepository.bindSikorkaInterface(contractAddress)
-        .subscribeOn(ioScheduler)
-        .observeOn(mainScheduler)
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
         .onErrorReturn {
           object : ISikorkaBasicInterface {
             override fun confirmAnswer(opts: CallOpts?, _answer: String): Boolean {

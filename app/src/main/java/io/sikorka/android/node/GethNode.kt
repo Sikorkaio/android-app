@@ -2,6 +2,8 @@ package io.sikorka.android.node
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.UpdateSyncStatusEvent
 import io.sikorka.android.helpers.fail
@@ -9,14 +11,13 @@ import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationFactory
 import io.sikorka.android.node.configuration.IConfiguration
 import io.sikorka.android.settings.AppPreferences
+import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.math.BigDecimal
-import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-
-
 
 
 @Singleton
@@ -25,12 +26,18 @@ class GethNode
 constructor(
     private val configurationFactory: ConfigurationFactory,
     private val appPreferences: AppPreferences,
-    private val rxBus: RxBus
+    private val rxBus: RxBus,
+    private val schedulerProvider: SchedulerProvider
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
   private var listener: ((String, Int) -> Unit)? = null
   private lateinit var configuration: IConfiguration
+
+  private val disposables: CompositeDisposable = CompositeDisposable()
+  private fun addDisposable(disposable: Disposable) {
+    disposables.add(disposable)
+  }
 
   fun setListener(listener: (String, Int) -> Unit) {
     this.listener = listener
@@ -50,7 +57,32 @@ constructor(
     node = Geth.newNode(dataDir.absolutePath, nodeConfig)
     val node = node ?: fail("what node?")
     node.start()
-    schedulerPeerCheck(node)
+
+    addDisposable(headers()
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.io())
+        .subscribe({
+          Timber.v("new header ${it.number} - ${it.hash.hex}")
+        }) {
+          Timber.v(it)
+        }
+    )
+
+    addDisposable(status()
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.io())
+        .subscribe({
+          rxBus.post(it)
+        }) {
+          Timber.v(it)
+        })
+  }
+
+  fun stop() {
+    val node = node ?: return
+
+    node.stop()
+    disposables.clear()
   }
 
 
@@ -106,9 +138,26 @@ constructor(
     Pair(0, 0)
   }
 
+  fun canCallMethods(): Single<Boolean> = Single.fromCallable {
+    ethereumClient.syncProgress(ethContext)
+    ethereumClient.getBlockByNumber(ethContext, -1)
+    return@fromCallable true
+  }.onErrorResumeNext {
+    val message = it.message ?: ""
+    val error = if (message.contains("no suitable peers available")) {
+      NoSuitablePeersAvailableException(it)
+    } else {
+      it
+    }
+    Single.error(error)
+  }
+
   private fun headers(): Observable<Header> = Observable.create<Header> {
     val handler = object : NewHeadHandler {
-      override fun onError(error: String) { Timber.v(error)}
+      override fun onError(error: String) {
+        Timber.v(error)
+      }
+
       override fun onNewHead(header: Header) {
         it.onNext(header)
       }
@@ -116,49 +165,36 @@ constructor(
     ethereumClient.subscribeNewHead(ethContext, handler, 16)
   }
 
-  private fun schedulerPeerCheck(node: Node) {
-    Timer().scheduleAtFixedRate(object : TimerTask() {
-      override fun run() {
-
-        val peerInfos = node.peersInfo
-        val peers = peerInfos.size().toInt()
-        logPeers(peerInfos)
-        var message = "Peers: $peers"
-        val (current, highest) = syncProgress(node.ethereumClient)
-        if (highest > 0) {
-          message = "$message | Block $current of $highest"
-        }
-        Timber.v("checking sync progress $message")
-        listener?.invoke(message, peers)
-        val status = SyncStatus(peers, current, highest)
-        rxBus.post(UpdateSyncStatusEvent(status))
-        val pendingTransactionCount = ethereumClient.getPendingTransactionCount(ethContext)
-        Timber.v("pending transactions $pendingTransactionCount")
-      }
-
-      private fun logPeers(peerInfos: PeerInfos?) {
-        if (peerInfos == null) {
-          return
-        }
-        for (peer in peerInfos) {
-          Timber.v("Connected to ${peer.name} on ${peer.remoteAddress} (${peer.id})")
-        }
-      }
-
-      operator fun PeerInfos.iterator(): Iterator<PeerInfo> = object : Iterator<PeerInfo> {
-        var current = 0L
-        override fun hasNext(): Boolean {
-          return current < size()
-        }
-
-        override fun next(): PeerInfo {
-          return get(current++)
-        }
-
-      }
+  private fun status(): Observable<UpdateSyncStatusEvent> = Observable.timer(15, TimeUnit.SECONDS)
+      .flatMap { checkStatus() }
 
 
-    }, 0, 30000)//put here time 1000 milliseconds=1 second
+  private fun checkStatus(): Observable<UpdateSyncStatusEvent> = Observable.fromCallable {
+    val ethNode = node ?: fail("node was null")
+
+    val peers = ethNode.peersInfo
+    val peerCount = peers.size().toInt()
+    logPeers(peers)
+    var message = "Peers: $peerCount"
+    val (current, highest) = syncProgress(ethNode.ethereumClient)
+    if (highest > 0) {
+      message = "$message | Block $current of $highest"
+    }
+    Timber.v("Sync progress $message")
+    listener?.invoke(message, peerCount)
+    val status = SyncStatus(peerCount, current, highest)
+    UpdateSyncStatusEvent(status)
+  }
+
+
+  private fun logPeers(peerInfos: PeerInfos?) {
+    if (peerInfos == null) {
+      return
+    }
+    Timber.v("Printing connected Peers\n========")
+    peerInfos.all().forEach {
+      Timber.v("Client => ${it.name} -- \"enode://${it.id}@${it.remoteAddress}\"")
+    }
   }
 }
 

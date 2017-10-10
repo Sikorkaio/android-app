@@ -41,6 +41,7 @@ import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
+import io.sikorka.android.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
 import kotlinx.android.synthetic.main.content__main.*
@@ -253,7 +254,10 @@ class MainActivity : AppCompatActivity(),
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     return when (item.itemId) {
-      R.id.action_settings -> true
+      R.id.action_settings -> {
+        SettingsActivity.start(this)
+        true
+      }
       else -> super.onOptionsItemSelected(item)
     }
   }

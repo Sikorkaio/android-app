@@ -34,6 +34,7 @@ class GethService : Service() {
 
   override fun onDestroy() {
     super.onDestroy()
+    gethNode.stop()
     Toothpick.closeScope(this)
     stopForeground(true)
   }

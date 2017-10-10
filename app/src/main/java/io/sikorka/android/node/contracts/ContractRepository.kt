@@ -64,28 +64,45 @@ constructor(
     return Single.zip(sign, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
       Timber.v("getting ready to deploy")
       DeployData(transactOpts, ec)
-    }).flatMap {
-      Single.fromCallable {
-        val lat = Geth.newBigInt((contractData.latitude * 10000).toLong())
-        val long = Geth.newBigInt((contractData.longitude * 10000).toLong())
-        val answerHash = contractData.answer.kekkac256()
-        val contractName = "sikorka experiment"
-        val basicInterface = SikorkaBasicInterface.deploy(it.transactOpts, it.ec, contractName, lat, long, contractData.question, answerHash.hexStringToByteArray())
-        Timber.v("preparing to deploy contract: {$contractName} with lat: ${lat.int64}, long ${long.int64} question: ${contractData.question} => answer hash: $answerHash")
-        val pendingContract = PendingContract(basicInterface.address.hex, basicInterface.deployer!!.hash.hex)
-        Timber.v("pending contract: $pendingContract")
-        //pendingContractDataSource.insert(pendingContract)
+    }).flatMap { deploy(contractData, it) }
+  }
 
-        basicInterface
-      }.onErrorResumeNext {
-        val message = it.message ?: ""
-        when {
-          message.contains("could not decrypt key with given passphrase") -> Single.error<SikorkaBasicInterface>(InvalidPassphraseException(it))
-          message.contains("exceeds block gas limit") -> Single.error<SikorkaBasicInterface>(ExceedsBlockGasLimit(it))
-          else -> return@onErrorResumeNext Single.error<SikorkaBasicInterface>(it)
-        }
-      }
+  private fun deploy(contractData: ContractData, deployData: DeployData): Single<SikorkaBasicInterface> = Single.fromCallable {
+    val lat = Geth.newBigInt((contractData.latitude * 10000).toLong())
+    val long = Geth.newBigInt((contractData.longitude * 10000).toLong())
+    val answerHash = contractData.answer.kekkac256()
+    val contractName = "sikorka experiment"
+    val basicInterface = SikorkaBasicInterface.deploy(
+        deployData.transactOpts,
+        deployData.ec,
+        contractName,
+        lat,
+        long,
+        contractData.question,
+        answerHash.hexStringToByteArray()
+    )
+    Timber.v("preparing to deploy contract: {$contractName} " +
+        "with latitude: ${lat.getString(10)}, longitude ${long.getString(10)} " +
+        "question: ${contractData.question} => answer hash: $answerHash"
+    )
+
+    val address = basicInterface.address
+    val deployer = basicInterface.deployer
+    val pendingContract = PendingContract(
+        contractAddress = address.hex,
+        transactionHash = deployer!!.hash.hex
+    )
+    Timber.v("pending contract: $pendingContract")
+    pendingContractDataSource.insert(pendingContract)
+    basicInterface
+  }.onErrorResumeNext {
+    val message = it.message ?: ""
+    val error = when {
+      message.contains("could not decrypt key with given passphrase") -> InvalidPassphraseException(it)
+      message.contains("exceeds block gas limit") -> ExceedsBlockGasLimit(it)
+      else -> it
     }
+    Single.error<SikorkaBasicInterface>(error)
   }
 
   fun bindSikorkaInterface(addressHex: String): Single<ISikorkaBasicInterface> =
@@ -97,6 +114,10 @@ constructor(
           boundContract
         }
       }
+
+
+
+  private fun bindRegistry() = gethNode.ethereumClient().map { SikorkaRegistry.bind(it) }
 
   private data class DeployData(val transactOpts: TransactOpts, val ec: EthereumClient)
 }

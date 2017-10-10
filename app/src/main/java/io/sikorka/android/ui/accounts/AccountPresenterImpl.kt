@@ -1,20 +1,16 @@
 package io.sikorka.android.ui.accounts
 
-import io.reactivex.Scheduler
-import io.sikorka.android.di.qualifiers.IoScheduler
-import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
+import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.Account
-import timber.log.Timber
 import javax.inject.Inject
 
 class AccountPresenterImpl
 @Inject
 constructor(
     private val accountRepository: AccountRepository,
-    @IoScheduler private val ioScheduler: Scheduler,
-    @MainScheduler private val mainScheduler: Scheduler
+    private val schedulerProvider: SchedulerProvider
 ) : AccountPresenter, BasePresenter<AccountView>() {
   override fun loadAccounts() {
     addDisposable(accountRepository.accounts().subscribe({
@@ -29,8 +25,8 @@ constructor(
 
   override fun setDefault(account: Account) {
     addDisposable(accountRepository.setDefaultAccount(account)
-        .subscribeOn(ioScheduler)
-        .observeOn(mainScheduler)
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
         .subscribe({
           loadAccounts()
         }) {
@@ -46,8 +42,8 @@ constructor(
     }
 
     addDisposable(accountRepository.deleteAccount(account, passphrase)
-        .subscribeOn(ioScheduler)
-        .observeOn(mainScheduler)
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
         .subscribe({
           loadAccounts()
         }) {

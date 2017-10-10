@@ -6,10 +6,10 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "pending_contracts")
 data class PendingContract(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = -1,
     @ColumnInfo(name = "contract_address")
     var contractAddress: String,
     @ColumnInfo(name = "transaction_hash")
-    var transactionHash: String,
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = -1
+    var transactionHash: String
 )

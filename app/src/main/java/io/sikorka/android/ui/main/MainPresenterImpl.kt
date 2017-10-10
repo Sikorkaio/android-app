@@ -1,14 +1,12 @@
 package io.sikorka.android.ui.main
 
-import io.reactivex.Scheduler
-import io.sikorka.android.di.qualifiers.IoScheduler
-import io.sikorka.android.di.qualifiers.MainScheduler
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.UpdateSyncStatusEvent
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -18,8 +16,7 @@ constructor(
     private val accountRepository: AccountRepository,
     private val contractRepository: ContractRepository,
     private val bus: RxBus,
-    @IoScheduler private val ioScheduler: Scheduler,
-    @MainScheduler private val mainScheduler: Scheduler
+    private val schedulerProvider: SchedulerProvider
 ) : MainPresenter, BasePresenter<MainView>() {
 
   override fun attach(view: MainView) {
@@ -36,8 +33,8 @@ constructor(
 
   override fun load(latitude: Double, longitude: Double) {
     addDisposable(accountRepository.selectedAccount()
-        .subscribeOn(ioScheduler)
-        .observeOn(mainScheduler)
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
         .subscribe({
           attachedView().updateAccountInfo(it)
           Timber.v(it.toString())
@@ -53,8 +50,8 @@ constructor(
         .toObservable()
         .startWith(Lce.loading())
         .onErrorReturn { Lce.failure(it) }
-        .subscribeOn(ioScheduler)
-        .observeOn(mainScheduler)
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
         .subscribe({
           Timber.v("Completed retrieving deployed contracts")
           when {
