@@ -1,6 +1,16 @@
 Sikorka Android Application
 ---------
 
+### Geth Android Library
+
+The go-ethereum android aar is build from [https://github.com/kelsos/go-ethereum/tree/sikorka-abi-unmarshal-fix](https://github.com/kelsos/go-ethereum/tree/sikorka-abi-unmarshal-fix)
+due to issue 14832 of go-ethereum that causes `'abi: cannot unmarshal x in to []interface {}'` when
+trying to interact with smart contracts.
+
+The library is deployed on bintray with a different `groupId` and `artifactId` from the artifact deployed
+on maven central in order to avoid confusion.
+
+As soon as the issue is fixed upstream the dependency will be updated to the official artifact. 
 
 ### Google Maps 
 For google maps integration you should provide a `api-keys.properties` file in the project `root directory`
@@ -9,6 +19,7 @@ The file should have the following format
 ```properties
 google_maps_key=API_KEY_VALUE
 ```
+
 
 ### Building
 
