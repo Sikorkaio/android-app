@@ -4,8 +4,11 @@ import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
+
 
 fun EditText.asString(): String = this.text.toString()
 
@@ -31,4 +34,13 @@ fun View.hide() {
 
 fun View.gone() {
   visibility = View.GONE
+}
+
+
+fun View.progressSnack(@StringRes resId: Int, duration: Int) : Snackbar {
+  val bar = Snackbar.make(this, resId, duration)
+  val contentLay = bar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text).parent as ViewGroup
+  val item = ProgressBar(context)
+  contentLay.addView(item)
+  return bar
 }

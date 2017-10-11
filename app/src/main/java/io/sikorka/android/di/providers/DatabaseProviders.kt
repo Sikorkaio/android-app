@@ -2,8 +2,8 @@ package io.sikorka.android.di.providers
 
 import android.app.Application
 import android.arch.persistence.room.Room
-import io.sikorka.android.helpers.AppDatabase
-import io.sikorka.android.node.contracts.PendingContractDataSource
+import io.sikorka.android.data.AppDatabase
+import io.sikorka.android.data.PendingContractDataSource
 import javax.inject.Inject
 import javax.inject.Provider
 

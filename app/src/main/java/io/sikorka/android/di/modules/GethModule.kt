@@ -6,10 +6,10 @@ import io.sikorka.android.di.providers.PendingContractDataSourceProvider
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.RxBusImpl
-import io.sikorka.android.helpers.AppDatabase
+import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.node.accounts.PassphraseValidator
 import io.sikorka.android.node.accounts.PassphraseValidatorImpl
-import io.sikorka.android.node.contracts.PendingContractDataSource
+import io.sikorka.android.data.PendingContractDataSource
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.settings.AppPreferencesImpl
 import io.sikorka.android.utils.schedulers.SchedulerProvider

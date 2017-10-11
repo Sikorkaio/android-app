@@ -5,7 +5,6 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.sikorka.android.events.RxBus
-import io.sikorka.android.events.UpdateSyncStatusEvent
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationFactory
@@ -15,7 +14,6 @@ import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.math.BigDecimal
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -67,16 +65,8 @@ constructor(
           Timber.v(it)
         }
     )
-
-    addDisposable(status()
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.io())
-        .subscribe({
-          rxBus.post(it)
-        }) {
-          Timber.v(it)
-        })
   }
+
 
   fun stop() {
     val node = node ?: return
@@ -115,8 +105,10 @@ constructor(
     return Geth.newBigInt(nodeConfig.ethereumNetworkID)
   }
 
-  fun suggestedGasPrice(): Single<BigInt> {
-    return Single.fromCallable { ethereumClient.suggestGasPrice(ethContext) }
+  fun suggestedGasPrice(): Single<BigInt> = Single.fromCallable {
+    val suggestGasPrice = ethereumClient.suggestGasPrice(ethContext)
+    Timber.v("suggested gas price ${suggestGasPrice.getString(10)} wei")
+    suggestGasPrice
   }
 
   fun ethereumClient(): Single<EthereumClient> = Single.fromCallable { ethereumClient }
@@ -165,11 +157,11 @@ constructor(
     ethereumClient.subscribeNewHead(ethContext, handler, 16)
   }
 
-  private fun status(): Observable<UpdateSyncStatusEvent> = Observable.timer(15, TimeUnit.SECONDS)
+  fun status(): Observable<SyncStatus> = headers()
       .flatMap { checkStatus() }
+      .startWith(checkStatus())
 
-
-  private fun checkStatus(): Observable<UpdateSyncStatusEvent> = Observable.fromCallable {
+  private fun checkStatus(): Observable<SyncStatus> = Observable.fromCallable {
     val ethNode = node ?: fail("node was null")
 
     val peers = ethNode.peersInfo
@@ -182,8 +174,8 @@ constructor(
     }
     Timber.v("Sync progress $message")
     listener?.invoke(message, peerCount)
-    val status = SyncStatus(peerCount, current, highest)
-    UpdateSyncStatusEvent(status)
+    SyncStatus(peerCount, current, highest)
+
   }
 
 
@@ -195,6 +187,7 @@ constructor(
     peerInfos.all().forEach {
       Timber.v("Client => ${it.name} -- \"enode://${it.id}@${it.remoteAddress}\"")
     }
+    Timber.v("========")
   }
 }
 

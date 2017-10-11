@@ -21,7 +21,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.widget.TextView
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -41,12 +41,10 @@ import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
+import io.sikorka.android.ui.progressSnack
 import io.sikorka.android.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
-import kotlinx.android.synthetic.main.content__main.*
-import kotlinx.android.synthetic.main.nav_header__main.*
-import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -156,12 +154,9 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun updateAccountInfo(model: AccountModel) {
-    if (main__header_account == null) {
-      Timber.v("no header")
-      return
-    }
-    main__header_account.text = model.addressHex
-    main__header_balance.text = if (model.ethBalance < 0) {
+    val view = main__nav_view.getHeaderView(0)
+    view.findViewById<TextView>(R.id.main__header_account).text = model.addressHex
+    view.findViewById<TextView>(R.id.main__header_balance).text = if (model.ethBalance < 0) {
       getString(R.string.main_nav__header_no_balance)
     } else {
       getString(R.string.main_nav_balance_eth, model.ethBalance)
@@ -298,16 +293,18 @@ class MainActivity : AppCompatActivity(),
   override fun error(error: Throwable) {
     loading(false)
     val message = error.message ?: getString(R.string.errors__generic_error)
-    Snackbar.make(main__overlay, message, Snackbar.LENGTH_SHORT).show()
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_SHORT).show()
   }
+
+  private var progress: Snackbar? = null
 
   override fun loading(loading: Boolean) {
     if (loading) {
       main__deploy_fab.hide()
-      main__progress_group.visibility = View.VISIBLE
+      progress = main__deploy_fab.progressSnack(R.string.main__loading_message, Snackbar.LENGTH_INDEFINITE)
     } else {
       main__deploy_fab.show()
-      main__progress_group.visibility = View.GONE
+      progress?.dismiss()
     }
   }
 

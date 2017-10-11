@@ -1,9 +1,7 @@
-package io.sikorka.android.helpers
+package io.sikorka.android.data
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
-import io.sikorka.android.node.contracts.PendingContract
-import io.sikorka.android.node.contracts.PendingContractDataSource
 
 @Database(
     version = 1,

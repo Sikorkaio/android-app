@@ -1,4 +1,4 @@
-package io.sikorka.android.node.contracts
+package io.sikorka.android.data
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity

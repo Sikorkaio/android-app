@@ -5,6 +5,8 @@ import io.reactivex.functions.BiFunction
 import io.sikorka.android.contract.ISikorkaBasicInterface
 import io.sikorka.android.contract.SikorkaBasicInterface
 import io.sikorka.android.contract.SikorkaRegistry
+import io.sikorka.android.data.PendingContract
+import io.sikorka.android.data.PendingContractDataSource
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.helpers.hexStringToByteArray
@@ -57,7 +59,6 @@ constructor(
       return@flatMap gethNode.createTransactOpts(it, gas.price, gas.limit) { _, transaction, chainId ->
         val signedTransaction = accountRepository.sign(it.addressHex, passphrase, transaction, chainId) ?: fail("null transaction was returned")
         Timber.v("sign ${transaction.hash.hex} ${transaction.cost} ${transaction.nonce}")
-
         signedTransaction
       }
     }
