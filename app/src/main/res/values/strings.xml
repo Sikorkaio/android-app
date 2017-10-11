@@ -99,6 +99,14 @@
   <string name="title_activity_settings">Settings</string>
   <string name="preferences__about_version_title">Version</string>
   <string name="preferences__about_version_key" translatable="false">pref_key_about_version</string>
+  <string name="preferences__network_key" translatable="false">pref_key_network</string>
+  <string name="preferences__network_title">Network</string>
+  <string name="preferences__selected_network_key" translatable="false">pref_key_selected_network</string>
+  <string name="preferences__selected_network_title">Selected Network</string>
+
+  <string name="networks__ropsten">Ropsten</string>
+  <string name="networks__rinkeby">Rinkeby</string>
+  <string name="networks__mainnet">Mainnet</string>
 
 
 </resources>

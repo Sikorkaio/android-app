@@ -3,12 +3,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
   <PreferenceCategory
-      android:title="@string/preferences__about_title"
-      android:key="pref_key_about">
+      android:key="@string/preferences__network_key"
+      android:title="@string/preferences__network_title">
+
+    <Preference
+        android:key="@string/preferences__selected_network_key"
+        android:title="@string/preferences__selected_network_title" />
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="pref_key_about"
+      android:title="@string/preferences__about_title">
 
     <Preference
         android:key="@string/preferences__about_version_key"
-        android:title="@string/preferences__about_version_title"
-        />
+        android:title="@string/preferences__about_version_title" />
   </PreferenceCategory>
 </PreferenceScreen>
