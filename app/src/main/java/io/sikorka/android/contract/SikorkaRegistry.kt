@@ -159,15 +159,20 @@ private constructor(private val contract: BoundContract) {
    * ```Solidity: function addContract(contract_address address, latitude uint256, longitude uint256) returns()```
    */
   fun addContract(opts: TransactOpts, contract_address: Address, latitude: BigInt, longitude: BigInt): Transaction {
-    val args = Geth.newInterfaces(3)
-    args.set(0, Geth.newInterface())
-    args.get(0).address = contract_address
-    args.set(1, Geth.newInterface())
-    args.get(1).bigInt = latitude
-    args.set(2, Geth.newInterface())
-    args.get(2).bigInt = longitude
 
+    val addressInteraface = Geth.newInterface()
+    val latitudeInterface = Geth.newInterface()
+    val longitudeInterface = Geth.newInterface()
 
+    addressInteraface.address = contract_address
+    latitudeInterface.bigInt = latitude
+    longitudeInterface.bigInt = longitude
+
+    val args = Geth.newInterfaces(3).apply {
+      set(0, addressInteraface)
+      set(1, latitudeInterface)
+      set(2, longitudeInterface)
+    }
     return this.contract.transact(opts, "addContract", args)
   }
 
@@ -178,8 +183,9 @@ private constructor(private val contract: BoundContract) {
    */
   fun removeContract(opts: TransactOpts, contract_address: Address): Transaction {
     val args = Geth.newInterfaces(1)
-    args.set(0, Geth.newInterface())
-    args.get(0).address = contract_address
+    val addressInterface = Geth.newInterface()
+    addressInterface.address = contract_address
+    args.set(0, addressInterface)
     return this.contract.transact(opts, "removeContract", args)
   }
 

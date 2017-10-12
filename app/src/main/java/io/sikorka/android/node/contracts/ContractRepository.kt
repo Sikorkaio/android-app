@@ -11,10 +11,13 @@ import io.sikorka.android.helpers.Lce
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.helpers.sha3.kekkac256
+import io.sikorka.android.io.StorageManager
+import io.sikorka.android.io.toFile
 import io.sikorka.android.node.ExceedsBlockGasLimit
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.InvalidPassphraseException
+import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.EthereumClient
 import org.ethereum.geth.Geth
 import org.ethereum.geth.TransactOpts
@@ -27,7 +30,9 @@ class ContractRepository
 constructor(
     private val gethNode: GethNode,
     private val accountRepository: AccountRepository,
-    private val pendingContractDataSource: PendingContractDataSource
+    private val pendingContractDataSource: PendingContractDataSource,
+    private val storageManager: StorageManager,
+    private val schedulerProvider: SchedulerProvider
 ) {
 
   fun getDeployedContracts(): Single<Lce<DeployedContractModel>> = gethNode.ethereumClient()
@@ -54,21 +59,14 @@ constructor(
 
 
   fun deployContract(passphrase: String, contractData: ContractData): Single<SikorkaBasicInterface> {
-    val sign = accountRepository.selectedAccount().flatMap {
-      val gas = contractData.gas
-      return@flatMap gethNode.createTransactOpts(it, gas.price, gas.limit) { _, transaction, chainId ->
-        val signedTransaction = accountRepository.sign(it.addressHex, passphrase, transaction, chainId) ?: fail("null transaction was returned")
-        Timber.v("sign ${transaction.hash.hex} ${transaction.cost} ${transaction.nonce}")
-        signedTransaction
-      }
-    }
+    val sign = signer(passphrase, contractData.gas)
     return Single.zip(sign, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
       Timber.v("getting ready to deploy")
       DeployData(transactOpts, ec)
-    }).flatMap { deploy(contractData, it) }
+    }).flatMap { deploy(contractData, it, passphrase) }
   }
 
-  private fun deploy(contractData: ContractData, deployData: DeployData): Single<SikorkaBasicInterface> = Single.fromCallable {
+  private fun deploy(contractData: ContractData, deployData: DeployData, passphrase: String): Single<SikorkaBasicInterface> = Single.fromCallable {
     val lat = Geth.newBigInt((contractData.latitude * 10000).toLong())
     val long = Geth.newBigInt((contractData.longitude * 10000).toLong())
     val answerHash = contractData.answer.kekkac256()
@@ -95,6 +93,8 @@ constructor(
     )
     Timber.v("pending contract: $pendingContract")
     pendingContractDataSource.insert(pendingContract)
+    val deployedContractInfo = DeployedContractInfo(address, lat, long)
+    prepareRegistryAddTransaction(deployedContractInfo, passphrase, contractData.gas)
     basicInterface
   }.onErrorResumeNext {
     val message = it.message ?: ""
@@ -104,6 +104,28 @@ constructor(
       else -> it
     }
     Single.error<SikorkaBasicInterface>(error)
+  }
+
+  private fun prepareRegistryAddTransaction(contractInfo: DeployedContractInfo, passphrase: String, gas: ContractGas) {
+    Timber.v("preparing transaction for registry $contractInfo")
+    signer(passphrase, gas).flatMap { transactOpts ->
+      bindRegistry().map {
+        it.addContract(
+            transactOpts,
+            contractInfo.address,
+            contractInfo.latitude,
+            contractInfo.longitude)
+      }
+    }.map { it.encodeRLP() }
+        .map { it.toFile(storageManager.registryTransactionFile(contractInfo.address.hex)) }
+        .subscribeOn(schedulerProvider.io())
+        .subscribe({
+          Timber.v("Transaction persisted for later use")
+        }) {
+          Timber.v(it, "persistence failed")
+        }
+
+
   }
 
   fun bindSikorkaInterface(addressHex: String): Single<ISikorkaBasicInterface> =
@@ -117,6 +139,15 @@ constructor(
       }
 
 
+  private fun signer(passphrase: String, gas: ContractGas): Single<TransactOpts> {
+    return accountRepository.selectedAccount().flatMap {
+      return@flatMap gethNode.createTransactOpts(it, gas) { _, transaction, chainId ->
+        val signedTransaction = accountRepository.sign(it.addressHex, passphrase, transaction, chainId) ?: fail("null transaction was returned")
+        Timber.v("signing ${transaction.hash.hex} ${transaction.cost} ${transaction.nonce}")
+        signedTransaction
+      }
+    }
+  }
 
   private fun bindRegistry() = gethNode.ethereumClient().map { SikorkaRegistry.bind(it) }
 
