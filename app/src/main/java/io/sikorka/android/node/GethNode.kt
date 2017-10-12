@@ -4,11 +4,11 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationFactory
 import io.sikorka.android.node.configuration.IConfiguration
+import io.sikorka.android.node.contracts.ContractGas
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
@@ -24,7 +24,6 @@ class GethNode
 constructor(
     private val configurationFactory: ConfigurationFactory,
     private val appPreferences: AppPreferences,
-    private val rxBus: RxBus,
     private val schedulerProvider: SchedulerProvider
 ) {
   private val ethContext = Geth.newContext()
@@ -57,10 +56,11 @@ constructor(
     node.start()
 
     addDisposable(headers()
+        .flatMap { checkStatus() }
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.io())
         .subscribe({
-          Timber.v("new header ${it.number} - ${it.hash.hex}")
+          updateNotification(it.peers, it.currentBlock, it.highestBlock)
         }) {
           Timber.v(it)
         }
@@ -83,8 +83,7 @@ constructor(
 
   fun createTransactOpts(
       account: AccountModel,
-      gasPrice: Long,
-      gasLimit: Long,
+      gas: ContractGas,
       signer: TransactionSigner): Single<TransactOpts> {
     return Single.fromCallable {
       val signerAccount = account.ethAccount
@@ -94,8 +93,8 @@ constructor(
       opts.from = signerAddress
       opts.nonce = ethereumClient.getPendingNonceAt(ethContext, signerAddress)
       opts.setSigner({ address, transaction -> signer(address, transaction, chainId()) })
-      opts.gasLimit = gasLimit
-      opts.gasPrice = Geth.newBigInt(gasPrice)
+      opts.gasLimit = gas.limit
+      opts.gasPrice = Geth.newBigInt(gas.price)
       return@fromCallable opts
     }
   }
@@ -163,19 +162,20 @@ constructor(
 
   private fun checkStatus(): Observable<SyncStatus> = Observable.fromCallable {
     val ethNode = node ?: fail("node was null")
-
     val peers = ethNode.peersInfo
     val peerCount = peers.size().toInt()
     logPeers(peers)
-    var message = "Peers: $peerCount"
     val (current, highest) = syncProgress(ethNode.ethereumClient)
+    SyncStatus(peerCount, current, highest)
+  }
+
+  private fun updateNotification(peerCount: Int, current: Long, highest: Long) {
+    var message = "Peers: $peerCount"
     if (highest > 0) {
       message = "$message | Block $current of $highest"
     }
     Timber.v("Sync progress $message")
     listener?.invoke(message, peerCount)
-    SyncStatus(peerCount, current, highest)
-
   }
 
 
