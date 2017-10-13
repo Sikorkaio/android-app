@@ -14,6 +14,7 @@ import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.math.BigDecimal
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,6 +57,9 @@ constructor(
     node.start()
 
     addDisposable(headers()
+        .doOnNext {
+          Timber.v("header ${it.number} - ${it.hash}")
+        }
         .flatMap { checkStatus() }
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.io())
@@ -65,12 +69,12 @@ constructor(
           Timber.v(it)
         }
     )
+    periodicallyCheckIfRunning()
   }
 
-
   fun stop() {
+    Timber.v("Stoping geth node.")
     val node = node ?: return
-
     node.stop()
     disposables.clear()
   }
@@ -114,10 +118,27 @@ constructor(
 
   private val ethereumClient: EthereumClient
     get() {
+      checkNodeStatus()
       val ethNode = node ?: fail("no node")
       val ethereumClient = ethNode.ethereumClient
       return ethereumClient ?: fail("no client")
     }
+
+  private fun checkNodeStatus() {
+    if (node == null) {
+      Timber.v("Node was null")
+      start()
+    }
+  }
+
+  private fun periodicallyCheckIfRunning() {
+    addDisposable(Observable.interval(10, TimeUnit.MINUTES)
+        .subscribe({
+          checkNodeStatus()
+        }) {
+          Timber.v(it, "")
+        })
+  }
 
   private fun syncProgress(ec: EthereumClient): Pair<Long, Long> = try {
     val syncProgress = ec.syncProgress(ethContext)
