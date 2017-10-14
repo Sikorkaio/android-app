@@ -58,7 +58,7 @@ constructor(
 
     addDisposable(headers()
         .doOnNext {
-          Timber.v("header ${it.number} - ${it.hash}")
+          Timber.v("header ${it.number} - ${it.hash.hex}")
         }
         .flatMap { checkStatus() }
         .subscribeOn(schedulerProvider.io())
@@ -115,6 +115,19 @@ constructor(
   }
 
   fun ethereumClient(): Single<EthereumClient> = Single.fromCallable { ethereumClient }
+
+  fun getReceipt(transactionHex: String) : Single<Receipt> = Single.fromCallable {
+    val hash = Geth.newHashFromHex(transactionHex)
+    return@fromCallable ethereumClient.getTransactionReceipt(ethContext, hash)
+  }.onErrorResumeNext {
+    val message = it.message ?: ""
+    val throwable = if (message.contains("not found", true)) {
+      TransactionNotFoundException(transactionHex, it)
+    } else {
+      it
+    }
+    return@onErrorResumeNext Single.error<Receipt>(throwable)
+  }
 
   private val ethereumClient: EthereumClient
     get() {
@@ -209,6 +222,10 @@ constructor(
       Timber.v("Client => ${it.name} -- \"enode://${it.id}@${it.remoteAddress}\"")
     }
     Timber.v("========")
+  }
+
+  fun sendTransaction(transaction: Transaction) {
+    ethereumClient.sendTransaction(ethContext, transaction)
   }
 }
 
