@@ -20,7 +20,7 @@ import io.sikorka.android.utils.schedulers.SchedulerProvider
 import io.sikorka.android.utils.schedulers.SchedulerProviderImpl
 import toothpick.config.Module
 
-class GethModule : Module() {
+class SikorkaModule : Module() {
   init {
     bind(String::class.java).withName(KeystorePath::class.java).toProvider(KeystorePathProvider::class.java)
     bind(SchedulerProvider::class.java).to(SchedulerProviderImpl::class.java).singletonInScope()

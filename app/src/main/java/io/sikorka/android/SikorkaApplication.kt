@@ -1,7 +1,7 @@
 package io.sikorka.android
 
 import android.app.Application
-import io.sikorka.android.di.modules.GethModule
+import io.sikorka.android.di.modules.SikorkaModule
 import timber.log.Timber
 import toothpick.Toothpick
 import toothpick.configuration.Configuration
@@ -13,7 +13,7 @@ class SikorkaApplication : Application() {
   override fun onCreate() {
     super.onCreate()
     val scope = Toothpick.openScope(this)
-    scope.installModules(SmoothieApplicationModule(this), GethModule())
+    scope.installModules(SmoothieApplicationModule(this), SikorkaModule())
 
     if (BuildConfig.DEBUG) {
       Toothpick.setConfiguration(Configuration.forDevelopment().disableReflection())

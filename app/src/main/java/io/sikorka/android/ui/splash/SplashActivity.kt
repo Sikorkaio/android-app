@@ -6,7 +6,7 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.sikorka.android.GethService
 import io.sikorka.android.R
-import io.sikorka.android.di.modules.GethModule
+import io.sikorka.android.di.modules.SikorkaModule
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.WizardActivity
@@ -21,7 +21,7 @@ class SplashActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     val scope = Toothpick.openScope(application)
-    scope.installModules(SmoothieApplicationModule(application), GethModule())
+    scope.installModules(SmoothieApplicationModule(application), SikorkaModule())
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__splash)
     Toothpick.inject(this, scope)
