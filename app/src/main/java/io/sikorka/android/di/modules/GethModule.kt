@@ -14,6 +14,8 @@ import io.sikorka.android.node.accounts.PassphraseValidator
 import io.sikorka.android.node.accounts.PassphraseValidatorImpl
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.settings.AppPreferencesImpl
+import io.sikorka.android.ui.settings.DebugPreferencesStore
+import io.sikorka.android.ui.settings.DebugPreferencesStoreImpl
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import io.sikorka.android.utils.schedulers.SchedulerProviderImpl
 import toothpick.config.Module
@@ -28,5 +30,6 @@ class GethModule : Module() {
     bind(AppDatabase::class.java).toProvider(AppDatabaseProvider::class.java).providesSingletonInScope()
     bind(PendingContractDataSource::class.java).toProvider(PendingContractDataSourceProvider::class.java).providesSingletonInScope()
     bind(StorageManager::class.java).to(StorageManagerImpl::class.java).singletonInScope()
+    bind(DebugPreferencesStore::class.java).to(DebugPreferencesStoreImpl::class.java).singletonInScope()
   }
 }

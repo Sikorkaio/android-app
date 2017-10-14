@@ -27,10 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.GethService
 import io.sikorka.android.R
@@ -42,7 +39,9 @@ import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.progressSnack
+import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.SettingsActivity
+import io.sikorka.android.ui.show
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
 import toothpick.Scope
@@ -58,9 +57,12 @@ class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener {
 
   @Inject internal lateinit var presenter: MainPresenter
+  @Inject internal lateinit var debugPreferences: DebugPreferencesStore
 
   private lateinit var scope: Scope
   private var map: GoogleMap? = null
+
+  private var myMarker: Marker? = null
 
   private var latitude: Double = 0.0
   private var longitude: Double = 0.0
@@ -107,6 +109,15 @@ class MainActivity : AppCompatActivity(),
     }
 
     main__nav_network_statistics.setText(R.string.main__no_peers_available)
+
+    if (BuildConfig.DEBUG) {
+      main__nav_debug_randomize.show()
+      main__nav_debug_randomize.isChecked = debugPreferences.isLocationRandomizationEnabled()
+      main__nav_debug_randomize.setOnCheckedChangeListener { _, enabled ->
+        debugPreferences.setLocationRandomiztion(enabled)
+        getLocation()
+      }
+    }
   }
 
   @SuppressLint("MissingPermission")
@@ -120,7 +131,7 @@ class MainActivity : AppCompatActivity(),
           val map = map ?: return@addOnCompleteListener
           val location = it.result ?: return@addOnCompleteListener
 
-          if (BuildConfig.DEBUG) {
+          if (BuildConfig.DEBUG && debugPreferences.isLocationRandomizationEnabled()) {
             val random = Random()
             val longAdd = random.nextBoolean()
             val latAdd = random.nextBoolean()
@@ -164,6 +175,8 @@ class MainActivity : AppCompatActivity(),
   }
 
   private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {
+    myMarker?.remove()
+
     val me = LatLng(latitude, longitude)
 
     val bitmap = getBitmapFromVectorDrawable(this, R.drawable.ic_person_pin_circle_black_24dp)
@@ -179,7 +192,7 @@ class MainActivity : AppCompatActivity(),
     map.run {
       animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
       moveCamera(CameraUpdateFactory.newCameraPosition(position))
-      addMarker(MarkerOptions().position(me).title("Me").icon(icon))
+      myMarker = addMarker(MarkerOptions().position(me).title("Me").icon(icon))
     }
   }
 

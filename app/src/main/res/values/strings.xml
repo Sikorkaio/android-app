@@ -107,6 +107,7 @@
   <string name="networks__ropsten">Ropsten</string>
   <string name="networks__rinkeby">Rinkeby</string>
   <string name="networks__mainnet">Mainnet</string>
+  <string name="main__nav_randomized_debug_location">Use randomized location</string>
 
 
 </resources>
