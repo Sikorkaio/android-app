@@ -61,6 +61,7 @@ constructor(
           Timber.v("header ${it.number} - ${it.hash.hex}")
         }
         .flatMap { checkStatus() }
+        .startWith(checkStatus())
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.io())
         .subscribe({
