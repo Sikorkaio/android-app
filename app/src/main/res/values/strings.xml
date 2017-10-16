@@ -54,6 +54,8 @@
   <string name="main_nav__header_no_balance">No balance information</string>
   <string name="main_nav_balance_eth">%.2f ether</string>
 
+  <string name="notification__network_statistics">%d Peers | %d of %d Blocks</string>
+
   <string name="dialog__passphrase_title">Verify your Passphrase</string>
   <string name="dialog__passphrase_content">In order to process you need to insert the passphrase for this account.</string>
   <string name="dialog__input_hint">Passphrase</string>
@@ -108,6 +110,10 @@
   <string name="networks__rinkeby">Rinkeby</string>
   <string name="networks__mainnet">Mainnet</string>
   <string name="main__nav_randomized_debug_location">Use randomized location</string>
+  <string name="preferences__storage">Storage</string>
+  <string name="preferences__usage">Usage</string>
+  <string name="preferences__usage_key">pref_key_storage_usage</string>
+  <string name="notification__not_syncing">No syncing in progress</string>
 
 
 </resources>

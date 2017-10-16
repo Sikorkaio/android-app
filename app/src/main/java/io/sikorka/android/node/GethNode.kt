@@ -10,7 +10,6 @@ import io.sikorka.android.node.configuration.ConfigurationFactory
 import io.sikorka.android.node.configuration.IConfiguration
 import io.sikorka.android.node.contracts.ContractGas
 import io.sikorka.android.settings.AppPreferences
-import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.math.BigDecimal
@@ -24,21 +23,16 @@ class GethNode
 @Inject
 constructor(
     private val configurationFactory: ConfigurationFactory,
-    private val appPreferences: AppPreferences,
-    private val schedulerProvider: SchedulerProvider
+    private val appPreferences: AppPreferences
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
-  private var listener: ((String, Int) -> Unit)? = null
   private lateinit var configuration: IConfiguration
 
   private val disposables: CompositeDisposable = CompositeDisposable()
+
   private fun addDisposable(disposable: Disposable) {
     disposables.add(disposable)
-  }
-
-  fun setListener(listener: (String, Int) -> Unit) {
-    this.listener = listener
   }
 
   fun start() {
@@ -55,21 +49,6 @@ constructor(
     node = Geth.newNode(dataDir.absolutePath, nodeConfig)
     val node = node ?: fail("what node?")
     node.start()
-
-    addDisposable(headers()
-        .doOnNext {
-          Timber.v("header ${it.number} - ${it.hash.hex}")
-        }
-        .flatMap { checkStatus() }
-        .startWith(checkStatus())
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.io())
-        .subscribe({
-          updateNotification(it.peers, it.currentBlock, it.highestBlock)
-        }) {
-          Timber.v(it)
-        }
-    )
     periodicallyCheckIfRunning()
   }
 
@@ -117,7 +96,7 @@ constructor(
 
   fun ethereumClient(): Single<EthereumClient> = Single.fromCallable { ethereumClient }
 
-  fun getReceipt(transactionHex: String) : Single<Receipt> = Single.fromCallable {
+  fun getReceipt(transactionHex: String): Single<Receipt> = Single.fromCallable {
     val hash = Geth.newHashFromHex(transactionHex)
     return@fromCallable ethereumClient.getTransactionReceipt(ethContext, hash)
   }.onErrorResumeNext {
@@ -191,9 +170,10 @@ constructor(
     ethereumClient.subscribeNewHead(ethContext, handler, 16)
   }
 
-  fun status(): Observable<SyncStatus> = headers()
+  fun status(): Observable<SyncStatus> = Observable.interval(2, TimeUnit.SECONDS)
       .flatMap { checkStatus() }
       .startWith(checkStatus())
+
 
   private fun checkStatus(): Observable<SyncStatus> = Observable.fromCallable {
     val ethNode = node ?: fail("node was null")
@@ -202,17 +182,7 @@ constructor(
     logPeers(peers)
     val (current, highest) = syncProgress(ethNode.ethereumClient)
     SyncStatus(peerCount, current, highest)
-  }
-
-  private fun updateNotification(peerCount: Int, current: Long, highest: Long) {
-    var message = "Peers: $peerCount"
-    if (highest > 0) {
-      message = "$message | Block $current of $highest"
-    }
-    Timber.v("Sync progress $message")
-    listener?.invoke(message, peerCount)
-  }
-
+  }.onErrorReturn { SyncStatus(0, 0, 0) }
 
   private fun logPeers(peerInfos: PeerInfos?) {
     if (peerInfos == null) {
