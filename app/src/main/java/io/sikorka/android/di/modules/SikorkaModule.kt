@@ -12,6 +12,8 @@ import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.StorageManagerImpl
 import io.sikorka.android.node.accounts.PassphraseValidator
 import io.sikorka.android.node.accounts.PassphraseValidatorImpl
+import io.sikorka.android.node.configuration.ConfigurationProvider
+import io.sikorka.android.node.configuration.ConfigurationProviderImpl
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.settings.AppPreferencesImpl
 import io.sikorka.android.ui.settings.DebugPreferencesStore
@@ -31,5 +33,7 @@ class SikorkaModule : Module() {
     bind(PendingContractDataSource::class.java).toProvider(PendingContractDataSourceProvider::class.java).providesSingletonInScope()
     bind(StorageManager::class.java).to(StorageManagerImpl::class.java).singletonInScope()
     bind(DebugPreferencesStore::class.java).to(DebugPreferencesStoreImpl::class.java).singletonInScope()
+
+    bind(ConfigurationProvider::class.java).to(ConfigurationProviderImpl::class.java).singletonInScope()
   }
 }

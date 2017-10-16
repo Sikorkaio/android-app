@@ -89,6 +89,9 @@ dependencies {
 
   implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
 
+  // Apache commons IO
+  implementation group: 'commons-io', name: 'commons-io', version: '2.5'
+
 
   //dependency injection
   implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.0'

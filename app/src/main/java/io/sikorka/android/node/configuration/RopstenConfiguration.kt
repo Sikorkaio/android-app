@@ -1,5 +1,6 @@
 package io.sikorka.android.node.configuration
 
+import android.os.Environment
 import org.ethereum.geth.Enodes
 import org.ethereum.geth.Geth
 import org.ethereum.geth.NodeConfig
@@ -11,7 +12,10 @@ import javax.inject.Singleton
 class RopstenConfiguration
 @Inject
 constructor(private val peerHelper: PeerHelper) : IConfiguration {
+  private val dataDirectory: File = File(Environment.getExternalStorageDirectory(), "/$directoryPath")
+
   override fun prepare() {
+    prepareDataDir(dataDir)
     val peerFile = "${dataDir.absolutePath}/GethDroid/static-nodes.json"
     peerHelper.prepareStaticNodes(peerFile, assetFilename)
   }
@@ -44,7 +48,7 @@ constructor(private val peerHelper: PeerHelper) : IConfiguration {
     }
 
   override val dataDir: File
-    get() = prepareDataDir(directoryPath)
+    get() = dataDirectory
 
   companion object {
     const val directoryPath = ".ropsten"

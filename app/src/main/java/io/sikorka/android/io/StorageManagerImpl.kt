@@ -1,12 +1,22 @@
 package io.sikorka.android.io
 
 import android.app.Application
+import io.sikorka.android.node.configuration.ConfigurationProvider
+import org.apache.commons.io.FileUtils
 import java.io.File
 import javax.inject.Inject
 
 class StorageManagerImpl
 @Inject
-constructor(private val application: Application) : StorageManager {
+constructor(
+    private val application: Application,
+    private val configurationProvider: ConfigurationProvider
+) : StorageManager {
+
+  override fun storageUsed(): Long {
+    val active = configurationProvider.getActive()
+    return FileUtils.sizeOf(active.dataDir)
+  }
 
   private fun getTransactionDirectory(): File {
     val filesDir = application.filesDir

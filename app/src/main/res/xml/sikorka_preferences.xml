@@ -2,6 +2,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+
   <PreferenceCategory
       android:key="@string/preferences__network_key"
       android:title="@string/preferences__network_title">
@@ -9,6 +10,16 @@
     <Preference
         android:key="@string/preferences__selected_network_key"
         android:title="@string/preferences__selected_network_title" />
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="pref_key_storage"
+      android:title="@string/preferences__storage">
+
+    <Preference
+        android:key="@string/preferences__usage_key"
+        android:title="@string/preferences__usage" />
+
   </PreferenceCategory>
 
   <PreferenceCategory

@@ -13,4 +13,6 @@ interface StorageManager {
    * @return A file where the pending transaction will be written.
    */
   fun registryTransactionFile(contractAddress: String): File
+
+  fun storageUsed(): Long
 }

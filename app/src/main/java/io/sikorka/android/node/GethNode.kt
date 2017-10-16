@@ -6,10 +6,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
-import io.sikorka.android.node.configuration.ConfigurationFactory
+import io.sikorka.android.node.configuration.ConfigurationProvider
 import io.sikorka.android.node.configuration.IConfiguration
 import io.sikorka.android.node.contracts.ContractGas
-import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.math.BigDecimal
@@ -22,8 +21,7 @@ import javax.inject.Singleton
 class GethNode
 @Inject
 constructor(
-    private val configurationFactory: ConfigurationFactory,
-    private val appPreferences: AppPreferences
+   private val configurationProvider: ConfigurationProvider
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
@@ -40,8 +38,7 @@ constructor(
       return
     }
 
-    configuration = configurationFactory.configuration(appPreferences.selectedNetwork())
-    configuration.prepare()
+    configuration = configurationProvider.getActive()
     val dataDir = configuration.dataDir
     val nodeConfig = configuration.nodeConfig
 
