@@ -43,6 +43,7 @@
     <activity
         android:name=".ui.main.MainActivity"
         android:label="@string/main_screen__title"
+        android:launchMode="singleTask"
         android:theme="@style/AppTheme.NoActionBar" />
     <activity android:name=".ui.contracts.DeployContractActivity" />
     <activity android:name=".ui.contracts.interact.ContractInteractActivity" />
