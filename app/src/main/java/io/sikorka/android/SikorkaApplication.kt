@@ -25,7 +25,11 @@ class SikorkaApplication : Application() {
     MemberInjectorRegistryLocator.setRootRegistry(io.sikorka.android.di.MemberInjectorRegistry())
 
     if (BuildConfig.DEBUG) {
-      Timber.plant(Timber.DebugTree())
+      Timber.plant(object : Timber.DebugTree() {
+        override fun createStackElementTag(element: StackTraceElement): String {
+          return "${super.createStackElementTag(element)}:${element.lineNumber} [${Thread.currentThread().name}]"
+        }
+      })
     }
   }
 }
