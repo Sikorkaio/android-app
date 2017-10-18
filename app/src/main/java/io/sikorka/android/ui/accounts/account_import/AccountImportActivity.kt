@@ -86,9 +86,9 @@ class AccountImportActivity : AppCompatActivity(),
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
     scope.installModules(SmoothieActivityModule(this), AccountImportModule())
-    Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_import)
+    Toothpick.inject(this, scope)
     ButterKnife.bind(this)
     supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)

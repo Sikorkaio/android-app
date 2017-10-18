@@ -119,9 +119,9 @@ class AccountExportActivity : AppCompatActivity(),
   override fun onCreate(savedInstanceState: Bundle?) {
     val scope = Toothpick.openScopes(application, this)
     scope.installModules(SmoothieSupportActivityModule(this), AccountExportModule())
-    Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_export)
+    Toothpick.inject(this, scope)
     ButterKnife.bind(this)
     supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)

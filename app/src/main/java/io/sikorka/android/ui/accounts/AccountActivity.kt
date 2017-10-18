@@ -34,9 +34,9 @@ class AccountActivity : AppCompatActivity(), AccountView {
   override fun onCreate(savedInstanceState: Bundle?) {
     val scope = Toothpick.openScopes(application, this)
     scope.installModules(SmoothieSupportActivityModule(this), AccountModule())
-    Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account)
+    Toothpick.inject(this, scope)
     ButterKnife.bind(this)
     accountsRecycler.adapter = adapter
     accountsRecycler.layoutManager = LinearLayoutManager(this)
