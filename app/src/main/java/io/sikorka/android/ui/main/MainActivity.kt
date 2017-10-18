@@ -19,6 +19,7 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.content.res.AppCompatResources
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -31,9 +32,11 @@ import com.google.android.gms.maps.model.*
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.GethService
 import io.sikorka.android.R
+import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.contracts.DeployedContractModel
+import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
@@ -44,6 +47,7 @@ import io.sikorka.android.ui.settings.SettingsActivity
 import io.sikorka.android.ui.show
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
+import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -70,9 +74,9 @@ class MainActivity : AppCompatActivity(),
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
     scope.installModules(SmoothieSupportActivityModule(this), MainModule())
-    Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__main)
+    Toothpick.inject(this, scope)
     val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
     mapFragment.getMapAsync(this)
 
@@ -99,6 +103,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     if (!checkWritePermissions()) {
+      Timber.v("Didn't have storage write permissions")
       startWritePermissionRequest()
     }
 
@@ -254,6 +259,7 @@ class MainActivity : AppCompatActivity(),
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     // Inflate the menu; this adds items to the action bar if it is present.
     menuInflater.inflate(R.menu.main, menu)
+    MenuTint.on(menu).setMenuItemIconColor(ContextCompat.getColor(this, R.color.white)).apply(this)
     return true
   }
 
@@ -264,6 +270,10 @@ class MainActivity : AppCompatActivity(),
     return when (item.itemId) {
       R.id.action_settings -> {
         SettingsActivity.start(this)
+        true
+      }
+      R.id.action_reload -> {
+        presenter.load(latitude, longitude)
         true
       }
       else -> super.onOptionsItemSelected(item)
@@ -304,7 +314,6 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun error(error: Throwable) {
-    loading(false)
     val message = error.message ?: getString(R.string.errors__generic_error)
     Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_SHORT).show()
   }
@@ -315,6 +324,7 @@ class MainActivity : AppCompatActivity(),
     if (loading) {
       main__deploy_fab.hide()
       progress = main__deploy_fab.progressSnack(R.string.main__loading_message, Snackbar.LENGTH_INDEFINITE)
+      progress?.show()
     } else {
       main__deploy_fab.show()
       progress?.dismiss()
@@ -322,7 +332,6 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun update(model: DeployedContractModel) {
-    loading(false)
     val googleMap = map ?: return
 
     val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_ethereum_icon)
@@ -340,7 +349,8 @@ class MainActivity : AppCompatActivity(),
   }
 
   private fun getBitmapFromVectorDrawable(context: Context, @DrawableRes drawableId: Int): Bitmap {
-    var drawable = ContextCompat.getDrawable(context, drawableId);
+
+    var drawable = AppCompatResources.getDrawable(context, drawableId) ?: fail("couldn't retrieve the drawable")
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
       drawable = (DrawableCompat.wrap(drawable)).mutate()
     }

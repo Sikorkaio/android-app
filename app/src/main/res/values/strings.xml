@@ -115,6 +115,7 @@
   <string name="preferences__usage_key">pref_key_storage_usage</string>
   <string name="notification__not_syncing">No syncing in progress</string>
   <string name="preferences__usage_summary">The data directory uses %s</string>
+  <string name="action_reload">Reload</string>
 
 
 </resources>

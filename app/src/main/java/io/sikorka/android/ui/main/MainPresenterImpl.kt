@@ -49,11 +49,14 @@ constructor(
     addDisposable(contractRepository.getDeployedContracts()
         .toObservable()
         .startWith(Lce.loading())
-        .onErrorReturn { Lce.failure(it) }
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.main())
+        .doOnTerminate {
+          Timber.v("termin")
+          attachedView().loading(false)
+        }
         .subscribe({
-          Timber.v("Completed retrieving deployed contracts")
+          Timber.v("Deployed retrieval completed ${it.success()}")
           when {
             it.success() -> attachedView().update(it.data())
             it.failure() -> {
