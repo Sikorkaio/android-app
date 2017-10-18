@@ -1,10 +1,12 @@
 package io.sikorka.android.ui.wizard.slides.network_selection
 
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.content.res.AppCompatResources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -97,7 +99,7 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
       else -> null
     }
 
-    var drawable = ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp)
+    var drawable: Drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_black_24dp) ?: return
     drawable = DrawableCompat.wrap(drawable)
     DrawableCompat.setTint(drawable, ContextCompat.getColor(context, R.color.colorAccent))
     selection?.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
