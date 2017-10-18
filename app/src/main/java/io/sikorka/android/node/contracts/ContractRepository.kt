@@ -13,8 +13,7 @@ import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.helpers.sha3.kekkac256
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.toFile
-import io.sikorka.android.node.ExceedsBlockGasLimit
-import io.sikorka.android.node.GethNode
+import io.sikorka.android.node.*
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.InvalidPassphraseException
 import io.sikorka.android.utils.schedulers.SchedulerProvider
@@ -22,6 +21,7 @@ import org.ethereum.geth.EthereumClient
 import org.ethereum.geth.Geth
 import org.ethereum.geth.TransactOpts
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -38,6 +38,7 @@ constructor(
   fun getDeployedContracts(): Single<Lce<DeployedContractModel>> = gethNode.ethereumClient()
       .flatMap { ethereumClient ->
         return@flatMap Single.fromCallable {
+          Timber.v("Binding registry contract")
           val sikorkaRegistry = SikorkaRegistry.bind(ethereumClient)
 
           val contractAddresses = sikorkaRegistry.getContractAddresses()
@@ -54,6 +55,12 @@ constructor(
           }
 
           return@fromCallable Lce.success(DeployedContractModel(contractList))
+        }.timeout(1, TimeUnit.MINUTES).onErrorReturn {
+          return@onErrorReturn when {
+            it.messageValue.contains("no suitable peers available") -> Lce.failure<DeployedContractModel>(NoSuitablePeersAvailableException(it))
+            it.messageValue.contains("no contract code at given address") -> Lce.failure(NoContractCodeAtGivenAddressException(it))
+            else -> Lce.failure(it)
+          }
         }
       }
 
