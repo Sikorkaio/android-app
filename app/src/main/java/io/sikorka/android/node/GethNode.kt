@@ -51,8 +51,12 @@ constructor(
 
   fun stop() {
     Timber.v("Stoping geth node.")
-    val node = node ?: return
-    node.stop()
+    try {
+      val node = node ?: return
+      node.stop()
+    } catch (e: Exception) {
+      Timber.v(e)
+    }
     disposables.clear()
   }
 
