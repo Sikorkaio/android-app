@@ -78,6 +78,7 @@ class WizardActivity : AppIntro2(), WizardView {
   private fun done() {
     GethService.start(this)
     MainActivity.start(this)
+    finish()
   }
 
   companion object {

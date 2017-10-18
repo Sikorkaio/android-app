@@ -14,6 +14,8 @@ import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
+import io.sikorka.android.ui.isVisible
+import io.sikorka.android.ui.show
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -67,6 +69,7 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
   override fun onStart() {
     super.onStart()
     presenter.attach(this)
+    presenter.loadAccount()
   }
 
   override fun onStop() {
@@ -77,6 +80,9 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
 
   override fun setAccount(accountHex: String) {
     accountAddress.text = accountHex
+    if (!accountAddress.isVisible) {
+      accountAddress.show()
+    }
   }
 
 
