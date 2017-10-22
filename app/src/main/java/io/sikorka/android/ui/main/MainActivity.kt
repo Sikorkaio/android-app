@@ -40,7 +40,9 @@ import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
+import io.sikorka.android.ui.detector.FindDetectorActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
+import io.sikorka.android.ui.dialogs.useDetector
 import io.sikorka.android.ui.progressSnack
 import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.SettingsActivity
@@ -83,7 +85,13 @@ class MainActivity : AppCompatActivity(),
     setSupportActionBar(toolbar)
 
     main__deploy_fab.setOnClickListener {
-      DeployContractActivity.start(this, latitude, longitude)
+      useDetector { use ->
+        if (use) {
+          FindDetectorActivity.start(this)
+        } else {
+          DeployContractActivity.start(this, latitude, longitude)
+        }
+      }.show()
     }
 
     val toggle = ActionBarDrawerToggle(

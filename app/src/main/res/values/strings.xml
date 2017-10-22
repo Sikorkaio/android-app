@@ -116,6 +116,20 @@
   <string name="notification__not_syncing">No syncing in progress</string>
   <string name="preferences__usage_summary">The data directory uses %s</string>
   <string name="action_reload">Reload</string>
+  <string name="gas_selection__gas_price">Gas Price</string>
+  <string name="gas_selection__gas_limit">Gas Limit</string>
+  <string name="gas_selection__dialog_title">Select Gas Price</string>
+  <string name="find_detector__searching_for_detectors">Searching for detectors</string>
+  <string name="find_detector__no_devices_found">No detectors found</string>
+  <string name="find_detector__connecting_title">Connecting to detector</string>
+  <string name="find_detector__connecting_content">Please wait while a connection is established</string>
+  <string name="use_detectors__dialog_title">Use detectors</string>
+  <string name="use_detectors__dialog_content">Do you want to deploy a contract that makes use of detectors?</string>
+  <string name="use_detectors__positive">Yes</string>
+  <string name="use_detectors__neutral">No</string>
+  <string name="find_detector__title">Find Detector</string>
+  <string name="find_detector__discovery_failed">Detector discovery was unsuccessful</string>
+  <string name="find_detector__connection_failed">Couldn\'t establish a connection with the detector.</string>
 
 
 </resources>

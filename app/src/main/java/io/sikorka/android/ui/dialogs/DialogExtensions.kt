@@ -5,6 +5,7 @@ import android.os.Environment
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
+import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
@@ -115,3 +116,35 @@ fun Context.verifyPassphraseDialog(onInput: (input: String) -> Unit) {
           }
       ).show()
 }
+
+fun Context.progress(
+    @StringRes title: Int,
+    @StringRes content: Int
+): MaterialDialog = MaterialDialog.Builder(this)
+    .title(title)
+    .titleColorRes(R.color.colorAccent)
+    .progress(true, 100)
+    .content(content)
+    .build()
+
+fun Context.useDetector(
+    callback: (useDetector: Boolean) -> Unit
+): MaterialDialog = MaterialDialog.Builder(this)
+    .buttonsGravity(GravityEnum.CENTER)
+    .btnStackedGravity(GravityEnum.END)
+    .title(R.string.use_detectors__dialog_title)
+    .titleColorRes(R.color.colorAccent)
+    .content(R.string.use_detectors__dialog_content)
+    .positiveText(R.string.use_detectors__positive)
+    .neutralText(R.string.use_detectors__neutral)
+    .negativeText(android.R.string.cancel)
+    .onPositive { dialog, _ ->
+      callback(true)
+      dialog.dismiss()
+    }
+    .onNeutral { dialog, _ ->
+      callback(false)
+      dialog.dismiss()
+    }
+    .onNegative { dialog, _ -> dialog.dismiss() }
+    .build()

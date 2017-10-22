@@ -1,5 +1,6 @@
 package io.sikorka.android.node
 
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -21,13 +22,14 @@ import javax.inject.Singleton
 class GethNode
 @Inject
 constructor(
-   private val configurationProvider: ConfigurationProvider
+    private val configurationProvider: ConfigurationProvider
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
   private lateinit var configuration: IConfiguration
 
   private val disposables: CompositeDisposable = CompositeDisposable()
+  private val loggingThrottler: PublishRelay<PeerInfos> = PublishRelay.create()
 
   private fun addDisposable(disposable: Disposable) {
     disposables.add(disposable)
@@ -47,6 +49,10 @@ constructor(
     val node = node ?: fail("what node?")
     node.start()
     periodicallyCheckIfRunning()
+    addDisposable(
+        loggingThrottler.throttleLast(1, TimeUnit.MINUTES)
+            .subscribe { logPeers(it) }
+    )
   }
 
   fun stop() {
@@ -180,7 +186,7 @@ constructor(
     val ethNode = node ?: fail("node was null")
     val peers = ethNode.peersInfo
     val peerCount = peers.size().toInt()
-    logPeers(peers)
+    loggingThrottler.accept(peers)
     val (current, highest) = syncProgress(ethNode.ethereumClient)
     SyncStatus(peerCount, current, highest)
   }.onErrorReturn { SyncStatus(0, 0, 0) }
