@@ -11,13 +11,17 @@ interface DeployContractView : BaseView {
   fun requestDeployAuthorization(gas: ContractGas)
   fun showError(message: String?)
   fun complete(hex: String?)
+  fun showGasDialog(gas: ContractGas)
 
+  fun showError(code: Int)
 }
 
 interface DeployContractPresenter : Presenter<DeployContractView> {
   fun load()
-  fun checkValues(gasPrice: Long, gasLimit: Long)
   fun deployContract(passphrase: String, contractInfo: ContractData)
+
+  fun prepareGasSelection()
+  fun prepareDeployWithDefaults()
 }
 
 

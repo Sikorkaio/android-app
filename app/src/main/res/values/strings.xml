@@ -130,6 +130,9 @@
   <string name="find_detector__title">Find Detector</string>
   <string name="find_detector__discovery_failed">Detector discovery was unsuccessful</string>
   <string name="find_detector__connection_failed">Couldn\'t establish a connection with the detector.</string>
+  <string name="deploy_contract__advanced_options">Advanced Options</string>
+  <string name="gas_selection__positive_text">Confirm</string>
+  <string name="deploy_contract__no_gas_preferences">Gas preferences have not been set, please set manually</string>
 
 
 </resources>

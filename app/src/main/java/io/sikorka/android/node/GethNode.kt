@@ -95,10 +95,11 @@ constructor(
     return Geth.newBigInt(nodeConfig.ethereumNetworkID)
   }
 
-  fun suggestedGasPrice(): Single<BigInt> = Single.fromCallable {
+  fun suggestedGasPrice(): Single<ContractGas> = Single.fromCallable {
     val suggestGasPrice = ethereumClient.suggestGasPrice(ethContext)
+    val gasLimit = ethereumClient.getBlockByNumber(ethContext, -1).gasLimit
     Timber.v("suggested gas price ${suggestGasPrice.getString(10)} wei")
-    suggestGasPrice
+    ContractGas(suggestGasPrice.getString(10).toLong(), gasLimit)
   }
 
   fun ethereumClient(): Single<EthereumClient> = Single.fromCallable { ethereumClient }

@@ -1,16 +1,48 @@
 package io.sikorka.android.node
 
+import android.support.annotation.StringDef
+import io.sikorka.android.node.EtherUnits.Currency
+import io.sikorka.android.node.EtherUnits.ETHER
+import io.sikorka.android.node.EtherUnits.FINNEY
+import io.sikorka.android.node.EtherUnits.GWEI
+import io.sikorka.android.node.EtherUnits.KWEI
+import io.sikorka.android.node.EtherUnits.MWEI
+import io.sikorka.android.node.EtherUnits.SZABO
+import io.sikorka.android.node.EtherUnits.WEI
 import org.ethereum.geth.BigInt
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-private const val WEI = "wei"
-private const val KWEI = "kwei"
-private const val MWEI = "mwei"
-private const val GWEI = "gwei"
-private const val SZABO = "szabo"
-private const val FINNEY = "finney"
-private const val ETHER = "ether"
+object EtherUnits {
+  const val WEI = "wei"
+  const val KWEI = "kwei"
+  const val MWEI = "mwei"
+  const val GWEI = "gwei"
+  const val SZABO = "szabo"
+  const val FINNEY = "finney"
+  const val ETHER = "ether"
+
+  val units = arrayOf(WEI,
+      KWEI,
+      MWEI,
+      GWEI,
+      SZABO,
+      FINNEY,
+      ETHER)
+
+  @StringDef(
+      WEI,
+      KWEI,
+      MWEI,
+      GWEI,
+      SZABO,
+      FINNEY,
+      ETHER
+  )
+  @Retention(AnnotationRetention.SOURCE)
+  annotation class Currency
+}
+
 
 private var unitMap = mapOf(
     WEI to 1L,
@@ -31,11 +63,27 @@ fun BigDecimal.toEther(): Double {
   return division.setScale(2, RoundingMode.DOWN).toDouble()
 }
 
-private fun BigInt.toUnit(unit: String): Double = this.int64.toDouble() / unitToValue(unit)
+private fun BigInt.toUnit(@Currency unit: String): Double = this.int64.toDouble() / unitToValue(unit)
 
-private fun unitToValue(unit: String): Long = unitMap[unit] ?: 1L
+private fun unitToValue(@Currency unit: String): Long = unitMap[unit] ?: 1L
 
-fun etherToWei(ether: Double): Long = (ether * unitToValue(ETHER).toDouble()).toLong()
+fun valueToUnit(amount: Long, @Currency unit: String): Long {
+  return amount / unitToValue(unit)
+}
 
-fun weiToEther(wei: Long): Double = (wei.toDouble() / unitToValue(ETHER))
+fun valueToWei(amount: Long, @Currency unit: String): Long {
+  return amount * unitToValue(unit)
+}
 
+@Currency
+fun findUnit(amount: Long): String {
+  val keys = unitMap.keys
+  val unit = keys.reversed().firstOrNull { isUnit(amount, it) }
+  return unit ?: WEI
+}
+
+private fun isUnit(amount: Long, @Currency unit: String): Boolean {
+  val remaining = amount % unitToValue(unit)
+  val result = amount / unitToValue(unit)
+  return remaining == 0L && result > 0
+}

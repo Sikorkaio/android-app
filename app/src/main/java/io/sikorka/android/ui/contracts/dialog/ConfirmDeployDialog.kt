@@ -16,14 +16,8 @@ import io.sikorka.android.node.contracts.ContractGas
 
 class ConfirmDeployDialog : DialogFragment() {
 
-  @BindView(R.id.confirm_deploy__gas_price_ether)
-  lateinit var gasPriceEther: TextView
-
   @BindView(R.id.confirm_deploy__gas_price_wei)
   lateinit var gasPriceWei: TextView
-
-  @BindView(R.id.confirm_deploy__gas_limit_ether)
-  lateinit var gasLimitEther: TextView
 
   @BindView(R.id.confirm_deploy__gas_limit_wei)
   lateinit var gasLimitWei: TextView
@@ -43,6 +37,7 @@ class ConfirmDeployDialog : DialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     dialog = MaterialDialog.Builder(context)
         .title(R.string.confirm_deploy__dialog_title)
+        .titleColorRes(R.color.colorAccent)
         .positiveText(R.string.confirm_deploy__positive_button)
         .negativeText(android.R.string.cancel)
         .customView(R.layout.dialog__confirm_deploy, false)

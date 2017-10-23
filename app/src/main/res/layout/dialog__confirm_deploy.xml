@@ -1,125 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/linearLayout"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical"
-  tools:layout_editor_absoluteX="0dp"
-  tools:layout_editor_absoluteY="81dp">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
   <TextView
-    android:gravity="center"
-    android:id="@+id/confirm_deploy__header"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:text="@string/confirm_deploy__header_text"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"/>
+      android:id="@+id/confirm_deploy__header"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:gravity="center"
+      android:text="@string/confirm_deploy__header_text"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
   <TextView
-    android:textSize="20sp"
-    android:id="@+id/confirm_deploy__gas_price_label"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="24dp"
-    android:text="@string/confirm_deploy__gas_price"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__header"/>
+      android:id="@+id/confirm_deploy__gas_price_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="24dp"
+      android:text="@string/confirm_deploy__gas_price"
+      android:textSize="20sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__header" />
 
   <TextView
-    android:textSize="20sp"
-    android:id="@+id/confirm_deploy__gas_limit_label"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="48dp"
-    android:text="@string/confirm_deploy__gas_limit"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_price_label"/>
+      android:id="@+id/confirm_deploy__gas_limit_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="48dp"
+      android:text="@string/confirm_deploy__gas_limit"
+      android:textSize="20sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_price_label" />
 
   <TextView
-    android:id="@+id/confirm_deploy__gas_price_ether"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="1"
-    app:layout_constraintStart_toEndOf="@+id/confirm_deploy__gas_price_label"
-    app:layout_constraintTop_toTopOf="@+id/confirm_deploy__gas_price_label"
-    tools:text="0.1 ether"/>
+      android:id="@+id/confirm_deploy__gas_price_ether"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1"
+      app:layout_constraintStart_toEndOf="@+id/confirm_deploy__gas_price_label"
+      app:layout_constraintTop_toTopOf="@+id/confirm_deploy__gas_price_label"
+      tools:text="0.1 ether" />
 
   <TextView
-    android:id="@+id/confirm_deploy__gas_price_wei"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="1"
-    app:layout_constraintStart_toStartOf="@+id/confirm_deploy__middle_vertical_guideline"
-    app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_price_ether"
-    tools:text="1000000000100 wei"/>
+      android:id="@+id/confirm_deploy__gas_price_wei"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1"
+      app:layout_constraintStart_toStartOf="@+id/confirm_deploy__middle_vertical_guideline"
+      app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_price_ether"
+      tools:text="1000000000100 wei" />
 
   <TextView
-    android:id="@+id/confirm_deploy__gas_limit_ether"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="16dp"
-    android:layout_marginStart="8dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="1"
-    app:layout_constraintStart_toEndOf="@+id/confirm_deploy__gas_limit_label"
-    app:layout_constraintTop_toTopOf="@+id/confirm_deploy__gas_limit_label"
-    tools:text="0.1 ether"/>
+      android:id="@+id/confirm_deploy__gas_limit_ether"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1"
+      app:layout_constraintStart_toEndOf="@+id/confirm_deploy__gas_limit_label"
+      app:layout_constraintTop_toTopOf="@+id/confirm_deploy__gas_limit_label"
+      tools:text="0.1 ether" />
 
   <TextView
-    android:id="@+id/confirm_deploy__gas_limit_wei"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="1"
-    app:layout_constraintStart_toStartOf="@+id/confirm_deploy__middle_vertical_guideline"
-    app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_limit_ether"
-    tools:text="1000000000100 wei"/>
+      android:id="@+id/confirm_deploy__gas_limit_wei"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1"
+      app:layout_constraintStart_toStartOf="@+id/confirm_deploy__middle_vertical_guideline"
+      app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_limit_ether"
+      tools:text="1000000000100 wei" />
 
   <android.support.constraint.Guideline
-    android:id="@+id/confirm_deploy__middle_vertical_guideline"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    app:layout_constraintGuide_percent="0.3"/>
+      android:id="@+id/confirm_deploy__middle_vertical_guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.3" />
 
   <android.support.design.widget.TextInputLayout
-    android:id="@+id/confirm_deploy__passphrase_input"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="16dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_limit_wei"
-    app:passwordToggleEnabled="true">
-
-    <android.support.design.widget.TextInputEditText
-      android:id="@+id/confirm_deploy__passphrase"
+      android:id="@+id/confirm_deploy__passphrase_input"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/confirm_deploy__passphrase"
-      android:inputType="textPassword"/>
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/confirm_deploy__gas_limit_wei"
+      app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/confirm_deploy__passphrase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/confirm_deploy__passphrase"
+        android:inputType="textPassword" />
 
   </android.support.design.widget.TextInputLayout>
 

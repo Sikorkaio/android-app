@@ -5,6 +5,7 @@ import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.contracts.ContractData
 import io.sikorka.android.node.contracts.ContractGas
 import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
 import javax.inject.Inject
@@ -14,26 +15,24 @@ class DeployContractPresenterImpl
 constructor(
     private val gethNode: GethNode,
     private val contractRepository: ContractRepository,
-    private val schedulerProvider: SchedulerProvider
+    private val schedulerProvider: SchedulerProvider,
+    private val appPreferences: AppPreferences
 ) : DeployContractPresenter, BasePresenter<DeployContractView>() {
+
+
   override fun load() {
 
     addDisposable(gethNode.suggestedGasPrice()
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.main())
         .subscribe({
-          attachedView().setSuggestedGasPrice(it.int64)
+          attachedView().setSuggestedGasPrice(it.price)
         }) {
 
         }
     )
 
 
-  }
-
-  override fun checkValues(gasPrice: Long, gasLimit: Long) {
-    val contractGas = ContractGas(gasPrice, gasLimit)
-    view?.requestDeployAuthorization(contractGas)
   }
 
   override fun deployContract(passphrase: String, contractInfo: ContractData) {
@@ -47,6 +46,29 @@ constructor(
           Timber.v(it)
         }
 
+  }
+
+  override fun prepareGasSelection() {
+    addDisposable(gethNode.suggestedGasPrice()
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
+        .subscribe({
+          attachedView().showGasDialog(it)
+        }) {
+          attachedView().showError(it.message)
+        }
+    )
+  }
+
+  override fun prepareDeployWithDefaults() {
+    val gasLimit = appPreferences.preferredGasLimit()
+    val gasPrice = appPreferences.preferredGasPrice()
+
+    if (gasLimit < 0 || gasPrice < 0) {
+      view?.showError(DeployContractCodes.NO_GAS_PREFERENCES)
+    } else {
+      view?.requestDeployAuthorization(ContractGas(gasPrice, gasLimit))
+    }
   }
 
 }

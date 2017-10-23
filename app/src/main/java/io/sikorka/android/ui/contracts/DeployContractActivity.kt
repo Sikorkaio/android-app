@@ -18,8 +18,10 @@ import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.node.contracts.ContractData
 import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.ui.contracts.DeployContractCodes.NO_GAS_PREFERENCES
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.dialogs.showInfo
+import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import kotlinx.android.synthetic.main.activity__deploy_contract.*
 import toothpick.Scope
 import toothpick.Toothpick
@@ -54,10 +56,13 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
         return@setOnClickListener
       }
 
-      presenter.checkValues(gasPrice, gasLimit)
+      if (deploy_contract__advanced_options.isChecked) {
+        presenter.prepareGasSelection()
+      } else {
+        presenter.prepareDeployWithDefaults()
+      }
     }
 
-    gasLimit = 4000000
     if (BuildConfig.DEBUG) {
       deploy_contract__question.editText?.setText("Experimental Question")
       deploy_contract__answer.editText?.setText("Experimental Answer")
@@ -67,6 +72,22 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
       setDisplayHomeAsUpEnabled(true)
       setHomeButtonEnabled(true)
     }
+  }
+
+  override fun showError(code: Int) {
+    when (code) {
+      NO_GAS_PREFERENCES -> {
+        Snackbar.make(deploy_contract__deploy_fab, R.string.deploy_contract__no_gas_preferences, Snackbar.LENGTH_LONG).show()
+      }
+    }
+  }
+
+  override fun showGasDialog(gas: ContractGas) {
+    val dialog = GasSelectionDialog.create(supportFragmentManager, gas) {
+      requestDeployAuthorization(it)
+    }
+    dialog.show()
+
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -94,28 +115,6 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
       finish()
     }
   }
-
-  private var gasPrice: Long
-    get() {
-      val gasField = deploy_contract__gas_price.editText
-      val value = gasField?.text.toString()
-      return value.toLongOrNull() ?: 0
-    }
-    set(value) {
-      val gasField = deploy_contract__gas_price.editText
-      gasField?.setText(value.toString())
-    }
-
-  private var gasLimit: Long
-    get() {
-      val gasLimitField = deploy_contract__gas_limit.editText
-      val value = gasLimitField?.text.toString()
-      return value.toLongOrNull() ?: 0
-    }
-    set(value) {
-      val gasLimitField = deploy_contract__gas_limit.editText
-      gasLimitField?.setText(value.toString())
-    }
 
   private val question: String
     get() {
@@ -146,7 +145,7 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
   }
 
   override fun setSuggestedGasPrice(gasPrice: Long) {
-    this.gasPrice = if (BuildConfig.DEBUG) 200L * 1000 * 1000 * 1000 else gasPrice
+
   }
 
   private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {

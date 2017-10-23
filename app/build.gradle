@@ -131,6 +131,7 @@ dependencies {
   //Unit testing
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.1.0'
+  testImplementation "com.google.truth:truth:0.36"
 }
 
 
