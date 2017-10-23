@@ -29,8 +29,30 @@ constructor(private val sharedPreferences: SharedPreferences) : AppPreferences {
         .apply()
   }
 
+  override fun preferredGasPrice(): Long {
+    return sharedPreferences.getLong(PREFERRED_GAS_PRICE, -1)
+  }
+
+  override fun setPreferredGasPrice(gasPrice: Long) {
+    sharedPreferences.edit()
+        .putLong(PREFERRED_GAS_PRICE, gasPrice)
+        .apply()
+  }
+
+  override fun preferredGasLimit(): Long {
+    return sharedPreferences.getLong(PREFERRED_GAS_LIMIT, -1)
+  }
+
+  override fun setPreferredGasLimit(gasLimit: Long) {
+    sharedPreferences.edit()
+        .putLong(PREFERRED_GAS_LIMIT, gasLimit)
+        .apply()
+  }
+
   companion object {
     const val SELECTED_NETWORK = "io.sikorka.android.preferences.NETWORK"
     const val SELECTED_ACCOUNT = "io.sikorka.android.preferences.ACCOUNT"
+    const val PREFERRED_GAS_PRICE = "io.sikorka.android.preferences.GAS_PRICE"
+    const val PREFERRED_GAS_LIMIT = "io.sikorka.android.preferences.GAS_LIMIT"
   }
 }
