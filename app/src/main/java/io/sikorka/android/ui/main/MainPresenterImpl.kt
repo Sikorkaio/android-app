@@ -31,7 +31,7 @@ constructor(
     )
   }
 
-  override fun load(latitude: Double, longitude: Double) {
+  override fun load() {
     addDisposable(accountRepository.selectedAccount()
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.main())

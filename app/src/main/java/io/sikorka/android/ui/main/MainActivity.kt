@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity(),
   override fun onStart() {
     super.onStart()
     presenter.attach(this)
-    presenter.load(latitude, longitude)
+    presenter.load()
   }
 
   override fun onStop() {
@@ -281,7 +281,7 @@ class MainActivity : AppCompatActivity(),
         true
       }
       R.id.action_reload -> {
-        presenter.load(latitude, longitude)
+        presenter.load()
         true
       }
       else -> super.onOptionsItemSelected(item)

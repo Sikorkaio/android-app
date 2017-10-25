@@ -22,10 +22,7 @@ constructor(
     return attemptConnection(device)
         .subscribeOn(Schedulers.single())
         .observeOn(Schedulers.single())
-        .map {
-          Timber.v(it.isConnected.toString())
-          BtService(it)
-        }
+        .map { BtService(it) }
   }
 
   companion object {
@@ -55,6 +52,7 @@ constructor(
     } catch (connectException: IOException) {
       // Unable to connect; close the socket and return.
       try {
+        Timber.v("closing socket")
         socket.close()
       } catch (closeException: IOException) {
         Timber.e(closeException, "Could not close the client socket")
@@ -62,14 +60,6 @@ constructor(
 
       it.onError(connectException)
       return@create
-    }
-
-    it.setCancellable {
-      try {
-        socket.close()
-      } catch (e: IOException) {
-        Timber.e(e, "Could not close the client socket")
-      }
     }
 
     it.onSuccess(socket)

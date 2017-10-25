@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.R
 import io.sikorka.android.io.detectors.BtConnector
 import io.sikorka.android.io.detectors.BtScanner
@@ -93,11 +94,13 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
       )
       dialog.show()
 
-      btConnector.connect(it).doAfterTerminate {
-        dialog.dismiss()
-      }.subscribe({
-        it.write("hello".toByteArray())
-        it.close()
+      btConnector.connect(it)
+          .flatMap { it.getDetectorEthAddress() }
+          .subscribeOn(Schedulers.io())
+          .doAfterTerminate {
+            dialog.dismiss()
+          }.subscribe({
+        Timber.v(it.hex)
       }) {
         Snackbar.make(find_detector__swipe_layout, R.string.find_detector__connection_failed, Snackbar.LENGTH_SHORT).show()
         Timber.e(it, "connection failed")
