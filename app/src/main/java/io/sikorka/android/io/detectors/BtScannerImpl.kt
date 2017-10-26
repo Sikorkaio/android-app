@@ -10,7 +10,6 @@ import android.content.IntentFilter
 import io.reactivex.Observable
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class BtScannerImpl
@@ -33,6 +32,7 @@ class BtScannerImpl
   }
 
   override fun discover(context: Context): Observable<BluetoothDevice> = Observable.create<BluetoothDevice> { emitter ->
+    Timber.v("Starting discovery")
     val btAdapter = BluetoothAdapter.getDefaultAdapter()
     val receiver = object : BroadcastReceiver() {
       override fun onReceive(ctx: Context?, intent: Intent?) {
@@ -43,6 +43,7 @@ class BtScannerImpl
           return
         }
         val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+        Timber.v("found device:: ${device.name}")
         emitter.onNext(device)
       }
     }
@@ -51,15 +52,18 @@ class BtScannerImpl
     btAdapter.startDiscovery()
 
     emitter.setCancellable {
+      Timber.v("Stopping Discovery")
       try {
         context.unregisterReceiver(receiver)
       } catch (ignored: Exception) {
       }
+
       btAdapter.cancelDiscovery()
     }
-  }.distinct()
+  }
+
       .subscribeOn(schedulerProvider.io())
-      .take(10, TimeUnit.SECONDS)
+
       .observeOn(schedulerProvider.main())
 
 }

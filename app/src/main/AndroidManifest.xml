@@ -6,7 +6,6 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
   <uses-permission android:name="android.permission.BLUETOOTH" />
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
@@ -54,6 +53,7 @@
         android:name=".ui.settings.SettingsActivity"
         android:label="@string/title_activity_settings" />
     <activity android:name=".ui.detector.FindDetectorActivity" />
+    <activity android:name=".ui.contracts.deploydetectorcontract.DeployDetectorActivity"></activity>
   </application>
 
 </manifest>

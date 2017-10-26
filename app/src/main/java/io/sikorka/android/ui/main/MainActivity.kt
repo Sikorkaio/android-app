@@ -5,21 +5,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.os.Build
 import android.os.Bundle
-import android.support.annotation.DrawableRes
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.content.res.AppCompatResources
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -32,7 +26,6 @@ import com.google.android.gms.maps.model.*
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.GethService
 import io.sikorka.android.R
-import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.contracts.DeployedContractModel
@@ -47,6 +40,7 @@ import io.sikorka.android.ui.progressSnack
 import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.SettingsActivity
 import io.sikorka.android.ui.show
+import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
 import timber.log.Timber
@@ -87,7 +81,7 @@ class MainActivity : AppCompatActivity(),
     main__deploy_fab.setOnClickListener {
       useDetector { use ->
         if (use) {
-          FindDetectorActivity.start(this)
+          FindDetectorActivity.start(this, latitude, longitude)
         } else {
           DeployContractActivity.start(this, latitude, longitude)
         }
@@ -192,7 +186,7 @@ class MainActivity : AppCompatActivity(),
 
     val me = LatLng(latitude, longitude)
 
-    val bitmap = getBitmapFromVectorDrawable(this, R.drawable.ic_person_pin_circle_black_24dp)
+    val bitmap = getBitmapFromVectorDrawable(R.drawable.ic_person_pin_circle_black_24dp)
     val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
     val position = CameraPosition.builder()
@@ -356,25 +350,7 @@ class MainActivity : AppCompatActivity(),
     }
   }
 
-  private fun getBitmapFromVectorDrawable(context: Context, @DrawableRes drawableId: Int): Bitmap {
 
-    var drawable = AppCompatResources.getDrawable(context, drawableId) ?: fail("couldn't retrieve the drawable")
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-      drawable = (DrawableCompat.wrap(drawable)).mutate()
-    }
-
-    val bitmap = Bitmap.createBitmap(
-        drawable.intrinsicWidth,
-        drawable.intrinsicHeight,
-        Bitmap.Config.ARGB_8888
-    )
-    val canvas = Canvas(bitmap)
-    drawable.run {
-      setBounds(0, 0, canvas.width, canvas.height)
-      draw(canvas)
-    }
-    return bitmap
-  }
 
 
   companion object {

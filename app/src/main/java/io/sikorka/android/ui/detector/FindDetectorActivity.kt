@@ -7,12 +7,15 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.R
+import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.detectors.BtConnector
 import io.sikorka.android.io.detectors.BtScanner
+import io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity
 import io.sikorka.android.ui.dialogs.progress
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.show
@@ -22,6 +25,7 @@ import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -100,7 +104,7 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
           .doAfterTerminate {
             dialog.dismiss()
           }.subscribe({
-        Timber.v(it.hex)
+        DeployDetectorActivity.start(this, it.hex, latitude, longiture)
       }) {
         Snackbar.make(find_detector__swipe_layout, R.string.find_detector__connection_failed, Snackbar.LENGTH_SHORT).show()
         Timber.e(it, "connection failed")
@@ -130,7 +134,10 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
     }
 
     discoveryDisposable = btScanner.discover(this)
-        .toList()
+        .buffer(15, TimeUnit.SECONDS)
+        .distinct()
+        .first(emptyList())
+        .observeOn(AndroidSchedulers.mainThread())
         .doAfterTerminate {
           find_detector__swipe_layout.isRefreshing = false
           find_detector__loading_group.gone()
@@ -149,6 +156,13 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
   }
 
 
+  private val latitude: Double
+    get() = intent?.getDoubleExtra(LATITTUDE, 0.0) ?: fail("got a null value instead")
+
+  private val longiture: Double
+    get() = intent?.getDoubleExtra(LONGITUDE, 0.0) ?: fail("got a null value instead")
+
+
   @javax.inject.Scope
   @Target(AnnotationTarget.TYPE)
   @Retention(AnnotationRetention.RUNTIME)
@@ -157,9 +171,13 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
   companion object {
     var PRESENTER_SCOPE: Class<*> = Presenter::class.java
     const val BT_ACTIVATE_REQUEST_CODE = 198
+    private const val LATITTUDE = "io.sikorka.android.extras.LATITUDE"
+    private const val LONGITUDE = "io.sikorka.android.extras.LONGITUDE"
 
-    fun start(context: Context) {
+    fun start(context: Context, latitude: Double, longitude: Double) {
       val intent = Intent(context, FindDetectorActivity::class.java)
+      intent.putExtra(LATITTUDE, latitude)
+      intent.putExtra(LONGITUDE, longitude)
       context.startActivity(intent)
     }
   }
