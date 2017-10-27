@@ -33,6 +33,7 @@ import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
+import io.sikorka.android.ui.contracts.pending.PendingContractsActivity
 import io.sikorka.android.ui.detector.select.SelectDetectorTypeActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.useDetector
@@ -287,6 +288,9 @@ class MainActivity : AppCompatActivity(),
     when (item.itemId) {
       R.id.main__nav_accounts -> {
         AccountActivity.start(this)
+      }
+      R.id.main__nav_pending_contracts -> {
+        PendingContractsActivity.start(this)
       }
     }
 

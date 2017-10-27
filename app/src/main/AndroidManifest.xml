@@ -54,7 +54,8 @@
         android:label="@string/title_activity_settings" />
     <activity android:name=".ui.detector.bluetooth.FindBtDetectorActivity" />
     <activity android:name=".ui.contracts.deploydetectorcontract.DeployDetectorActivity" />
-    <activity android:name=".ui.detector.select.SelectDetectorTypeActivity"></activity>
+    <activity android:name=".ui.detector.select.SelectDetectorTypeActivity" />
+    <activity android:name=".ui.contracts.pending.PendingContractsActivity"></activity>
   </application>
 
 </manifest>

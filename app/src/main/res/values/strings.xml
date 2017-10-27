@@ -142,6 +142,9 @@
   <string name="deploy_detector__contract_name">Contract Name</string>
   <string name="select_detector_type__title">Select detector type</string>
   <string name="select_detector_type__detector_bluetooth">Bluetooth</string>
+  <string name="main_nav__pending_contracts">Pending Contracts</string>
+  <string name="pending_contracts__title">Pending Contracts</string>
+  <string name="pending_contract__no_data_label">No Pending Contracts...</string>
 
 
 </resources>
