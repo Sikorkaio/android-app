@@ -56,6 +56,7 @@ constructor(
             contractList.add(deployedContract)
           }
 
+          Timber.v("${contractList.size} deployed contracts found")
           return@fromCallable Lce.success(DeployedContractModel(contractList))
         }.timeout(1, TimeUnit.MINUTES).onErrorReturn {
           return@onErrorReturn when {
@@ -72,7 +73,7 @@ constructor(
     return Single.zip(sign, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
       Timber.v("getting ready to deploy")
       DeployData(transactOpts, ec)
-    }).flatMap { deploy(contractData, it, passphrase) }
+    }).flatMap { deploy(contractData, it) }
   }
 
   fun deployDetectorContract(passphrase: String, data: DetectorContractData): Single<SikorkaBasicInterfacev011> {
@@ -80,16 +81,28 @@ constructor(
     return Single.zip(signer, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
       Timber.v("getting ready to deploy")
       DeployData(transactOpts, ec)
-    }).flatMap { deploy(data, it, passphrase) }
+    }).flatMap { deploy(data, it) }
   }
 
-  private fun deploy(data: DetectorContractData, deployData: DeployData, passphrase: String): Single<SikorkaBasicInterfacev011> = Single.fromCallable {
-    val latitude = Geth.newBigInt((data.latitude * COORDINATES_MODIFIER).toLong())
-    val longitude = Geth.newBigInt((data.longitude * COORDINATES_MODIFIER).toLong())
+  private fun deploy(data: DetectorContractData, deployData: DeployData): Single<SikorkaBasicInterfacev011> = Single.fromCallable {
+    val modifier = BigDecimal(COORDINATES_MODIFIER)
+    val biLatitude = BigDecimal(data.latitude).multiply(modifier).toBigInteger()
+    val biLogitude = BigDecimal(data.longitude).multiply(modifier).toBigInteger()
+
+    val latitude = Geth.newBigInt(0).apply {
+      setString(biLatitude.toString(10), 10)
+    }
+
+    val longitude = Geth.newBigInt(0).apply {
+      setString(biLogitude.toString(10), 10)
+    }
+
+    Timber.v("Settings lat: ${latitude.string()}, long: ${longitude.string()}")
+
     val secondsAllowed = Geth.newBigInt(data.secondsAllowed.toLong())
     val detector = Geth.newAddressFromHex(data.detectorAddress)
     val registry = Geth.newAddressFromHex(SikorkaRegistry.REGISTRY_ADDRESS)
-    return@fromCallable SikorkaBasicInterfacev011.deploy(
+    val contract = SikorkaBasicInterfacev011.deploy(
         deployData.transactOpts,
         deployData.ec,
         data.name,
@@ -99,9 +112,19 @@ constructor(
         secondsAllowed,
         registry
     )
+
+    val address = contract.address
+    val deployer = contract.deployer
+    val pendingContract = PendingContract(
+        contractAddress = address.hex,
+        transactionHash = deployer!!.hash.hex
+    )
+    Timber.v("pending contract: $pendingContract")
+    pendingContractDataSource.insert(pendingContract)
+    return@fromCallable contract
   }
 
-  private fun deploy(contractData: ContractData, deployData: DeployData, passphrase: String): Single<SikorkaBasicInterface> = Single.fromCallable {
+  private fun deploy(contractData: ContractData, deployData: DeployData): Single<SikorkaBasicInterface> = Single.fromCallable {
     val lat = Geth.newBigInt((contractData.latitude * 10000).toLong())
     val long = Geth.newBigInt((contractData.longitude * 10000).toLong())
     val answerHash = contractData.answer.kekkac256()
@@ -128,7 +151,6 @@ constructor(
     )
     Timber.v("pending contract: $pendingContract")
     pendingContractDataSource.insert(pendingContract)
-    val deployedContractInfo = DeployedContractInfo(address, lat, long)
     basicInterface
   }.onErrorResumeNext {
     val message = it.message ?: ""

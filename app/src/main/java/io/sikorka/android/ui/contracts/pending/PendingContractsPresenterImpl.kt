@@ -13,7 +13,6 @@ class PendingContractsPresenterImpl
 ) : PendingContractsPresenter, BasePresenter<PendingContractsView>() {
   override fun load() {
     addDisposable(pendingContractDataSource.getAllPendingContracts()
-        .toList()
         .observeOn(schedulerProvider.main())
         .subscribeOn(schedulerProvider.io())
         .subscribe({

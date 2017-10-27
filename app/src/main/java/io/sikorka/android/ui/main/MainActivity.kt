@@ -354,9 +354,6 @@ class MainActivity : AppCompatActivity(),
     }
   }
 
-
-
-
   companion object {
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     fun start(context: Context) {

@@ -2,10 +2,12 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
   <TextView
+      android:textSize="12sp"
       android:id="@+id/pending_contract__contract_address_label"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -19,6 +21,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
   <TextView
+      android:fontFamily="sans-serif-condensed"
       android:id="@+id/pending_contract__contract_address"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -32,6 +35,7 @@
       tools:text="0xDEC986031920f56fDf1e8a9E5fBEE94672f8d2e2" />
 
   <TextView
+      android:textSize="12sp"
       android:id="@+id/pending_contract__contract_transaction_label"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

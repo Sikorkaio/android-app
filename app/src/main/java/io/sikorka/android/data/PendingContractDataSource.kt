@@ -11,7 +11,7 @@ import io.reactivex.Flowable
 interface PendingContractDataSource {
 
   @Query("SELECT * FROM pending_contracts")
-  fun getAllPendingContracts(): Flowable<PendingContract>
+  fun getAllPendingContracts(): Flowable<List<PendingContract>>
 
   @Insert
   fun insert(pendingContract: PendingContract)

@@ -22,7 +22,7 @@ private constructor(//
   val address: Address = contract.address
 
   // Ethereum transaction in which this contract was deployed (if known!).
-  val Deployer: Transaction? = contract.deployer
+  val deployer: Transaction? = contract.deployer
 
   // Creates a new instance of SikorkaBasicInterface, bound to a specific deployed contract.
   @Throws(Exception::class)

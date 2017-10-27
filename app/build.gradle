@@ -72,6 +72,7 @@ dependencies {
   implementation 'com.android.support:design:26.1.0'
   implementation 'com.android.support:preference-v7:26.1.0'
   implementation 'com.android.support:preference-v14:26.1.0'
+
   implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
 
   // Custom build of master with an addition to an unmarshal issue
@@ -102,7 +103,7 @@ dependencies {
   //android persistance (SQLite)
 
   // Database
-  def roomVersion = "1.0.0-beta2"
+  def roomVersion = "1.0.0-rc1"
   compile "android.arch.persistence.room:runtime:$roomVersion"
   kapt "android.arch.persistence.room:compiler:$roomVersion"
   compile "android.arch.persistence.room:rxjava2:$roomVersion"

@@ -153,29 +153,6 @@ private constructor(private val contract: BoundContract) {
 
 
   /**
-   * addContract is a paid mutator transaction binding the contract method 0x8f33221e.
-   *
-   * ```Solidity: function addContract(contract_address address, latitude uint256, longitude uint256) returns()```
-   */
-  fun addContract(opts: TransactOpts, contract_address: Address, latitude: BigInt, longitude: BigInt): Transaction {
-
-    val addressInteraface = Geth.newInterface()
-    val latitudeInterface = Geth.newInterface()
-    val longitudeInterface = Geth.newInterface()
-
-    addressInteraface.address = contract_address
-    latitudeInterface.bigInt = latitude
-    longitudeInterface.bigInt = longitude
-
-    val args = Geth.newInterfaces(3).apply {
-      set(0, addressInteraface)
-      set(1, latitudeInterface)
-      set(2, longitudeInterface)
-    }
-    return this.contract.transact(opts, "addContract", args)
-  }
-
-  /**
    * removeContract is a paid mutator transaction binding the contract method 0xc375c2ef.
    *
    * ```Solidity: function removeContract(contract_address address) returns()```
