@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.detector
+package io.sikorka.android.ui.detector.bluetooth
 
 import io.sikorka.android.io.detectors.BtConnector
 import io.sikorka.android.io.detectors.BtConnectorImpl
@@ -8,17 +8,17 @@ import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
 import toothpick.config.Module
 
-interface FindDetectorView : BaseView {
+interface FindBtDetectorView : BaseView {
 
 }
 
-interface FindDetectorPresenter : Presenter<FindDetectorView> {
+interface FindBtDetectorPresenter : Presenter<FindBtDetectorView> {
 
 }
 
-class FindDetectorModule : Module() {
+class FindBtDetectorModule : Module() {
   init {
-    bind(FindDetectorPresenter::class.java).to(FindDetectorPresenterImpl::class.java).singletonInScope()
+    bind(FindBtDetectorPresenter::class.java).to(FindBtDetectorPresenterImpl::class.java).singletonInScope()
     bind(BtScanner::class.java).to(BtScannerImpl::class.java).singletonInScope()
     bind(BtConnector::class.java).to(BtConnectorImpl::class.java).singletonInScope()
   }

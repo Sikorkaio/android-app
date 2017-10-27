@@ -139,6 +139,9 @@
   <string name="deploy_detector__authorization_duration">Authorization Duration</string>
   <string name="deploy_detector__authorization_duration_unit">sec</string>
   <string name="deploy_detector__authorization_duration_not_set">Authorization duration must be greater than zero</string>
+  <string name="deploy_detector__contract_name">Contract Name</string>
+  <string name="select_detector_type__title">Select detector type</string>
+  <string name="select_detector_type__detector_bluetooth">Bluetooth</string>
 
 
 </resources>

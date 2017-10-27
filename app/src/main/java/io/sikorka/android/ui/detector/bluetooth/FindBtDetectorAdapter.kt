@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.detector
+package io.sikorka.android.ui.detector.bluetooth
 
 import android.bluetooth.BluetoothDevice
 import android.support.v7.widget.RecyclerView

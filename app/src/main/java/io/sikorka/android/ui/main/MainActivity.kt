@@ -33,7 +33,7 @@ import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
-import io.sikorka.android.ui.detector.FindDetectorActivity
+import io.sikorka.android.ui.detector.select.SelectDetectorTypeActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.useDetector
 import io.sikorka.android.ui.progressSnack
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(),
     main__deploy_fab.setOnClickListener {
       useDetector { use ->
         if (use) {
-          FindDetectorActivity.start(this, latitude, longitude)
+          SelectDetectorTypeActivity.start(this, latitude, longitude)
         } else {
           DeployContractActivity.start(this, latitude, longitude)
         }

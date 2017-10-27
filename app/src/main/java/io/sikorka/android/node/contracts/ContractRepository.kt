@@ -4,6 +4,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.sikorka.android.contract.ISikorkaBasicInterface
 import io.sikorka.android.contract.SikorkaBasicInterface
+import io.sikorka.android.contract.SikorkaBasicInterfacev011
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.data.PendingContract
 import io.sikorka.android.data.PendingContractDataSource
@@ -12,7 +13,6 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.helpers.sha3.kekkac256
 import io.sikorka.android.io.StorageManager
-import io.sikorka.android.io.toFile
 import io.sikorka.android.node.*
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.accounts.InvalidPassphraseException
@@ -21,6 +21,7 @@ import org.ethereum.geth.EthereumClient
 import org.ethereum.geth.Geth
 import org.ethereum.geth.TransactOpts
 import timber.log.Timber
+import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -48,9 +49,10 @@ constructor(
 
           for (i in 0 until contractCoordinates.size() step 2) {
             val address = contractAddresses[i / 2]
-            val latitude = contractCoordinates[i].int64 / 10000.0
-            val longitude = contractCoordinates[i + 1].int64 / 10000.0
-            val deployedContract = DeployedContract(address.hex, latitude, longitude)
+            val modifier = BigDecimal(COORDINATES_MODIFIER)
+            val latitude = BigDecimal(contractCoordinates[i].getString(10)).divide(modifier)
+            val longitude = BigDecimal(contractCoordinates[i + 1].getString(10)).divide(modifier)
+            val deployedContract = DeployedContract(address.hex, latitude.toDouble(), longitude.toDouble())
             contractList.add(deployedContract)
           }
 
@@ -71,6 +73,32 @@ constructor(
       Timber.v("getting ready to deploy")
       DeployData(transactOpts, ec)
     }).flatMap { deploy(contractData, it, passphrase) }
+  }
+
+  fun deployDetectorContract(passphrase: String, data: DetectorContractData): Single<SikorkaBasicInterfacev011> {
+    val signer = signer(passphrase, data.gas)
+    return Single.zip(signer, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
+      Timber.v("getting ready to deploy")
+      DeployData(transactOpts, ec)
+    }).flatMap { deploy(data, it, passphrase) }
+  }
+
+  private fun deploy(data: DetectorContractData, deployData: DeployData, passphrase: String): Single<SikorkaBasicInterfacev011> = Single.fromCallable {
+    val latitude = Geth.newBigInt((data.latitude * COORDINATES_MODIFIER).toLong())
+    val longitude = Geth.newBigInt((data.longitude * COORDINATES_MODIFIER).toLong())
+    val secondsAllowed = Geth.newBigInt(data.secondsAllowed.toLong())
+    val detector = Geth.newAddressFromHex(data.detectorAddress)
+    val registry = Geth.newAddressFromHex(SikorkaRegistry.REGISTRY_ADDRESS)
+    return@fromCallable SikorkaBasicInterfacev011.deploy(
+        deployData.transactOpts,
+        deployData.ec,
+        data.name,
+        detector,
+        latitude,
+        longitude,
+        secondsAllowed,
+        registry
+    )
   }
 
   private fun deploy(contractData: ContractData, deployData: DeployData, passphrase: String): Single<SikorkaBasicInterface> = Single.fromCallable {
@@ -101,7 +129,6 @@ constructor(
     Timber.v("pending contract: $pendingContract")
     pendingContractDataSource.insert(pendingContract)
     val deployedContractInfo = DeployedContractInfo(address, lat, long)
-    prepareRegistryAddTransaction(deployedContractInfo, passphrase, contractData.gas)
     basicInterface
   }.onErrorResumeNext {
     val message = it.message ?: ""
@@ -111,28 +138,6 @@ constructor(
       else -> it
     }
     Single.error<SikorkaBasicInterface>(error)
-  }
-
-  private fun prepareRegistryAddTransaction(contractInfo: DeployedContractInfo, passphrase: String, gas: ContractGas) {
-    Timber.v("preparing transaction for registry $contractInfo")
-    signer(passphrase, gas).flatMap { transactOpts ->
-      bindRegistry().map {
-        it.addContract(
-            transactOpts,
-            contractInfo.address,
-            contractInfo.latitude,
-            contractInfo.longitude)
-      }
-    }.map { it.encodeRLP() }
-        .map { it.toFile(storageManager.registryTransactionFile(contractInfo.address.hex)) }
-        .subscribeOn(schedulerProvider.io())
-        .subscribe({
-          Timber.v("Transaction persisted for later use")
-        }) {
-          Timber.v(it, "persistence failed")
-        }
-
-
   }
 
   fun bindSikorkaInterface(addressHex: String): Single<ISikorkaBasicInterface> =
@@ -159,4 +164,8 @@ constructor(
   private fun bindRegistry() = gethNode.ethereumClient().map { SikorkaRegistry.bind(it) }
 
   private data class DeployData(val transactOpts: TransactOpts, val ec: EthereumClient)
+
+  companion object {
+    private const val COORDINATES_MODIFIER = 10_000_000_000_000_000
+  }
 }

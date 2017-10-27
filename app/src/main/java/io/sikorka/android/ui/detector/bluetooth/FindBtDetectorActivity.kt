@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.detector
+package io.sikorka.android.ui.detector.bluetooth
 
 import android.content.Context
 import android.content.Intent
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
+class FindBtDetectorActivity : AppCompatActivity(), FindBtDetectorView {
 
   private lateinit var scope: Scope
 
@@ -40,7 +40,7 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
   lateinit var btConnector: BtConnector
 
   @Inject
-  lateinit var presenter: FindDetectorPresenter
+  lateinit var presenter: FindBtDetectorPresenter
 
   @Inject
   lateinit var detectorAdapter: FindDetectorAdapter
@@ -49,7 +49,7 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
   private var discoveryDisposable: Disposable? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Toothpick.openScope(PRESENTER_SCOPE).installModules(FindDetectorModule())
+    Toothpick.openScope(PRESENTER_SCOPE).installModules(FindBtDetectorModule())
     scope = Toothpick.openScopes(application, PRESENTER_SCOPE, this)
     scope.installModules(SmoothieSupportActivityModule(this))
     super.onCreate(savedInstanceState)
@@ -64,7 +64,7 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
     btScanner.enableBt(this, BT_ACTIVATE_REQUEST_CODE)
     find_detector__detector_list.apply {
       adapter = detectorAdapter
-      layoutManager = LinearLayoutManager(this@FindDetectorActivity)
+      layoutManager = LinearLayoutManager(this@FindBtDetectorActivity)
     }
 
     supportActionBar?.apply {
@@ -104,7 +104,7 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
           .doAfterTerminate {
             dialog.dismiss()
           }.subscribe({
-        DeployDetectorActivity.start(this, it.hex, latitude, longiture)
+        DeployDetectorActivity.start(this, it.hex, latitude, longitude)
       }) {
         Snackbar.make(find_detector__swipe_layout, R.string.find_detector__connection_failed, Snackbar.LENGTH_SHORT).show()
         Timber.e(it, "connection failed")
@@ -157,9 +157,9 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
 
 
   private val latitude: Double
-    get() = intent?.getDoubleExtra(LATITTUDE, 0.0) ?: fail("got a null value instead")
+    get() = intent?.getDoubleExtra(LATITUDE, 0.0) ?: fail("got a null value instead")
 
-  private val longiture: Double
+  private val longitude: Double
     get() = intent?.getDoubleExtra(LONGITUDE, 0.0) ?: fail("got a null value instead")
 
 
@@ -171,12 +171,12 @@ class FindDetectorActivity : AppCompatActivity(), FindDetectorView {
   companion object {
     var PRESENTER_SCOPE: Class<*> = Presenter::class.java
     const val BT_ACTIVATE_REQUEST_CODE = 198
-    private const val LATITTUDE = "io.sikorka.android.extras.LATITUDE"
+    private const val LATITUDE = "io.sikorka.android.extras.LATITUDE"
     private const val LONGITUDE = "io.sikorka.android.extras.LONGITUDE"
 
     fun start(context: Context, latitude: Double, longitude: Double) {
-      val intent = Intent(context, FindDetectorActivity::class.java)
-      intent.putExtra(LATITTUDE, latitude)
+      val intent = Intent(context, FindBtDetectorActivity::class.java)
+      intent.putExtra(LATITUDE, latitude)
       intent.putExtra(LONGITUDE, longitude)
       context.startActivity(intent)
     }

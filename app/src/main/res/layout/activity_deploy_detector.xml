@@ -40,29 +40,48 @@
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.5" />
 
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/deploy_detector__contract_name"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__detector_address"
+      app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/deploy_detector__contract_name"
+        android:inputType="text" />
+  </android.support.design.widget.TextInputLayout>
+
   <TextView
+      app:layout_constraintHorizontal_bias="0.0"
       android:id="@+id/deploy_detector__bound_detector"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
-      android:layout_marginTop="12dp"
+      android:layout_marginTop="8dp"
       android:fontFamily="@font/roboto_light"
       android:text="@string/deploy_detector__contract_detector"
       android:textSize="18sp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@+id/deploy_detector__guideline" />
 
   <TextView
-      android:fontFamily="sans-serif-condensed"
       android:id="@+id/deploy_detector__detector_address"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
+      android:fontFamily="sans-serif-condensed"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/deploy_detector__bound_detector"
@@ -80,17 +99,19 @@
       android:text="@string/deploy_detector__authorization_duration_unit"
       app:layout_constraintBottom_toBottomOf="@+id/deploy_detector__authorization_duration"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__detector_address" />
+      app:layout_constraintTop_toTopOf="@+id/deploy_detector__authorization_duration" />
 
   <android.support.design.widget.TextInputLayout
       android:id="@+id/deploy_detector__authorization_duration"
       android:layout_width="0dp"
-      android:layout_height="wrap_content"
+      android:layout_height="58dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
-      app:layout_constraintTop_toBottomOf="@id/deploy_detector__detector_address"
+      android:layout_marginTop="8dp"
       app:layout_constraintEnd_toStartOf="@id/deploy_detector__authorization_duration_unit"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__contract_name"
       app:passwordToggleEnabled="true">
 
     <android.support.design.widget.TextInputEditText
@@ -101,10 +122,10 @@
   </android.support.design.widget.TextInputLayout>
 
   <CheckBox
-      android:layout_marginTop="16dp"
       android:id="@+id/deploy_detector__advanced_options"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
       android:enabled="true"
       android:text="@string/deploy_detector__advanced_options"
       app:layout_constraintEnd_toEndOf="parent"

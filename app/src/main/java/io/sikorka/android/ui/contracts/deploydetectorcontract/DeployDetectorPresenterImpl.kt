@@ -3,6 +3,7 @@ package io.sikorka.android.ui.contracts.deploydetectorcontract
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.node.contracts.ContractRepository
 import io.sikorka.android.node.contracts.DetectorContractData
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.contracts.DeployContractCodes
@@ -15,6 +16,7 @@ class DeployDetectorPresenterImpl
 @Inject
 constructor(
     private val gethNode: GethNode,
+    private val contractRepository: ContractRepository,
     private val schedulerProvider: SchedulerProvider,
     private val appPreferences: AppPreferences
 ) : DeployDetectorPresenter, BasePresenter<DeployDetectorView>() {
@@ -25,14 +27,22 @@ constructor(
         .subscribe({
           attachedView().showGasDialog(it)
         }) {
-          attachedView().showError(it.message?:"")
+          attachedView().showError(it.message ?: "")
           Timber.e(it, "failed to get suggested gas price")
         }
     )
   }
 
   override fun deployContract(passphrase: String, data: DetectorContractData) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    contractRepository.deployDetectorContract(passphrase, data)
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
+        .subscribe({
+          attachedView().complete(it.address.hex)
+        }) {
+          attachedView().showError(it.message ?: "")
+          Timber.v(it)
+        }
   }
 
   override fun prepareDeployWithDefaults() {

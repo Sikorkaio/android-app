@@ -132,9 +132,13 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
+  override fun complete(hex: String) {
+   Snackbar.make(deploy_detector__detector_address, hex, Snackbar.LENGTH_SHORT).show()
+  }
+
   override fun requestDeployAuthorization(gas: ContractGas) {
     val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
-      val data = DetectorContractData(gas, address, authorizationDuration, latitude, longitude)
+      val data = DetectorContractData(name, gas, address, authorizationDuration, latitude, longitude)
       presenter.deployContract(passphrase, data)
     }
     dialog.show()
@@ -160,6 +164,12 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
         value.toInt()
       }
     }
+
+  private val name: String
+  get() {
+    val editText = deploy_detector__contract_name.editText ?: fail("null")
+    return editText.value()
+  }
 
   @javax.inject.Scope
   @Target(AnnotationTarget.CLASS)

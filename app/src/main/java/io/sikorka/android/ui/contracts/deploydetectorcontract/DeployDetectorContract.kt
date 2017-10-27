@@ -11,6 +11,7 @@ interface DeployDetectorView : BaseView {
   fun showError(message: String)
   fun showError(code: Int)
   fun requestDeployAuthorization(gas: ContractGas)
+  fun complete(hex: String)
 }
 
 interface DeployDetectorPresenter : Presenter<DeployDetectorView> {

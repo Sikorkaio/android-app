@@ -64,7 +64,7 @@ class BtService(private val socket: BluetoothSocket) {
             it.onNext(address)
             it.onComplete()
           } catch (e: Exception) {
-            it.onError(IllegalArgumentException("Address {$value}", e))
+            it.onError(IllegalArgumentException("address {$value}", e))
           }
         }
       } else {
