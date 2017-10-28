@@ -2,6 +2,8 @@ package io.sikorka.android.ui.main
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageButton
 import android.widget.TextView
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -45,6 +48,7 @@ import io.sikorka.android.ui.show
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
+import kotlinx.android.synthetic.main.nav_header__main.*
 import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
@@ -127,6 +131,8 @@ class MainActivity : AppCompatActivity(),
         getLocation()
       }
     }
+
+    enableCopyAccount()
   }
 
   @SuppressLint("MissingPermission")
@@ -180,6 +186,15 @@ class MainActivity : AppCompatActivity(),
       getString(R.string.main_nav__header_no_balance)
     } else {
       getString(R.string.main_nav_balance_eth, model.ethBalance)
+    }
+  }
+
+  private fun enableCopyAccount() {
+    val view = main__nav_view.getHeaderView(0)
+    view.findViewById<ImageButton>(R.id.main__header_copy_account).setOnClickListener {
+      val account = main__header_account.text
+      val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+      clipboardManager.primaryClip = ClipData.newPlainText("Account", account)
     }
   }
 
