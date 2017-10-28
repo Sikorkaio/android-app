@@ -53,12 +53,11 @@
     <activity
         android:name=".ui.settings.SettingsActivity"
         android:label="@string/title_activity_settings" />
-    <activity android:name=".ui.usesDetector.bluetooth.FindBtDetectorActivity" />
+    <activity android:name=".ui.detector.bluetooth.FindBtDetectorActivity" />
     <activity android:name=".ui.contracts.deploydetectorcontract.DeployDetectorActivity" />
-    <activity android:name=".ui.usesDetector.select.SelectDetectorTypeActivity" />
-    <activity android:name=".ui.contracts.pending.PendingContractsActivity"></activity>
-    <activity android:name="me.dm7.barcodescanner.zxing.sample.QrScannerActivity" />
     <activity android:name=".ui.detector.select.SelectDetectorTypeActivity" />
+    <activity android:name=".ui.contracts.pending.PendingContractsActivity" />
+    <activity android:name="me.dm7.barcodescanner.zxing.sample.QrScannerActivity" />
   </application>
 
 </manifest>
