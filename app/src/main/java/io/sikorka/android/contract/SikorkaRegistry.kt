@@ -172,9 +172,9 @@ private constructor(private val contract: BoundContract) {
     const val ABI = """[{"constant":true,"inputs":[{"name":"channel","type":"address"}],"name":"contractExists","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"contract_address","type":"address"},{"name":"latitude","type":"int256"},{"name":"longitude","type":"int256"}],"name":"addContract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getContractAddresses","outputs":[{"name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"contract_address","type":"address"}],"name":"removeContract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getContractCoordinates","outputs":[{"name":"","type":"int256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"sikorka_contracts","outputs":[{"name":"contract_address","type":"address"},{"name":"latitude","type":"int256"},{"name":"longitude","type":"int256"}],"payable":false,"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"contract_address","type":"address"},{"indexed":false,"name":"latitude","type":"int256"},{"indexed":false,"name":"longitude","type":"int256"}],"name":"ContractAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"contract_address","type":"address"}],"name":"ContractRemoved","type":"event"}]"""
 
     /**
-     * The address of the registry contract that we are going to inteface with.
+     * The address of the registry contract that we are going to interface with.
      */
-    const val REGISTRY_ADDRESS = "0x1e3fb7d2d44c4d87812Cc02186c598b67f23F477"
+    const val REGISTRY_ADDRESS = "0xB1750e5375330F158a9E8EB82DFC470389175613"
 
     /**
      * Binds the Sikorka Registry to provide access to the deployed contracts.
