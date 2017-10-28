@@ -14,6 +14,7 @@ import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.node.contracts.data.DetectorContractData
+import io.sikorka.android.ui.contracts.DeployContractCodes
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import io.sikorka.android.ui.main.MainActivity
@@ -131,7 +132,15 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
   }
 
   override fun showError(code: Int) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    when (code) {
+      DeployContractCodes.NO_GAS_PREFERENCES -> {
+        Snackbar.make(deploy_detector__detector_address, R.string.deploy_contract__no_gas_preferences, Snackbar.LENGTH_SHORT).show()
+      }
+      else -> {
+        Snackbar.make(deploy_detector__detector_address, "code $code", Snackbar.LENGTH_SHORT).show()
+      }
+    }
+
   }
 
   override fun complete(hex: String) {
@@ -175,10 +184,10 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
     }
 
   private val name: String
-  get() {
-    val editText = deploy_detector__contract_name.editText ?: fail("null")
-    return editText.value()
-  }
+    get() {
+      val editText = deploy_detector__contract_name.editText ?: fail("null")
+      return editText.value()
+    }
 
   @javax.inject.Scope
   @Target(AnnotationTarget.CLASS)
