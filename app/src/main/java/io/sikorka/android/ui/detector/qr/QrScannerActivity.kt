@@ -35,7 +35,7 @@ class QrScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
 
   private fun startCameraPermissionRequest() {
     ActivityCompat.requestPermissions(this,
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        arrayOf(Manifest.permission.CAMERA),
         REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE)
   }
 
