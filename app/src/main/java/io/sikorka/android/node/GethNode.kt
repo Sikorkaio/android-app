@@ -2,11 +2,9 @@ package io.sikorka.android.node
 
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationProvider
@@ -16,7 +14,6 @@ import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.math.BigDecimal
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,7 +33,6 @@ constructor(
   private val disposables: CompositeDisposable = CompositeDisposable()
   private val loggingThrottler: PublishRelay<PeerInfos> = PublishRelay.create()
   private val headerRelay: PublishRelay<Header> = PublishRelay.create()
-  private val scheduler: Scheduler = Schedulers.from(Executors.newSingleThreadExecutor({ Thread("peer-check") }))
 
   private fun addDisposable(disposable: Disposable) {
     disposables.add(disposable)
@@ -210,7 +206,6 @@ constructor(
     val (current, highest) = syncProgress(ethNode.ethereumClient)
     SyncStatus(peerCount, current, highest)
   }.onErrorReturn { SyncStatus(0, 0, 0) }
-      .observeOn(scheduler)
 
   private fun logPeers(peerInfos: PeerInfos?) {
     if (peerInfos == null) {
