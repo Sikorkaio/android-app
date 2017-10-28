@@ -144,6 +144,10 @@
   <string name="deploy_contract__name">Contract Name</string>
   <string name="interact_contract__detector_address">Detector Address</string>
   <string name="select_detector_type__detector_manual">Manually Specify</string>
+  <string name="select_detector__manual_dialog_title">Specify detector address</string>
+  <string name="select_detector__manual_dialog_content">Please specify the hex address of the detector</string>
+  <string name="select_detector__manual_dialog_hint">Detector address</string>
+  <string name="select_detector__manual_dialog_prefill" />
 
 
 </resources>
