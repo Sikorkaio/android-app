@@ -143,8 +143,6 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
         .dismissListener {
           MainActivity.start(this)
         }.show()
-
-   //Snackbar.make(deploy_detector__detector_address, hex, Snackbar.LENGTH_SHORT).show()
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {

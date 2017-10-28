@@ -28,6 +28,7 @@ import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
 import io.sikorka.android.node.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
+import io.sikorka.android.node.contracts.data.DeployedContract
 import io.sikorka.android.node.contracts.data.DeployedContractModel
 import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
@@ -302,14 +303,21 @@ class MainActivity : AppCompatActivity(),
     map = googleMap
 
     map?.setOnInfoWindowClickListener { marker ->
-      val contractAddress = marker.tag as String? ?: return@setOnInfoWindowClickListener
+      val contract = marker.tag as DeployedContract? ?: return@setOnInfoWindowClickListener
 
       showConfirmation(
           R.string.main__contract_intration_dialog_title,
           R.string.main__contract_intration_dialog_content,
-          contractAddress
+          contract.addressHex
       ) {
-        ContractInteractActivity.start(this, contractAddress)
+
+
+        ContractInteractActivity.start(
+            this,
+            contract.addressHex,
+            LatLng(latitude, longitude),
+            LatLng(contract.latitude, contract.longitude)
+        )
       }
 
     }
@@ -350,7 +358,7 @@ class MainActivity : AppCompatActivity(),
           .icon(icon)
 
       val marker = googleMap.addMarker(markerOptions)
-      marker.tag = it.addressHex
+      marker.tag = it
     }
   }
 
