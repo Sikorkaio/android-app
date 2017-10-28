@@ -12,7 +12,7 @@ import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.node.contracts.data.ContractGas
 
 class ConfirmDeployDialog : DialogFragment() {
 

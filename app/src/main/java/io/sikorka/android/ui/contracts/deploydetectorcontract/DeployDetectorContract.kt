@@ -2,8 +2,8 @@ package io.sikorka.android.ui.contracts.deploydetectorcontract
 
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
-import io.sikorka.android.node.contracts.ContractGas
-import io.sikorka.android.node.contracts.DetectorContractData
+import io.sikorka.android.node.contracts.data.ContractGas
+import io.sikorka.android.node.contracts.data.DetectorContractData
 import toothpick.config.Module
 
 interface DeployDetectorView : BaseView {

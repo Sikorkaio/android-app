@@ -14,10 +14,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
-import io.sikorka.android.node.contracts.ContractData
-import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.node.contracts.data.ContractData
+import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.ui.contracts.DeployContractCodes.NO_GAS_PREFERENCES
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.dialogs.showInfo
@@ -43,16 +42,10 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     val mapFragment = supportFragmentManager.findFragmentById(R.id.deploy_contract__map) as SupportMapFragment
     mapFragment.getMapAsync(this)
     deploy_contract__deploy_fab.setOnClickListener {
-      deploy_contract__answer.error = null
-      deploy_contract__question.error = null
+      deploy_contract__name.error = null
 
-      if (question.isBlank()) {
-        deploy_contract__question.error = getString(R.string.deploy_contract__question_empty)
-        return@setOnClickListener
-      }
-
-      if (answer.isBlank()) {
-        deploy_contract__answer.error = getString(R.string.deploy_contract__answer_empty)
+      if (contractName.isBlank()) {
+        deploy_contract__name.error = getString(R.string.deploy_contract__specify_contract_name)
         return@setOnClickListener
       }
 
@@ -61,11 +54,6 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
       } else {
         presenter.prepareDeployWithDefaults()
       }
-    }
-
-    if (BuildConfig.DEBUG) {
-      deploy_contract__question.editText?.setText("Experimental Question")
-      deploy_contract__answer.editText?.setText("Experimental Answer")
     }
 
     supportActionBar?.apply {
@@ -100,7 +88,7 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
 
   override fun requestDeployAuthorization(gas: ContractGas) {
     val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
-      val contractInfo = ContractData(gas, question, answer, latitude, longitude)
+      val contractInfo = ContractData(contractName, gas, latitude, longitude)
       presenter.deployContract(passphrase, contractInfo)
     }
     dialog.show()
@@ -116,15 +104,9 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     }
   }
 
-  private val question: String
+  private val contractName: String
     get() {
-      val editText = deploy_contract__question.editText
-      return editText?.text.toString()
-    }
-
-  private val answer: String
-    get() {
-      val editText = deploy_contract__answer.editText
+      val editText = deploy_contract__name.editText
       return editText?.text.toString()
     }
 

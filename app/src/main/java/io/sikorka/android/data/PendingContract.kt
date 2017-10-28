@@ -11,5 +11,7 @@ data class PendingContract(
     @ColumnInfo(name = "contract_address")
     var contractAddress: String,
     @ColumnInfo(name = "transaction_hash")
-    var transactionHash: String
+    var transactionHash: String,
+    @ColumnInfo(name = "date_created")
+    var dateCreated: Long
 )

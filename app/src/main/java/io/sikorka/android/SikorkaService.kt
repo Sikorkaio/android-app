@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationCompat
 import io.reactivex.disposables.CompositeDisposable
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.SyncStatus
+import io.sikorka.android.node.contracts.DeployedContractMonitor
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
@@ -15,11 +16,12 @@ import toothpick.Scope
 import toothpick.Toothpick
 import javax.inject.Inject
 
-class GethService : Service() {
+class SikorkaService : Service() {
 
   private lateinit var notificationManager: NotificationManager
 
   @Inject lateinit var gethNode: GethNode
+  @Inject lateinit var contractMonitor: DeployedContractMonitor
   @Inject lateinit var schedulerProvider: SchedulerProvider
 
   override fun onBind(intent: Intent): IBinder? = null
@@ -42,24 +44,31 @@ class GethService : Service() {
         .observeOn(schedulerProvider.io())
         .subscribe({
           val notification = createNotification(it)
-          notificationManager.notify(GethService.NOTIFICATION_ID, notification)
+          notificationManager.notify(SikorkaService.NOTIFICATION_ID, notification)
         }) {
           Timber.v(it, "failed")
         })
+
+    contractMonitor.setOnDeploymentStatusUpdateListener { status, contractAddress, txHash ->
+      val notification = statusNotification(status, contractAddress, txHash)
+      notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, notification)
+    }
   }
 
   override fun onDestroy() {
-    super.onDestroy()
-    compositeDisposable.clear()
     stopForeground(true)
+    compositeDisposable.clear()
     gethNode.stop()
+    contractMonitor.stop()
     Toothpick.closeScope(this)
+    super.onDestroy()
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
     Timber.v("Starting Node")
     return try {
       gethNode.start()
+      contractMonitor.start()
       START_STICKY
     } catch (e: Exception) {
       stopSelf()
@@ -72,7 +81,12 @@ class GethService : Service() {
       val channelId = "sikorka_geth_channel_01"
       val channelName = "service"
       val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-      notificationManager.createNotificationChannel(channel)
+
+      val channelIdStatus = "sikorka_deployment_update_channel"
+      val channelNameStatus = getString(R.string.notification_channel__deployment_status)
+      val channelStatus = NotificationChannel(channelIdStatus, channelNameStatus, NotificationManager.IMPORTANCE_HIGH)
+
+      notificationManager.createNotificationChannels(listOf(channel, channelStatus))
     }
   }
 
@@ -104,20 +118,43 @@ class GethService : Service() {
         .setContentIntent(pendingIntent).build()
   }
 
+  private fun statusNotification(status: Boolean, contractAddress: String, txHash: String) : Notification {
+    val message = if (status) {
+      getString(R.string.contract_deployment__status_success_notification, contractAddress, txHash)
+    } else {
+      "Not implemented"
+    }
+
+    return NotificationCompat.Builder(this, "sikorka_geth_channel_01")
+        .setSmallIcon(R.drawable.ic_stat_ic_launcher)
+        .setContentTitle(getString(R.string.notification__sikorka_node_title))
+        .setContentText(message)
+        .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+        .setGroup("")
+        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+        .build()
+  }
+
 
   companion object {
     const val NOTIFICATION_ID = 1337
+    const val STATUS_NOTIFICATION_ID: Int = 1338
+
     fun stop(context: android.content.Context) {
-      context.stopService(Intent(context, GethService::class.java))
+      context.stopService(Intent(context, SikorkaService::class.java))
     }
 
     fun start(context: android.content.Context) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        context.startForegroundService(Intent(context, GethService::class.java))
+        context.startForegroundService(Intent(context, SikorkaService::class.java))
       } else {
-        context.startService(Intent(context, GethService::class.java))
+        context.startService(Intent(context, SikorkaService::class.java))
       }
     }
+
+
   }
 }
 

@@ -2,9 +2,9 @@ package io.sikorka.android.ui.contracts
 
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.GethNode
-import io.sikorka.android.node.contracts.ContractData
-import io.sikorka.android.node.contracts.ContractGas
 import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.node.contracts.data.ContractData
+import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber

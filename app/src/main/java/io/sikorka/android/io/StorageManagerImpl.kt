@@ -31,11 +31,6 @@ constructor(
     return registryUpdateTrasactionsDir
   }
 
-  override fun registryTransactionFile(contractAddress: String): File {
-    val transactionDirectory = getTransactionDirectory()
-    return File(transactionDirectory, contractAddress)
-  }
-
   companion object {
     private val REGISTRY_TRANSACTION_DIR = "registry_update_transactions"
   }

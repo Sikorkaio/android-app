@@ -11,7 +11,9 @@ class AppDatabaseProvider
 @Inject
 constructor(private val application: Application) : Provider<AppDatabase> {
   override fun get(): AppDatabase {
-    return Room.databaseBuilder(application, AppDatabase::class.java, "sikorka.db").build()
+    return Room.databaseBuilder(application, AppDatabase::class.java, "sikorka.db")
+        .addMigrations(AppDatabase.migration_1_2)
+        .build()
   }
 }
 

@@ -9,7 +9,8 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationProvider
 import io.sikorka.android.node.configuration.IConfiguration
-import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.node.contracts.data.ContractGas
+import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.math.BigDecimal
@@ -22,7 +23,8 @@ import javax.inject.Singleton
 class GethNode
 @Inject
 constructor(
-    private val configurationProvider: ConfigurationProvider
+    private val configurationProvider: ConfigurationProvider,
+    private val schedulerProvider: SchedulerProvider
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
@@ -30,6 +32,7 @@ constructor(
 
   private val disposables: CompositeDisposable = CompositeDisposable()
   private val loggingThrottler: PublishRelay<PeerInfos> = PublishRelay.create()
+  private val headerRelay: PublishRelay<Header> = PublishRelay.create()
 
   private fun addDisposable(disposable: Disposable) {
     disposables.add(disposable)
@@ -53,7 +56,19 @@ constructor(
         loggingThrottler.throttleLast(1, TimeUnit.MINUTES)
             .subscribe { logPeers(it) }
     )
+
+    addDisposable(headers()
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.io())
+        .subscribe({
+          headerRelay.accept(it)
+        }) {
+          Timber.v(it, "Error")
+        }
+    )
   }
+
+  fun observeHeaders(): Observable<Header> = headerRelay
 
   fun stop() {
     Timber.v("Stoping geth node.")

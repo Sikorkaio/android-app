@@ -62,13 +62,7 @@
   <string name="dialog_passphrase__input_prefill" />
 
   <string name="deploy_contract__title">Deploy your Contract</string>
-  <string name="deploy_contract__question">Question</string>
-  <string name="deploy_contract__answer">Answer</string>
-  <string name="deploy_contract__gas_price">Gas Price</string>
-  <string name="deploy_contract__gas_price_value">%.10f</string>
-  <string name="deploy_contract__gas_price_currency">wei</string>
-  <string name="deploy_contract__gas_limit">Gas Limit</string>
-  <string name="deploy_contract__question_empty">Question can\'t be empty</string>
+  <string name="deploy_contract__specify_contract_name">Please specify a contract name</string>
   <string name="deploy_contract__answer_empty">Answer is empty.</string>
   <string name="deploy_contract__contract_creation_submitted">Contract creation submitted (%s)</string>
 
@@ -144,7 +138,10 @@
   <string name="select_detector_type__detector_bluetooth">Bluetooth</string>
   <string name="main_nav__pending_contracts">Pending Contracts</string>
   <string name="pending_contracts__title">Pending Contracts</string>
-  <string name="pending_contract__no_data_label">No Pending Contracts...</string>
+  <string name="pending_contract__no_data_label">No Pending Contracts…</string>
+  <string name="contract_deployment__status_success_notification">Contract\n%s\nhas been successfully deployed by transaction\%s</string>
+  <string name="notification_channel__deployment_status">Deployment Status Updates</string>
+  <string name="deploy_contract__name">Contract Name</string>
 
 
 </resources>

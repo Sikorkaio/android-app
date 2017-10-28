@@ -35,7 +35,7 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
     }
 
     contract_interact__confirm_answer.setOnClickListener {
-      presenter.confirmAnswer(answer)
+
     }
 
     contract_interact__contract_address.text = contractAddress
@@ -66,29 +66,21 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
   }
 
   override fun showConfirmationResult(confirmAnswer: Boolean) {
-    val resId = if (confirmAnswer) R.string.contract_interact__answer_success else R.string.contract_interact__answer_wrong
-    Snackbar.make(contract_interact__answer, resId, Snackbar.LENGTH_LONG).show()
 
   }
 
-  override fun update(question: String, name: String) {
+  override fun update(name: String) {
     supportActionBar?.title = name
-    contract_interact__question_content.text = question
   }
 
   override fun showError() {
-    Snackbar.make(contract_interact__answer, R.string.contract_interact__generic_error, Snackbar.LENGTH_LONG).show()
+    Snackbar.make(contract_interact__confirm_answer, R.string.contract_interact__generic_error, Snackbar.LENGTH_LONG).show()
   }
 
 
   private val contractAddress: String
     get() = intent?.getStringExtra(CONTRACT_ADDRESS) ?: fail("expected a non null contract address")
 
-  private val answer: String
-    get() {
-      val editText = contract_interact__answer.editText ?: fail("edittext was null")
-      return editText.text.toString()
-    }
 
   companion object {
     private const val CONTRACT_ADDRESS = "io.sikorka.android.extras.CONTRACT_ADDRESS"

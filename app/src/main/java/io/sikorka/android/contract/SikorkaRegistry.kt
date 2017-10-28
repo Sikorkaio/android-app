@@ -174,7 +174,7 @@ private constructor(private val contract: BoundContract) {
     /**
      * The address of the registry contract that we are going to inteface with.
      */
-    const val REGISTRY_ADDRESS = "0x6874D180D4D2e706874b0E3e078d26E43bed54dA"
+    const val REGISTRY_ADDRESS = "0x1e3fb7d2d44c4d87812Cc02186c598b67f23F477"
 
     /**
      * Binds the Sikorka Registry to provide access to the deployed contracts.

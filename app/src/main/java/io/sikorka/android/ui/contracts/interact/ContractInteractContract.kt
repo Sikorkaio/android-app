@@ -7,7 +7,7 @@ import toothpick.config.Module
 
 interface ContractInteractView : BaseView {
   fun showError()
-  fun update(question: String, name: String)
+  fun update(name: String)
   fun showConfirmationResult(confirmAnswer: Boolean)
 }
 

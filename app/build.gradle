@@ -120,6 +120,8 @@ dependencies {
   //Logging
   implementation 'com.jakewharton.timber:timber:4.5.1'
 
+  implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+
   //Location
   implementation 'com.google.android.gms:play-services-gcm:11.4.2'
   implementation 'com.google.android.gms:play-services-location:11.4.2'

@@ -197,7 +197,7 @@ private constructor(//
 
     // deploy deploys a new Ethereum contract, binding an instance of SikorkaBasicInterface to it.
     @Throws(Exception::class)
-    fun deploy(auth: TransactOpts, client: EthereumClient, _name: String, _detector: Address, _latitude: BigInt, _longitude: BigInt, _seconds_allowed: BigInt, registry_address: Address): SikorkaBasicInterfacev011 {
+    fun deploy(auth: TransactOpts, client: EthereumClient, _name: String, _detector: Address?, _latitude: BigInt, _longitude: BigInt, _seconds_allowed: BigInt?, registry_address: Address): SikorkaBasicInterfacev011 {
       val args = Geth.newInterfaces(6)
       val nameInterface = Geth.newInterface()
       val detectorInterface = Geth.newInterface()
@@ -207,7 +207,11 @@ private constructor(//
       val registryAddressInterface = Geth.newInterface()
 
       nameInterface.string = _name
-      detectorInterface.address = _detector
+      if (_detector != null) {
+        detectorInterface.address = _detector
+      } else {
+        detectorInterface.address = Geth.newAddressFromHex("0000000000000000000000000000000000000000")
+      }
       latitudeInterface.bigInt = _latitude
       longituteInterface.bigInt = _longitude
       secondsAllowedInterface.bigInt = _seconds_allowed

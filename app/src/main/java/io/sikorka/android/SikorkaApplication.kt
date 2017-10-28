@@ -1,6 +1,7 @@
 package io.sikorka.android
 
 import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 import io.sikorka.android.di.modules.SikorkaModule
 import timber.log.Timber
 import toothpick.Toothpick
@@ -12,6 +13,7 @@ import toothpick.smoothie.module.SmoothieApplicationModule
 class SikorkaApplication : Application() {
   override fun onCreate() {
     super.onCreate()
+    AndroidThreeTen.init(this)
     val scope = Toothpick.openScope(this)
     scope.installModules(SmoothieApplicationModule(this), SikorkaModule())
 

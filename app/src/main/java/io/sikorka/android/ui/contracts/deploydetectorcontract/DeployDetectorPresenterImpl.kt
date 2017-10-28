@@ -2,9 +2,9 @@ package io.sikorka.android.ui.contracts.deploydetectorcontract
 
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.GethNode
-import io.sikorka.android.node.contracts.ContractGas
 import io.sikorka.android.node.contracts.ContractRepository
-import io.sikorka.android.node.contracts.DetectorContractData
+import io.sikorka.android.node.contracts.data.ContractGas
+import io.sikorka.android.node.contracts.data.DetectorContractData
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.contracts.DeployContractCodes
 import io.sikorka.android.utils.schedulers.SchedulerProvider
@@ -34,7 +34,7 @@ constructor(
   }
 
   override fun deployContract(passphrase: String, data: DetectorContractData) {
-    contractRepository.deployDetectorContract(passphrase, data)
+    contractRepository.deployContract(passphrase, data)
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.main())
         .subscribe({

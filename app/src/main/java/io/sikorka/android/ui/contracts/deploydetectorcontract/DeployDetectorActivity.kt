@@ -11,8 +11,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.contracts.ContractGas
-import io.sikorka.android.node.contracts.DetectorContractData
+import io.sikorka.android.node.contracts.data.ContractGas
+import io.sikorka.android.node.contracts.data.DetectorContractData
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import io.sikorka.android.ui.value

@@ -22,7 +22,7 @@
         android:value="@string/google_maps_key" />
 
     <service
-        android:name=".GethService"
+        android:name=".SikorkaService"
         android:enabled="true"
         android:exported="false" />
 

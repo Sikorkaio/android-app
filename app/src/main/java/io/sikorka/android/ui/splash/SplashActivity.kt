@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.sikorka.android.GethService
+import io.sikorka.android.SikorkaService
 import io.sikorka.android.R
 import io.sikorka.android.di.modules.SikorkaModule
 import io.sikorka.android.settings.AppPreferences
@@ -30,7 +30,7 @@ class SplashActivity : AppCompatActivity() {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe {
           if (appPreferences.selectedAccount().isNotBlank()) {
-            GethService.start(this)
+            SikorkaService.start(this)
             MainActivity.start(this)
           } else {
             WizardActivity.start(this)

@@ -2,24 +2,22 @@ package io.sikorka.android.node.contracts
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.sikorka.android.contract.ISikorkaBasicInterface
-import io.sikorka.android.contract.SikorkaBasicInterface
 import io.sikorka.android.contract.SikorkaBasicInterfacev011
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.data.PendingContract
 import io.sikorka.android.data.PendingContractDataSource
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.helpers.hexStringToByteArray
-import io.sikorka.android.helpers.sha3.kekkac256
 import io.sikorka.android.io.StorageManager
-import io.sikorka.android.node.*
+import io.sikorka.android.node.GethNode
+import io.sikorka.android.node.NoContractCodeAtGivenAddressException
+import io.sikorka.android.node.NoSuitablePeersAvailableException
 import io.sikorka.android.node.accounts.AccountRepository
-import io.sikorka.android.node.accounts.InvalidPassphraseException
+import io.sikorka.android.node.contracts.data.*
+import io.sikorka.android.node.messageValue
 import io.sikorka.android.utils.schedulers.SchedulerProvider
-import org.ethereum.geth.EthereumClient
-import org.ethereum.geth.Geth
-import org.ethereum.geth.TransactOpts
+import org.ethereum.geth.*
+import org.threeten.bp.Instant
 import timber.log.Timber
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
@@ -68,15 +66,7 @@ constructor(
       }
 
 
-  fun deployContract(passphrase: String, contractData: ContractData): Single<SikorkaBasicInterface> {
-    val sign = signer(passphrase, contractData.gas)
-    return Single.zip(sign, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
-      Timber.v("getting ready to deploy")
-      DeployData(transactOpts, ec)
-    }).flatMap { deploy(contractData, it) }
-  }
-
-  fun deployDetectorContract(passphrase: String, data: DetectorContractData): Single<SikorkaBasicInterfacev011> {
+  fun deployContract(passphrase: String, data: IContractData): Single<SikorkaBasicInterfacev011> {
     val signer = signer(passphrase, data.gas)
     return Single.zip(signer, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
       Timber.v("getting ready to deploy")
@@ -84,7 +74,7 @@ constructor(
     }).flatMap { deploy(data, it) }
   }
 
-  private fun deploy(data: DetectorContractData, deployData: DeployData): Single<SikorkaBasicInterfacev011> = Single.fromCallable {
+  private fun deploy(data: IContractData, deployData: DeployData): Single<SikorkaBasicInterfacev011> = Single.fromCallable {
     val modifier = BigDecimal(COORDINATES_MODIFIER)
     val biLatitude = BigDecimal(data.latitude).multiply(modifier).toBigInteger()
     val biLogitude = BigDecimal(data.longitude).multiply(modifier).toBigInteger()
@@ -99,8 +89,16 @@ constructor(
 
     Timber.v("Settings lat: ${latitude.string()}, long: ${longitude.string()}")
 
-    val secondsAllowed = Geth.newBigInt(data.secondsAllowed.toLong())
-    val detector = Geth.newAddressFromHex(data.detectorAddress)
+    val secondsAllowed: BigInt?
+    val detector: Address?
+    if (data is DetectorContractData) {
+      secondsAllowed = Geth.newBigInt(data.secondsAllowed.toLong())
+      detector = Geth.newAddressFromHex(data.detectorAddress)
+    } else {
+      secondsAllowed = Geth.newBigInt(0)
+      detector = null
+    }
+
     val registry = Geth.newAddressFromHex(SikorkaRegistry.REGISTRY_ADDRESS)
     val contract = SikorkaBasicInterfacev011.deploy(
         deployData.transactOpts,
@@ -117,57 +115,20 @@ constructor(
     val deployer = contract.deployer
     val pendingContract = PendingContract(
         contractAddress = address.hex,
-        transactionHash = deployer!!.hash.hex
+        transactionHash = deployer!!.hash.hex,
+        dateCreated = Instant.now().epochSecond
     )
     Timber.v("pending contract: $pendingContract")
     pendingContractDataSource.insert(pendingContract)
     return@fromCallable contract
   }
 
-  private fun deploy(contractData: ContractData, deployData: DeployData): Single<SikorkaBasicInterface> = Single.fromCallable {
-    val lat = Geth.newBigInt((contractData.latitude * 10000).toLong())
-    val long = Geth.newBigInt((contractData.longitude * 10000).toLong())
-    val answerHash = contractData.answer.kekkac256()
-    val contractName = "sikorka experiment"
-    val basicInterface = SikorkaBasicInterface.deploy(
-        deployData.transactOpts,
-        deployData.ec,
-        contractName,
-        lat,
-        long,
-        contractData.question,
-        answerHash.hexStringToByteArray()
-    )
-    Timber.v("preparing to deploy contract: {$contractName} " +
-        "with latitude: ${lat.getString(10)}, longitude ${long.getString(10)} " +
-        "question: ${contractData.question} => answer hash: $answerHash"
-    )
-
-    val address = basicInterface.address
-    val deployer = basicInterface.deployer
-    val pendingContract = PendingContract(
-        contractAddress = address.hex,
-        transactionHash = deployer!!.hash.hex
-    )
-    Timber.v("pending contract: $pendingContract")
-    pendingContractDataSource.insert(pendingContract)
-    basicInterface
-  }.onErrorResumeNext {
-    val message = it.message ?: ""
-    val error = when {
-      message.contains("could not decrypt key with given passphrase") -> InvalidPassphraseException(it)
-      message.contains("exceeds block gas limit") -> ExceedsBlockGasLimit(it)
-      else -> it
-    }
-    Single.error<SikorkaBasicInterface>(error)
-  }
-
-  fun bindSikorkaInterface(addressHex: String): Single<ISikorkaBasicInterface> =
+  fun bindSikorkaInterface(addressHex: String): Single<SikorkaBasicInterfacev011> =
       gethNode.ethereumClient().flatMap { ethereumClient ->
         Single.fromCallable {
           val address = Geth.newAddressFromHex(addressHex)
-          val boundContract = SikorkaBasicInterface(address, ethereumClient)
-          Timber.v("Question ${boundContract.question(null)} -> name ${boundContract.name(null)}")
+          val boundContract = SikorkaBasicInterfacev011(address, ethereumClient)
+          Timber.v("contract -> name ${boundContract.name()}")
           boundContract
         }
       }

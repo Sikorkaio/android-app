@@ -24,11 +24,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import io.sikorka.android.BuildConfig
-import io.sikorka.android.GethService
 import io.sikorka.android.R
+import io.sikorka.android.SikorkaService
 import io.sikorka.android.node.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
-import io.sikorka.android.node.contracts.DeployedContractModel
+import io.sikorka.android.node.contracts.data.DeployedContractModel
 import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     main__nav_exit.setOnClickListener {
-      GethService.stop(this)
+      SikorkaService.stop(this)
       finish()
       drawer_layout.closeDrawer(GravityCompat.START)
     }
