@@ -153,6 +153,10 @@
   <string name="contract_deployment__transaction_send_title">Contract transaction send</string>
   <string name="contract_deployment__transaction_send_content">Your contract (%s) has been send, you will be notified as soon as it is mined.</string>
   <string name="contact_interact__contract_address">Contract Address</string>
+  <string name="select_detector_type__detector_qr">QR Code</string>
+  <string name="interact_contract__interact_with_label">Interact with the detector using</string>
+  <string name="contract_interact__success_title">Verified</string>
+  <string name="contract_interact__success_content">Your presences was successfully verified with a detector.</string>
 
 
 </resources>

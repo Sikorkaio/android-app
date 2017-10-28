@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="16dp"
-    tools:context="io.sikorka.android.ui.usesDetector.bluetooth.FindBtDetectorActivity">
+    tools:context="io.sikorka.android.ui.detector.bluetooth.FindBtDetectorActivity">
 
   <ProgressBar
       android:id="@+id/find_detector__loading_progress"

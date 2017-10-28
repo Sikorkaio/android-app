@@ -58,6 +58,7 @@
     <activity android:name=".ui.detector.select.SelectDetectorTypeActivity" />
     <activity android:name=".ui.contracts.pending.PendingContractsActivity" />
     <activity android:name="me.dm7.barcodescanner.zxing.sample.QrScannerActivity" />
+    <activity android:name=".ui.detector.userselect.UserSelectDetectorTypeActivity" />
   </application>
 
 </manifest>

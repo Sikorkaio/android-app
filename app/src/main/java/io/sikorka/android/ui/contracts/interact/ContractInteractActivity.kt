@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -16,6 +17,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.detector.select.SupportedDetector
+import io.sikorka.android.ui.detector.select.SupportedDetectors
+import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.gone
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__contract_interact.*
@@ -47,8 +51,11 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
     }
 
     contract_interact__verify.setOnClickListener {
-      presenter.verify("")
-      QrScannerActivity.start(this)
+      val typeId = interact_contract__interact_with_detector.selectedItemId.toInt()
+      when (typeId) {
+        SupportedDetectors.QR_CODE -> QrScannerActivity.start(this)
+        SupportedDetectors.BLUETOOTH -> Toast.makeText(this, "Not Implemented", Toast.LENGTH_SHORT).show()
+      }
     }
 
     contract_interact__contract_address.text = contractAddress
@@ -82,6 +89,9 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
       it.addMarker(markerOptions)
     }
+
+    interact_contract__interact_with_detector.adapter = DetectorSpinnerAdapter(this, detectors())
+    interact_contract__interact_with_detector.setSelection(0)
   }
 
   override fun detector(hex: String) {
@@ -117,7 +127,9 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
   }
 
   override fun showConfirmationResult(confirmAnswer: Boolean) {
-
+    showInfo(R.string.contract_interact__success_title, R.string.contract_interact__success_content) {
+      finish()
+    }
   }
 
   override fun update(name: String) {
@@ -131,7 +143,12 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     Timber.v("result $resultCode")
     if (requestCode == QrScannerActivity.SCANNER_RESULT && resultCode == Activity.RESULT_OK) {
-      Timber.v(data?.getStringExtra(QrScannerActivity.DATA))
+      if (data == null) {
+        Snackbar.make(contract_interact__verify, R.string.contract_interact__generic_error, Snackbar.LENGTH_LONG).show()
+      } else {
+        presenter.verify(data.getStringExtra(QrScannerActivity.DATA))
+      }
+
     }
     super.onActivityResult(requestCode, resultCode, data)
   }
@@ -139,6 +156,22 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
   private val contractAddress: String
     get() = intent?.getStringExtra(CONTRACT_ADDRESS) ?: fail("expected a non null contract address")
+
+
+  private fun detectors(): List<SupportedDetector> {
+    val detectors = ArrayList<SupportedDetector>()
+    detectors.add(SupportedDetector(
+        SupportedDetectors.QR_CODE,
+        R.string.select_detector_type__detector_qr,
+        R.drawable.ic_qr_code_24dp
+    ))
+    detectors.add(SupportedDetector(
+        SupportedDetectors.BLUETOOTH,
+        R.string.select_detector_type__detector_bluetooth,
+        R.drawable.ic_bluetooth_black_24dp
+    ))
+    return detectors
+  }
 
 
   companion object {

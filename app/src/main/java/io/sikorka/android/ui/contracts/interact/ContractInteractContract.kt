@@ -16,7 +16,7 @@ interface ContractInteractView : BaseView {
 
 interface ContractInteractPresenter : Presenter<ContractInteractView> {
   fun load(contractAddress: String)
-  fun verify(answer: String)
+  fun verify(messageHex: String)
 }
 
 

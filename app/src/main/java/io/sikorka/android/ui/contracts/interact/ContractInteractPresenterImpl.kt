@@ -1,11 +1,14 @@
 package io.sikorka.android.ui.contracts.interact
 
+import io.reactivex.Completable
 import io.sikorka.android.contract.SikorkaBasicInterfacev011
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.contracts.ContractRepository
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.Address
+import timber.log.Timber
 import java.math.BigInteger
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ContractInteractPresenterImpl
@@ -40,12 +43,19 @@ constructor(
 
   }
 
-  override fun verify(answer: String) {
-    if (usesDetector) {
+  override fun verify(messageHex: String) {
+    addDisposable(Completable.timer(500, TimeUnit.MILLISECONDS)
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main()).subscribe({
+      if (usesDetector) {
+        attachedView().showConfirmationResult(true)
+      } else {
 
-    } else {
+      }
+    }) {
+      Timber.e(it, "Failed")
+    })
 
-    }
 
   }
 

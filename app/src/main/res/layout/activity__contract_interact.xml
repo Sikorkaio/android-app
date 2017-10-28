@@ -7,25 +7,25 @@
 
 
   <TextView
-      android:text="@string/contact_interact__contract_address"
       android:id="@+id/contact_interact__contract_address_label"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      android:layout_marginEnd="8dp"
-      android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="16dp"
+      android:fontFamily="@font/roboto_medium"
+      android:text="@string/contact_interact__contract_address"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      />
+      app:layout_constraintTop_toTopOf="parent" />
 
   <TextView
       android:id="@+id/contract_interact__contract_address"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="8dp"
-      android:layout_marginStart="8dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
       android:layout_marginTop="8dp"
       android:fontFamily="sans-serif-condensed"
       android:lines="1"
@@ -41,8 +41,8 @@
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:layout_marginBottom="8dp"
-      android:layout_marginEnd="8dp"
-      android:layout_marginStart="8dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
       android:layout_marginTop="8dp"
       app:layout_constraintBottom_toTopOf="@id/contract_interact__guideline"
       app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,8 @@
       android:id="@+id/interact_contract__detector_address_label"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
       android:fontFamily="@font/roboto_medium"
       android:text="@string/interact_contract__detector_address"
       app:layout_constraintEnd_toEndOf="parent"
@@ -74,8 +75,8 @@
       android:id="@+id/interact_contract__detector_address"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="8dp"
-      android:layout_marginStart="8dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
       android:layout_marginTop="8dp"
       android:fontFamily="sans-serif-condensed"
       app:layout_constraintEnd_toEndOf="parent"
@@ -88,8 +89,32 @@
       android:id="@+id/interact_contract__detector_address_group"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      app:constraint_referenced_ids="interact_contract__detector_address,interact_contract__detector_address_label" />
+      app:constraint_referenced_ids="interact_contract__detector_address,interact_contract__detector_address_label,interact_contract__interact_with_detector_label,interact_contract__interact_with_detector" />
 
+  <TextView
+      android:id="@+id/interact_contract__interact_with_detector_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="16dp"
+      android:text="@string/interact_contract__interact_with_label"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/interact_contract__detector_address" />
+
+  <Spinner
+      android:id="@+id/interact_contract__interact_with_detector"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.498"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/interact_contract__interact_with_detector_label" />
 
   <android.support.design.widget.FloatingActionButton
       android:id="@+id/contract_interact__verify"
