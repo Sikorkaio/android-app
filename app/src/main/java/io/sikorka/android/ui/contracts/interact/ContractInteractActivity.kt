@@ -1,5 +1,6 @@
 package io.sikorka.android.ui.contracts.interact
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +9,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.gone
 import kotlinx.android.synthetic.main.activity__contract_interact.*
+import me.dm7.barcodescanner.zxing.sample.QrScannerActivity
+import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -34,11 +38,16 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
       title = ""
     }
 
-    contract_interact__confirm_answer.setOnClickListener {
-
+    contract_interact__verify.setOnClickListener {
+      presenter.verify("")
+      QrScannerActivity.start(this)
     }
 
     contract_interact__contract_address.text = contractAddress
+  }
+
+  override fun detector(hex: String) {
+    interact_contract__detector_address.text = hex
   }
 
   override fun onDestroy() {
@@ -50,6 +59,10 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
     super.onStart()
     presenter.attach(this)
     presenter.load(contractAddress)
+  }
+
+  override fun noDetector() {
+    interact_contract__detector_address_group.gone()
   }
 
   override fun onStop() {
@@ -74,7 +87,15 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
   }
 
   override fun showError() {
-    Snackbar.make(contract_interact__confirm_answer, R.string.contract_interact__generic_error, Snackbar.LENGTH_LONG).show()
+    Snackbar.make(contract_interact__verify, R.string.contract_interact__generic_error, Snackbar.LENGTH_LONG).show()
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    Timber.v("result $resultCode")
+    if (requestCode == QrScannerActivity.SCANNER_RESULT && resultCode == Activity.RESULT_OK) {
+      Timber.v(data?.getStringExtra(QrScannerActivity.DATA))
+    }
+    super.onActivityResult(requestCode, resultCode, data)
   }
 
 

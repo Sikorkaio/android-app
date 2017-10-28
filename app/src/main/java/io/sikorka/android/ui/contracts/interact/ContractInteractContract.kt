@@ -9,12 +9,14 @@ interface ContractInteractView : BaseView {
   fun showError()
   fun update(name: String)
   fun showConfirmationResult(confirmAnswer: Boolean)
+  fun noDetector()
+  fun detector(hex: String)
 }
 
 
 interface ContractInteractPresenter : Presenter<ContractInteractView> {
   fun load(contractAddress: String)
-  fun confirmAnswer(answer: String)
+  fun verify(answer: String)
 }
 
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
-    tools:context="io.sikorka.android.ui.detector.select.SelectDetectorTypeActivity">
+    tools:context="io.sikorka.android.ui.usesDetector.select.SelectDetectorTypeActivity">
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/select_detector_type__supported_detectors"
