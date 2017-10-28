@@ -38,7 +38,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.5" />
+      app:layout_constraintGuide_percent="0.4" />
 
   <android.support.design.widget.TextInputLayout
       android:id="@+id/deploy_detector__contract_name"
@@ -121,6 +121,25 @@
         android:inputType="number" />
   </android.support.design.widget.TextInputLayout>
 
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/deploy_detector__contract_tokens"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__authorization_duration"
+      app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/deploy_detector__contract_tokens"
+        android:inputType="number" />
+  </android.support.design.widget.TextInputLayout>
+
   <CheckBox
       android:id="@+id/deploy_detector__advanced_options"
       android:layout_width="0dp"
@@ -131,7 +150,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__authorization_duration" />
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__contract_tokens" />
 
   <android.support.design.widget.FloatingActionButton
       android:id="@+id/deploy_detector__deploy_fab"

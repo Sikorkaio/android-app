@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -15,6 +16,7 @@ import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.node.contracts.data.DetectorContractData
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
+import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.value
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity_deploy_detector.*
@@ -55,7 +57,7 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
 
       val position = CameraPosition.builder()
           .target(me)
-          .zoom(16f)
+          .zoom(10f)
           .bearing(0.0f)
           .tilt(0.0f)
           .build()
@@ -133,7 +135,16 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
   }
 
   override fun complete(hex: String) {
-   Snackbar.make(deploy_detector__detector_address, hex, Snackbar.LENGTH_SHORT).show()
+    MaterialDialog.Builder(this)
+        .titleColorRes(R.color.colorAccent)
+        .title(R.string.contract_deployment__transaction_send_title)
+        .content(R.string.contract_deployment__transaction_send_content, hex)
+        .positiveText(android.R.string.ok)
+        .dismissListener {
+          MainActivity.start(this)
+        }.show()
+
+   //Snackbar.make(deploy_detector__detector_address, hex, Snackbar.LENGTH_SHORT).show()
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {

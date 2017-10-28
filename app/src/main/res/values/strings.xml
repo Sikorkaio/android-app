@@ -139,7 +139,7 @@
   <string name="main_nav__pending_contracts">Pending Contracts</string>
   <string name="pending_contracts__title">Pending Contracts</string>
   <string name="pending_contract__no_data_label">No Pending Contracts…</string>
-  <string name="contract_deployment__status_success_notification">Contract\n%s\nhas been successfully deployed by transaction\%s</string>
+  <string name="contract_deployment__status_success_notification">Contract %s has been successfully deployed by transaction %s</string>
   <string name="notification_channel__deployment_status">Deployment Status Updates</string>
   <string name="deploy_contract__name">Contract Name</string>
   <string name="interact_contract__detector_address">Detector Address</string>
@@ -148,6 +148,10 @@
   <string name="select_detector__manual_dialog_content">Please specify the hex address of the detector</string>
   <string name="select_detector__manual_dialog_hint">Detector address</string>
   <string name="select_detector__manual_dialog_prefill" />
+  <string name="deploy_contract__token_supply">Total token supply</string>
+  <string name="deploy_detector__contract_tokens">Token supply</string>
+  <string name="contract_deployment__transaction_send_title">Contract transaction send</string>
+  <string name="contract_deployment__transaction_send_content">Your contract (%s) has been send, you will be notified as soon as it is mined.</string>
 
 
 </resources>
