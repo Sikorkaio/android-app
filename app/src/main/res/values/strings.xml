@@ -115,7 +115,7 @@
   <string name="gas_selection__dialog_title">Select Gas Price</string>
   <string name="find_detector__searching_for_detectors">Searching for detectors</string>
   <string name="find_detector__no_devices_found">No detectors found</string>
-  <string name="find_detector__connecting_title">Connecting to usesDetector</string>
+  <string name="find_detector__connecting_title">Connecting to detector</string>
   <string name="find_detector__connecting_content">Please wait while a connection is established</string>
   <string name="use_detectors__dialog_title">Use detectors</string>
   <string name="use_detectors__dialog_content">Do you want to deploy a contract that makes use of detectors?</string>
@@ -123,7 +123,7 @@
   <string name="use_detectors__neutral">No</string>
   <string name="find_detector__title">Find Detector</string>
   <string name="find_detector__discovery_failed">Detector discovery was unsuccessful</string>
-  <string name="find_detector__connection_failed">Couldn\'t establish a connection with the usesDetector.</string>
+  <string name="find_detector__connection_failed">Couldn\'t establish a connection with the detector.</string>
   <string name="deploy_contract__advanced_options">Advanced Options</string>
   <string name="gas_selection__positive_text">Confirm</string>
   <string name="deploy_contract__no_gas_preferences">Gas preferences have not been set, please set manually</string>
@@ -134,7 +134,7 @@
   <string name="deploy_detector__authorization_duration_unit">sec</string>
   <string name="deploy_detector__authorization_duration_not_set">Authorization duration must be greater than zero</string>
   <string name="deploy_detector__contract_name">Contract Name</string>
-  <string name="select_detector_type__title">Select usesDetector type</string>
+  <string name="select_detector_type__title">Select detector type</string>
   <string name="select_detector_type__detector_bluetooth">Bluetooth</string>
   <string name="main_nav__pending_contracts">Pending Contracts</string>
   <string name="pending_contracts__title">Pending Contracts</string>
@@ -143,6 +143,7 @@
   <string name="notification_channel__deployment_status">Deployment Status Updates</string>
   <string name="deploy_contract__name">Contract Name</string>
   <string name="interact_contract__detector_address">Detector Address</string>
+  <string name="select_detector_type__detector_manual">Manually Specify</string>
 
 
 </resources>
