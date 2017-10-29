@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -95,6 +96,10 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
     interact_contract__interact_with_detector.adapter = DetectorSpinnerAdapter(this, detectors())
     interact_contract__interact_with_detector.setSelection(0)
+    val spinnerArrayAdapter = ArrayAdapter(this,
+        android.R.layout.simple_spinner_dropdown_item,
+        arrayListOf("claimTokens"))
+    interact_contract__interact_with_method.adapter = spinnerArrayAdapter
   }
 
   override fun startDetectorFlow() {
