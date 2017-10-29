@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -96,10 +95,6 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
     interact_contract__interact_with_detector.adapter = DetectorSpinnerAdapter(this, detectors())
     interact_contract__interact_with_detector.setSelection(0)
-    val spinnerArrayAdapter = ArrayAdapter(this,
-        android.R.layout.simple_spinner_dropdown_item,
-        arrayListOf("claimTokens"))
-    interact_contract__interact_with_method.adapter = spinnerArrayAdapter
   }
 
   override fun startDetectorFlow() {
@@ -164,9 +159,22 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
   override fun showGasSelection(gas: ContractGas) {
     val dialog = GasSelectionDialog.create(supportFragmentManager, gas) {
       presenter.cacheGas(gas)
-      requestUnlock()
+      showMethodChoice()
     }
     dialog.show()
+  }
+
+  private fun showMethodChoice() {
+    MaterialDialog.Builder(this)
+        .title(R.string.contract_interact__select_method)
+        .items(arrayListOf("claimTokens"))
+        .itemsCallbackSingleChoice(0, MaterialDialog.ListCallbackSingleChoice { dialog, view, which, text ->
+          requestUnlock()
+          return@ListCallbackSingleChoice true
+        })
+        .negativeText(android.R.string.cancel)
+        .positiveText(R.string.contract_interact__select_method_choose)
+        .show()
   }
 
   private fun requestUnlock() {

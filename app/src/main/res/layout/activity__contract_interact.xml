@@ -116,17 +116,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/interact_contract__interact_with_detector_label" />
 
-  <Spinner
-      android:id="@+id/interact_contract__interact_with_method"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="16dp"
-      android:layout_marginStart="16dp"
-      android:layout_marginTop="8dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.498"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/interact_contract__interact_with_detector" />
 
   <CheckBox
       android:id="@+id/interact_contract__manual_gas_selection"
@@ -139,7 +128,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/interact_contract__interact_with_method" />
+      app:layout_constraintTop_toBottomOf="@+id/interact_contract__interact_with_detector" />
 
   <android.support.design.widget.FloatingActionButton
       android:id="@+id/contract_interact__verify"

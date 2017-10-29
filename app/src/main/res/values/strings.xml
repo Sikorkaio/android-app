@@ -165,6 +165,8 @@
   <string name="contract_deployment__status_failed_notification" >Contract %s deployment failed %s</string>
   <string name="contract_interact__proceed_with_claiming">Claim Your Tokens</string>
   <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
+  <string name="contract_interact__select_method">Select contract method to interact</string>
+  <string name="contract_interact__select_method_choose">Choose</string>
 
 
 </resources>
