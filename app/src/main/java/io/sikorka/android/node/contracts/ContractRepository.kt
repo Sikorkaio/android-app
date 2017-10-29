@@ -2,13 +2,12 @@ package io.sikorka.android.node.contracts
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.sikorka.android.contract.SikorkaBasicInterfacev011
+import io.sikorka.android.contract.DiscountContract
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.data.PendingContract
 import io.sikorka.android.data.PendingContractDataSource
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.io.StorageManager
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.NoContractCodeAtGivenAddressException
 import io.sikorka.android.node.NoSuitablePeersAvailableException
@@ -30,7 +29,6 @@ constructor(
     private val gethNode: GethNode,
     private val accountRepository: AccountRepository,
     private val pendingContractDataSource: PendingContractDataSource,
-    private val storageManager: StorageManager,
     private val schedulerProvider: SchedulerProvider
 ) {
 
@@ -66,7 +64,7 @@ constructor(
       }
 
 
-  fun deployContract(passphrase: String, data: IContractData): Single<SikorkaBasicInterfacev011> {
+  fun deployContract(passphrase: String, data: IContractData): Single<DiscountContract> {
     val signer = signer(passphrase, data.gas)
     return Single.zip(signer, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
       Timber.v("getting ready to deploy")
@@ -74,7 +72,7 @@ constructor(
     }).flatMap { deploy(data, it) }
   }
 
-  private fun deploy(data: IContractData, deployData: DeployData): Single<SikorkaBasicInterfacev011> = Single.fromCallable {
+  private fun deploy(data: IContractData, deployData: DeployData): Single<DiscountContract> = Single.fromCallable {
     val modifier = BigDecimal(COORDINATES_MODIFIER)
     val biLatitude = BigDecimal(data.latitude).multiply(modifier).toBigInteger()
     val biLogitude = BigDecimal(data.longitude).multiply(modifier).toBigInteger()
@@ -87,6 +85,8 @@ constructor(
       setString(biLogitude.toString(10), 10)
     }
 
+    val totalSupply = Geth.newBigInt(data.totalSupply)
+
     Timber.v("Settings lat: ${latitude.string()}, long: ${longitude.string()}")
 
     val secondsAllowed: BigInt?
@@ -96,11 +96,11 @@ constructor(
       detector = Geth.newAddressFromHex(data.detectorAddress)
     } else {
       secondsAllowed = Geth.newBigInt(0)
-      detector = null
+      detector = Geth.newAddressFromHex("0000000000000000000000000000000000000000")
     }
 
     val registry = Geth.newAddressFromHex(SikorkaRegistry.REGISTRY_ADDRESS)
-    val contract = SikorkaBasicInterfacev011.deploy(
+    val contract = DiscountContract.deploy(
         deployData.transactOpts,
         deployData.ec,
         data.name,
@@ -108,7 +108,8 @@ constructor(
         latitude,
         longitude,
         secondsAllowed,
-        registry
+        registry,
+        totalSupply
     )
 
     val address = contract.address
@@ -123,11 +124,11 @@ constructor(
     return@fromCallable contract
   }
 
-  fun bindSikorkaInterface(addressHex: String): Single<SikorkaBasicInterfacev011> =
+  fun bindSikorkaInterface(addressHex: String): Single<DiscountContract> =
       gethNode.ethereumClient().flatMap { ethereumClient ->
         Single.fromCallable {
           val address = Geth.newAddressFromHex(addressHex)
-          val boundContract = SikorkaBasicInterfacev011(address, ethereumClient)
+          val boundContract = DiscountContract(address, ethereumClient)
           Timber.v("contract -> name ${boundContract.name()}")
           boundContract
         }
@@ -150,5 +151,14 @@ constructor(
 
   companion object {
     private const val COORDINATES_MODIFIER = 10_000_000_000_000_000
+  }
+
+  fun transact(function: (opts: TransactOpts) -> Transaction, passphrase: String, gas: ContractGas): Single<Transaction> {
+    val signer = signer(passphrase, gas)
+    return Single.zip(signer, gethNode.ethereumClient(), BiFunction { transactOpts: TransactOpts, ec: EthereumClient ->
+      Timber.v("getting ready to deploy")
+      val transaction = function(transactOpts)
+      transaction
+    })
   }
 }

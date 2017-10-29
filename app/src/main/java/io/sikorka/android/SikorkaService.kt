@@ -122,7 +122,7 @@ class SikorkaService : Service() {
     val message = if (status) {
       getString(R.string.contract_deployment__status_success_notification, contractAddress, txHash)
     } else {
-      "Not implemented"
+      getString(R.string.contract_deployment__status_failed_notification, contractAddress, txHash)
     }
 
     return NotificationCompat.Builder(this, "sikorka_geth_channel_01")

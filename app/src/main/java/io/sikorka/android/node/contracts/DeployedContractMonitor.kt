@@ -25,11 +25,15 @@ class DeployedContractMonitor
         .flatMap { it.toObservable() }
         .subscribe({ contract ->
           node.getReceipt(contract.transactionHash).subscribe({
-            if (it.string().contains("status=1")) {
+            val status = it.string()
+            if (status.contains("status=1")) {
               pendingContractDataSource.delete(contract)
               onDeploymentStatusUpdateListener?.invoke(true, contract.contractAddress, contract.transactionHash)
+            } else if (status.contains("status=0")) {
+              pendingContractDataSource.delete(contract)
+              onDeploymentStatusUpdateListener?.invoke(false, contract.contractAddress, contract.transactionHash)
             }
-            Timber.v(it.string())
+            Timber.v(status)
           }) {
             Timber.v(it, "failed")
           }

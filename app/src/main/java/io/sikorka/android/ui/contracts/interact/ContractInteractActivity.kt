@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -17,9 +18,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.ui.detector.select.SupportedDetector
 import io.sikorka.android.ui.detector.select.SupportedDetectors
+import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.showInfo
+import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
+import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import io.sikorka.android.ui.gone
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__contract_interact.*
@@ -37,6 +42,8 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
   private lateinit var scope: Scope
 
+  private var dialog: MaterialDialog? = null
+
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
     scope.installModules(SmoothieSupportActivityModule(this), ContractInteractModule())
@@ -51,11 +58,7 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
     }
 
     contract_interact__verify.setOnClickListener {
-      val typeId = interact_contract__interact_with_detector.selectedItemId.toInt()
-      when (typeId) {
-        SupportedDetectors.QR_CODE -> QrScannerActivity.start(this)
-        SupportedDetectors.BLUETOOTH -> Toast.makeText(this, "Not Implemented", Toast.LENGTH_SHORT).show()
-      }
+      presenter.startClaimFlow()
     }
 
     contract_interact__contract_address.text = contractAddress
@@ -94,6 +97,18 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
     interact_contract__interact_with_detector.setSelection(0)
   }
 
+  override fun startDetectorFlow() {
+    startDetectorVerification()
+  }
+
+  private fun getGasSettings() {
+    if (interact_contract__manual_gas_selection.isChecked) {
+      presenter.prepareGasSelection()
+    } else {
+      Toast.makeText(this, "Not Implemented", Toast.LENGTH_SHORT).show()
+    }
+  }
+
   override fun detector(hex: String) {
     interact_contract__detector_address.text = hex
   }
@@ -127,6 +142,7 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
   }
 
   override fun showConfirmationResult(confirmAnswer: Boolean) {
+    dialog?.dismiss()
     showInfo(R.string.contract_interact__success_title, R.string.contract_interact__success_content) {
       finish()
     }
@@ -140,19 +156,58 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
     Snackbar.make(contract_interact__verify, R.string.contract_interact__generic_error, Snackbar.LENGTH_LONG).show()
   }
 
+  override fun showGasSelection(gas: ContractGas) {
+    val dialog = GasSelectionDialog.create(supportFragmentManager, gas) {
+      presenter.cacheGas(gas)
+      requestUnlock()
+    }
+    dialog.show()
+  }
+
+  private fun requestUnlock() {
+    verifyPassphraseDialog {
+      presenter.cachePassPhrase(it)
+      showConfirmation(R.string.contract_interact__proceed_with_claiming, R.string.contract_interact__proceed_with_claiming_content) {
+        dialog = showLoading()
+        presenter.verify()
+      }
+    }
+  }
+
+  private fun startDetectorVerification() {
+    val typeId = interact_contract__interact_with_detector.selectedItemId.toInt()
+    when (typeId) {
+      SupportedDetectors.QR_CODE -> QrScannerActivity.start(this)
+      SupportedDetectors.BLUETOOTH -> Toast.makeText(this, "Not Implemented", Toast.LENGTH_SHORT).show()
+    }
+  }
+
+
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     Timber.v("result $resultCode")
     if (requestCode == QrScannerActivity.SCANNER_RESULT && resultCode == Activity.RESULT_OK) {
       if (data == null) {
         Snackbar.make(contract_interact__verify, R.string.contract_interact__generic_error, Snackbar.LENGTH_LONG).show()
       } else {
-        presenter.verify(data.getStringExtra(QrScannerActivity.DATA))
+
+        presenter.cacheMessage(data.getStringExtra(QrScannerActivity.DATA))
+        getGasSettings()
       }
 
     }
     super.onActivityResult(requestCode, resultCode, data)
   }
 
+
+  private fun showLoading(): MaterialDialog {
+    return MaterialDialog.Builder(this)
+        .titleColorRes(R.color.colorAccent)
+        .title(R.string.contract_interact__claiming_tokens_title)
+        .content(R.string.contact_interact__claiming_tokens)
+        .progress(true, 100)
+        .cancelable(false)
+        .show()
+  }
 
   private val contractAddress: String
     get() = intent?.getStringExtra(CONTRACT_ADDRESS) ?: fail("expected a non null contract address")

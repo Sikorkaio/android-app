@@ -21,6 +21,7 @@ import io.sikorka.android.ui.contracts.DeployContractCodes.NO_GAS_PREFERENCES
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
+import io.sikorka.android.ui.value
 import kotlinx.android.synthetic.main.activity__deploy_contract.*
 import toothpick.Scope
 import toothpick.Toothpick
@@ -46,6 +47,14 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
 
       if (contractName.isBlank()) {
         deploy_contract__name.error = getString(R.string.deploy_contract__specify_contract_name)
+        return@setOnClickListener
+      }
+
+      deploy_contract__token_supply.error = null
+      val supply = deploy_contract__token_supply.editText?.value()?.toLong() ?: 0
+
+      if (supply == 0L) {
+        deploy_contract__token_supply.error = getString(R.string.deploy_contract__token_supply_empty)
         return@setOnClickListener
       }
 
@@ -87,8 +96,10 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
+    val supply = deploy_contract__token_supply.editText?.value()?.toLong() ?: 0
+
     val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
-      val contractInfo = ContractData(contractName, gas, latitude, longitude)
+      val contractInfo = ContractData(contractName, gas, latitude, longitude, supply)
       presenter.deployContract(passphrase, contractInfo)
     }
     dialog.show()

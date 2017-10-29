@@ -75,6 +75,14 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
         deploy_detector__authorization_duration.error = getString(R.string.deploy_detector__authorization_duration_not_set)
       }
 
+      deploy_detector__contract_tokens.error = null
+      val supply = deploy_detector__contract_tokens.editText?.value()?.toLong() ?: 0
+
+      if (supply == 0L) {
+        deploy_detector__contract_tokens.error = getString(R.string.deploy_detector__token_supply_empty)
+        return@setOnClickListener
+      }
+
       if (deploy_detector__advanced_options.isChecked) {
         presenter.prepareGasSelection()
       } else {
@@ -155,8 +163,9 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
+    val supply = deploy_detector__contract_tokens.editText?.value()?.toLong() ?: 0
     val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
-      val data = DetectorContractData(name, gas, address, authorizationDuration, latitude, longitude)
+      val data = DetectorContractData(name, gas, address, authorizationDuration, latitude, longitude, supply)
       presenter.deployContract(passphrase, data)
     }
     dialog.show()

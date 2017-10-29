@@ -1,24 +1,42 @@
 package io.sikorka.android.ui.contracts.interact
 
-import io.reactivex.Completable
-import io.sikorka.android.contract.SikorkaBasicInterfacev011
+import io.sikorka.android.contract.DiscountContract
+import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.mvp.BasePresenter
+import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.Address
 import timber.log.Timber
 import java.math.BigInteger
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ContractInteractPresenterImpl
 @Inject
 constructor(
     private val contractRepository: ContractRepository,
-    private val schedulerProvider: SchedulerProvider
+    private val schedulerProvider: SchedulerProvider,
+    private val gethNode: GethNode
 ) : ContractInteractPresenter, BasePresenter<ContractInteractView>() {
 
-  private lateinit var boundInterface: SikorkaBasicInterfacev011
+  private var gas: ContractGas? = null
+  private var passphrase: String? = null
+  private var detectorMessage: String? = null
+
+  override fun cacheGas(gas: ContractGas) {
+    this.gas = gas
+  }
+
+  override fun cachePassPhrase(passphrase: String) {
+    this.passphrase = passphrase
+  }
+
+  override fun cacheMessage(detectorSignedMessage: String?) {
+    this.detectorMessage = detectorSignedMessage
+  }
+
+  private lateinit var boundInterface: DiscountContract
   private var usesDetector: Boolean = false
 
   override fun load(contractAddress: String) {
@@ -43,20 +61,55 @@ constructor(
 
   }
 
-  override fun verify(messageHex: String) {
-    addDisposable(Completable.timer(500, TimeUnit.MILLISECONDS)
+  override fun verify() {
+
+    val data = if (usesDetector) {
+      detectorMessage?.hexStringToByteArray() ?: kotlin.ByteArray(0)
+    } else {
+      kotlin.ByteArray(0)
+    }
+
+    ifNotNull(gas, passphrase) { gas, passphrase ->
+      contractRepository.transact({
+        boundInterface.claimToken(it, data)
+      }, passphrase, gas)
+          .subscribeOn(schedulerProvider.io())
+          .observeOn(schedulerProvider.main())
+          .subscribe({
+            attachedView().showConfirmationResult(true)
+          }) {
+            Timber.e(it, "failed")
+          }
+    }
+  }
+
+  override fun startClaimFlow() {
+    if (usesDetector) {
+      view?.startDetectorFlow()
+    } else {
+      prepareGasSelection()
+    }
+  }
+
+  private fun ifNotNull(gas: ContractGas?, passphrase: String?, action: (gas: ContractGas, passphrase: String) -> Unit): Boolean {
+    return if (gas != null && passphrase != null) {
+      action(gas, passphrase)
+      true
+    } else {
+      false
+    }
+  }
+
+  override fun prepareGasSelection() {
+    addDisposable(gethNode.suggestedGasPrice()
         .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main()).subscribe({
-      if (usesDetector) {
-        attachedView().showConfirmationResult(true)
-      } else {
-
-      }
-    }) {
-      Timber.e(it, "Failed")
-    })
-
-
+        .observeOn(schedulerProvider.main())
+        .subscribe({
+          attachedView().showGasSelection(it)
+        }) {
+          view?.showError()
+        }
+    )
   }
 
   fun Address.toInt(): Int {

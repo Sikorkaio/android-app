@@ -6,5 +6,6 @@ data class DetectorContractData(
     val detectorAddress: String,
     val secondsAllowed: Int,
     override val latitude: Double,
-    override val longitude: Double
+    override val longitude: Double,
+    override val totalSupply: Long
 ) : IContractData

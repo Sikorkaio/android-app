@@ -155,8 +155,16 @@
   <string name="contact_interact__contract_address">Contract Address</string>
   <string name="select_detector_type__detector_qr">QR Code</string>
   <string name="interact_contract__interact_with_label">Interact with the detector using</string>
-  <string name="contract_interact__success_title">Verified</string>
-  <string name="contract_interact__success_content">Your presences was successfully verified with a detector.</string>
+  <string name="contract_interact__success_title">Transaction Send</string>
+  <string name="contract_interact__success_content">Your claim transaction has been send you will be notified as soon as it is mined.</string>
+  <string name="contract_interact__claiming_tokens_title">Please wait</string>
+  <string name="contact_interact__claiming_tokens">Please wait while your tokens are being claimed.</string>
+  <string name="deploy_contract__token_supply_empty">Token supply should not be empty</string>
+  <string name="deploy_detector__token_supply_empty">Token supply cannot be empty</string>
+  <string name="interact_contract__select_gas_before_transaction">Select gas before transaction</string>
+  <string name="contract_deployment__status_failed_notification" >Contract %s deployment failed %s</string>
+  <string name="contract_interact__proceed_with_claiming">Claim Your Tokens</string>
+  <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
 
 
 </resources>
