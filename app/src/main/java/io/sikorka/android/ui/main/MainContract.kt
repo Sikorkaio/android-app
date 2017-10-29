@@ -13,6 +13,8 @@ interface MainView : BaseView {
   fun loading(loading: Boolean)
   fun update(model: DeployedContractModel)
   fun error(error: Throwable)
+  fun notifyTransactionMined(txHash: String, success: Boolean)
+  fun notifyContractMined(address: String, txHash: String, success: Boolean)
 
 }
 

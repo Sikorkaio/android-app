@@ -1,10 +1,13 @@
 package io.sikorka.android.ui.main
 
+import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.node.contracts.ContractStatusEvent
+import io.sikorka.android.node.contracts.TransactionStatusEvent
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
 import javax.inject.Inject
@@ -15,7 +18,8 @@ constructor(
     private val accountRepository: AccountRepository,
     private val contractRepository: ContractRepository,
     private val gethNode: GethNode,
-    private val schedulerProvider: SchedulerProvider
+    private val schedulerProvider: SchedulerProvider,
+    private val bus: RxBus
 ) : MainPresenter, BasePresenter<MainView>() {
 
   override fun attach(view: MainView) {
@@ -29,6 +33,17 @@ constructor(
           Timber.v(it, "Failed")
         }
     )
+    bus.register(this, TransactionStatusEvent::class.java, {
+      this.view?.notifyTransactionMined(it.txHash, it.success)
+    })
+    bus.register(this, ContractStatusEvent::class.java, {
+      this.view?.notifyContractMined(it.address, it.txHash, it.success)
+    })
+  }
+
+  override fun detach() {
+    bus.unregister(this)
+    super.detach()
   }
 
   override fun load() {

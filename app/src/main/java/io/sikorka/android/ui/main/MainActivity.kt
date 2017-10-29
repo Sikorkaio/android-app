@@ -63,6 +63,21 @@ class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener {
 
   @Inject internal lateinit var presenter: MainPresenter
+
+  override fun notifyTransactionMined(txHash: String, success: Boolean) {
+    val message = "Your transaction has been mined. 100 Sikorka example discount tokens have been transferred to your account"
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
+  }
+
+  override fun notifyContractMined(address: String, txHash: String, success: Boolean) {
+    val message = if (success) {
+      "Contract $address was mined successfully"
+    } else {
+      "Contract $address was not mined successfully"
+    }
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
+  }
+
   @Inject internal lateinit var debugPreferences: DebugPreferencesStore
 
   private lateinit var scope: Scope

@@ -1,10 +1,12 @@
 package io.sikorka.android.ui.contracts.interact
 
 import io.sikorka.android.contract.DiscountContract
+import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.node.contracts.PrepareTransactionStatusEvent
 import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.Address
@@ -17,7 +19,8 @@ class ContractInteractPresenterImpl
 constructor(
     private val contractRepository: ContractRepository,
     private val schedulerProvider: SchedulerProvider,
-    private val gethNode: GethNode
+    private val gethNode: GethNode,
+    private val bus:RxBus
 ) : ContractInteractPresenter, BasePresenter<ContractInteractView>() {
 
   private var gas: ContractGas? = null
@@ -77,6 +80,7 @@ constructor(
           .observeOn(schedulerProvider.main())
           .subscribe({
             attachedView().showConfirmationResult(true)
+            bus.post(PrepareTransactionStatusEvent(it.hash.hex, true))
           }) {
             Timber.e(it, "failed")
           }
