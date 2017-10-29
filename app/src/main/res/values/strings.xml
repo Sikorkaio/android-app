@@ -150,13 +150,13 @@
   <string name="select_detector__manual_dialog_prefill" />
   <string name="deploy_contract__token_supply">Total token supply</string>
   <string name="deploy_detector__contract_tokens">Token supply</string>
-  <string name="contract_deployment__transaction_send_title">Contract transaction send</string>
-  <string name="contract_deployment__transaction_send_content">Your contract (%s) has been send, you will be notified as soon as it is mined.</string>
+  <string name="contract_deployment__transaction_sent_title">Contract transaction sent</string>
+  <string name="contract_deployment__transaction_sent_content">Your contract (%s) has been sent, you will be notified as soon as it is mined.</string>
   <string name="contact_interact__contract_address">Contract Address</string>
   <string name="select_detector_type__detector_qr">QR Code</string>
   <string name="interact_contract__interact_with_label">Interact with the detector using</string>
-  <string name="contract_interact__success_title">Transaction send</string>
-  <string name="contract_interact__success_content">Your claimTokens transaction has been send you will be notified as soon as it is mined.</string>
+  <string name="contract_interact__success_title">Transaction sent</string>
+  <string name="contract_interact__success_content">Your claimTokens transaction has been sent you will be notified as soon as it is mined.</string>
   <string name="contract_interact__claiming_tokens_title">Please wait</string>
   <string name="contact_interact__claiming_tokens">Please wait while your tokens are being claimed.</string>
   <string name="deploy_contract__token_supply_empty">Token supply should not be empty</string>

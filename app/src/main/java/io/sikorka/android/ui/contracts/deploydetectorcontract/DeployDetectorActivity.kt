@@ -154,8 +154,8 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
   override fun complete(hex: String) {
     MaterialDialog.Builder(this)
         .titleColorRes(R.color.colorAccent)
-        .title(R.string.contract_deployment__transaction_send_title)
-        .content(R.string.contract_deployment__transaction_send_content, hex)
+        .title(R.string.contract_deployment__transaction_sent_title)
+        .content(R.string.contract_deployment__transaction_sent_content, hex)
         .positiveText(android.R.string.ok)
         .dismissListener {
           MainActivity.start(this)
