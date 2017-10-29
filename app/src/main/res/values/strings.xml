@@ -57,7 +57,7 @@
   <string name="notification__network_statistics">%d Peers | %d of %d Blocks</string>
 
   <string name="dialog__passphrase_title">Verify your Passphrase</string>
-  <string name="dialog__passphrase_content">In order to process you need to insert the passphrase for this account.</string>
+  <string name="dialog__passphrase_content">In order to proceed you need to insert the passphrase for this account.</string>
   <string name="dialog__input_hint">Passphrase</string>
   <string name="dialog_passphrase__input_prefill" />
 
