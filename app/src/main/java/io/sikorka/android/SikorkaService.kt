@@ -61,7 +61,7 @@ class SikorkaService : Service() {
     }
     bus.register(this, PrepareTransactionStatusEvent::class.java, {
       Timber.v("Handling status")
-      Completable.timer(4, TimeUnit.SECONDS)
+      Completable.timer(10, TimeUnit.SECONDS)
           .subscribeOn(schedulerProvider.io())
           .observeOn(schedulerProvider.main())
           .subscribe({
