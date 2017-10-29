@@ -131,7 +131,7 @@
   <string name="deploy_detector__advanced_options">Advanced Options</string>
   <string name="deploy_detector__title">Deploy Contract</string>
   <string name="deploy_detector__authorization_duration">Authorization Duration</string>
-  <string name="deploy_detector__authorization_duration_unit">sec</string>
+  <string name="deploy_detector__authorization_duration_unit">secs</string>
   <string name="deploy_detector__authorization_duration_not_set">Authorization duration must be greater than zero</string>
   <string name="deploy_detector__contract_name">Contract Name</string>
   <string name="select_detector_type__title">Select detector type</string>
@@ -165,7 +165,7 @@
   <string name="contract_deployment__status_failed_notification" >Contract %s deployment failed %s</string>
   <string name="contract_interact__proceed_with_claiming">Claim Your Tokens</string>
   <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
-  <string name="contract_interact__select_method">Select contract method to interact</string>
+  <string name="contract_interact__select_method">Select contract method to interact with</string>
   <string name="contract_interact__select_method_choose">Choose</string>
 
 
