@@ -56,6 +56,7 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
   @Inject internal lateinit var presenter: NetworkSelectionPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    val context = context ?: fail("context was null")
     val scope = Toothpick.openScopes(context.applicationContext, this)
     scope.installModules(NetworkSelectionModule())
     Toothpick.inject(this, scope)
@@ -78,11 +79,9 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
     presenter.detach()
   }
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
-
-    val layoutInflater = inflater ?: fail("no inflater?")
-    val view = layoutInflater.inflate(R.layout.fragment__network_selection, container, false)
+    val view = inflater.inflate(R.layout.fragment__network_selection, container, false)
     ButterKnife.bind(this, view)
     // Inflate the layout for this fragment
     return view
@@ -99,6 +98,7 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
       else -> null
     }
 
+    val context = this.context ?: fail("null context")
     var drawable: Drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_black_24dp) ?: return
     drawable = DrawableCompat.wrap(drawable)
     DrawableCompat.setTint(drawable, ContextCompat.getColor(context, R.color.colorAccent))

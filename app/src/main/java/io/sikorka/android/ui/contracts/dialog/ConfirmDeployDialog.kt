@@ -35,6 +35,7 @@ class ConfirmDeployDialog : DialogFragment() {
     get() = passphraseInput.editText ?: fail("passphraseInput edittext was null")
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    val context = context ?: fail("null context")
     dialog = MaterialDialog.Builder(context)
         .title(R.string.confirm_deploy__dialog_title)
         .titleColorRes(R.color.colorAccent)

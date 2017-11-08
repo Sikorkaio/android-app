@@ -43,6 +43,7 @@ class GasSelectionDialog : DialogFragment() {
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    val context = context ?: fail("context was null")
     val scope = Toothpick.openScopes(context.applicationContext, this)
     Toothpick.inject(this, scope)
 

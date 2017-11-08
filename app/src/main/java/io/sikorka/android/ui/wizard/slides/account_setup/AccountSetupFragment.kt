@@ -34,7 +34,8 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
 
   @OnClick(R.id.account_setup__create_new)
   internal fun onCreateNewPressed() {
-    val dialog = AccountCreationDialog.newInstance(fragmentManager) {
+    val fm = fragmentManager ?: fail("fragmentManager was null")
+    val dialog = AccountCreationDialog.newInstance(fm) {
       presenter.loadAccount()
     }
     dialog.show()
@@ -42,10 +43,12 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
 
   @OnClick(R.id.account_setup__import_account)
   internal fun onAccountImportPressed() {
+    val context = context ?: fail("context was null")
     AccountImportActivity.start(context)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    val context = context ?: fail("")
     val scope = Toothpick.openScopes(context.applicationContext, this)
     scope.installModules(AccountSetupModule())
     Toothpick.inject(this, scope)
@@ -57,11 +60,10 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
     Toothpick.closeScope(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
     // Inflate the layout for this fragment
-    val layoutInflater = inflater ?: fail("no inflater?")
-    val view = layoutInflater.inflate(R.layout.fragment__account_setup, container, false)
+    val view = inflater.inflate(R.layout.fragment__account_setup, container, false)
     ButterKnife.bind(this, view)
     return view
   }

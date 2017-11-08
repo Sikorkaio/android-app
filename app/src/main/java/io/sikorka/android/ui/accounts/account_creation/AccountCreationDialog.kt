@@ -11,16 +11,12 @@ import android.widget.EditText
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.sikorka.android.R
+import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.ValidationResult
 import io.sikorka.android.node.accounts.ValidationResult.Code
 import io.sikorka.android.ui.asString
-import timber.log.Timber
 import toothpick.Toothpick
-import toothpick.smoothie.provider.SupportFragmentManagerProvider
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
@@ -53,6 +49,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    val context = context ?: fail("context was null")
     val scope = Toothpick.openScopes(context.applicationContext, context, this)
     scope.installModules(AccountCreationModule())
     Toothpick.inject(this, scope)
