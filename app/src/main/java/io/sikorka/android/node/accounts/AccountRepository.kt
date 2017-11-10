@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.sikorka.android.di.qualifiers.KeystorePath
+import io.sikorka.android.eth.converters.GethAccountConverter
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.all
@@ -20,6 +21,7 @@ class AccountRepository
     private val gethNode: GethNode
 ) {
 
+  private val accountConverter: GethAccountConverter = GethAccountConverter()
   private val keystore = KeyStore(keystorePath, Geth.LightScryptN, Geth.LightScryptP)
 
   fun createAccount(passphrase: String): Single<Account> = Single.fromCallable {
@@ -38,11 +40,11 @@ class AccountRepository
     val addressHex = appPreferences.selectedAccount()
     val account = getAccountByHex(addressHex)
     val balance = gethNode.getBalance(account.address)
-    return@fromCallable AccountModel(addressHex, account, balance.toEther())
+    return@fromCallable AccountModel(addressHex, accountConverter.convert(account), balance.toEther())
   }.onErrorReturn {
     val addressHex = appPreferences.selectedAccount()
     val account = getAccountByHex(addressHex)
-    return@onErrorReturn AccountModel(addressHex, account)
+    return@onErrorReturn AccountModel(addressHex, accountConverter.convert(account))
   }
 
   private fun getAccountByHex(addressHex: String): Account {

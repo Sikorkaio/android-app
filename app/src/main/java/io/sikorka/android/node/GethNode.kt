@@ -5,6 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.sikorka.android.eth.converters.SikorkaAddressConverter
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationProvider
@@ -33,6 +34,7 @@ constructor(
   private val disposables: CompositeDisposable = CompositeDisposable()
   private val loggingThrottler: PublishRelay<PeerInfos> = PublishRelay.create()
   private val headerRelay: PublishRelay<Header> = PublishRelay.create()
+  private val addressConverter = SikorkaAddressConverter()
 
   private fun addDisposable(disposable: Disposable) {
     disposables.add(disposable)
@@ -93,7 +95,7 @@ constructor(
       signer: TransactionSigner): Single<TransactOpts> {
     return Single.fromCallable {
       val signerAccount = account.ethAccount
-      val signerAddress = signerAccount.address
+      val signerAddress = addressConverter.convert(signerAccount.address)
       val opts = TransactOpts()
       opts.setContext(ethContext)
       opts.from = signerAddress
@@ -218,9 +220,6 @@ constructor(
     Timber.v("========")
   }
 
-  fun sendTransaction(transaction: Transaction) {
-    ethereumClient.sendTransaction(ethContext, transaction)
-  }
 }
 
 typealias TransactionSigner = (address: Address, transaction: Transaction, chainId: BigInt) -> Transaction
