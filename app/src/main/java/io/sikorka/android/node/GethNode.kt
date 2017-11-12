@@ -5,12 +5,15 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.eth.converters.SikorkaAddressConverter
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.configuration.ConfigurationProvider
 import io.sikorka.android.node.configuration.IConfiguration
 import io.sikorka.android.node.contracts.data.ContractGas
+import io.sikorka.android.node.ethereumclient.LightClient
+import io.sikorka.android.node.ethereumclient.LightClientProvider
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
@@ -25,7 +28,8 @@ class GethNode
 @Inject
 constructor(
     private val configurationProvider: ConfigurationProvider,
-    private val schedulerProvider: SchedulerProvider
+    private val schedulerProvider: SchedulerProvider,
+    private val lightClientProvider: LightClientProvider
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
@@ -53,6 +57,9 @@ constructor(
     node = Geth.newNode(dataDir.absolutePath, nodeConfig)
     val node = node ?: fail("what node?")
     node.start()
+
+    lightClientProvider.initialize(LightClient(node.ethereumClient, ethContext))
+
     periodicallyCheckIfRunning()
     addDisposable(
         loggingThrottler.throttleLast(1, TimeUnit.MINUTES)
@@ -168,20 +175,6 @@ constructor(
     Pair(0, 0)
   }
 
-  fun canCallMethods(): Single<Boolean> = Single.fromCallable {
-    ethereumClient.syncProgress(ethContext)
-    ethereumClient.getBlockByNumber(ethContext, -1)
-    return@fromCallable true
-  }.onErrorResumeNext {
-    val message = it.message ?: ""
-    val error = if (message.contains("no suitable peers available")) {
-      NoSuitablePeersAvailableException(it)
-    } else {
-      it
-    }
-    Single.error(error)
-  }
-
   private fun headers(): Observable<Header> = Observable.create<Header> {
     val handler = object : NewHeadHandler {
       override fun onError(error: String) {
@@ -206,8 +199,8 @@ constructor(
     val peerCount = peers.size().toInt()
     loggingThrottler.accept(peers)
     val (current, highest) = syncProgress(ethNode.ethereumClient)
-    SyncStatus(peerCount, current, highest)
-  }.onErrorReturn { SyncStatus(0, 0, 0) }
+    SyncStatus(true, peerCount, current, highest)
+  }.onErrorReturn { SyncStatus(false, 0, 0, 0) }
 
   private fun logPeers(peerInfos: PeerInfos?) {
     if (peerInfos == null) {

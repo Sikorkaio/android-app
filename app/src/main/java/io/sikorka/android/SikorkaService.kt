@@ -7,12 +7,13 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
+import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.node.GethNode
-import io.sikorka.android.node.SyncStatus
-import io.sikorka.android.node.contracts.DeployedContractMonitor
-import io.sikorka.android.node.contracts.PrepareTransactionStatusEvent
-import io.sikorka.android.node.contracts.TransactionStatusEvent
+import io.sikorka.android.node.monitor.DeployedContractMonitor
+import io.sikorka.android.node.monitor.PendingTransactionMonitor
+import io.sikorka.android.node.monitor.PrepareTransactionStatusEvent
+import io.sikorka.android.node.monitor.TransactionStatusEvent
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
@@ -27,6 +28,7 @@ class SikorkaService : Service() {
 
   @Inject lateinit var gethNode: GethNode
   @Inject lateinit var contractMonitor: DeployedContractMonitor
+  @Inject lateinit var pendingTransactionMonitor: PendingTransactionMonitor
   @Inject lateinit var schedulerProvider: SchedulerProvider
   @Inject lateinit var bus: RxBus
 
@@ -77,6 +79,7 @@ class SikorkaService : Service() {
     compositeDisposable.clear()
     gethNode.stop()
     contractMonitor.stop()
+    pendingTransactionMonitor.stop()
     Toothpick.closeScope(this)
     super.onDestroy()
   }
@@ -86,6 +89,7 @@ class SikorkaService : Service() {
     return try {
       gethNode.start()
       contractMonitor.start()
+      pendingTransactionMonitor.start()
       START_STICKY
     } catch (e: Exception) {
       stopSelf()

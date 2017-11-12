@@ -6,8 +6,8 @@ import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.contracts.ContractRepository
-import io.sikorka.android.node.contracts.ContractStatusEvent
-import io.sikorka.android.node.contracts.TransactionStatusEvent
+import io.sikorka.android.node.monitor.ContractStatusEvent
+import io.sikorka.android.node.monitor.TransactionStatusEvent
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
 import javax.inject.Inject

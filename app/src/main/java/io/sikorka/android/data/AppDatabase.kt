@@ -6,13 +6,15 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
 
 @Database(
-    version = 2,
+    version = 3,
     entities = arrayOf(
-        PendingContract::class
+        PendingContract::class,
+        PendingTransaction::class
     )
 )
 abstract class AppDatabase : RoomDatabase() {
-  abstract fun pendingContractDataSource(): PendingContractDataSource
+  abstract fun pendingContractDao(): PendingContractDao
+  abstract fun pendingTransactionDao(): PendingTransactionDao
 
   companion object {
     val migration_1_2 = object : Migration(1, 2) {
@@ -20,7 +22,18 @@ abstract class AppDatabase : RoomDatabase() {
         database.execSQL("ALTER TABLE pending_contracts " +
             "ADD COLUMN date_created INTEGER")
       }
+    }
 
+    val migration_2_3 = object : Migration(2, 3) {
+      override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+          CREATE TABLE pending_transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            transaction_hash TEXT NOT NULL,
+            date_added INTEGER NOT NULL,
+            transaction_status INTEGER NOT NULL
+          )""".trimIndent())
+      }
     }
   }
 }

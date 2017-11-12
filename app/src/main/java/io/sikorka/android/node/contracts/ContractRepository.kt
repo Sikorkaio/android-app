@@ -5,7 +5,7 @@ import io.reactivex.functions.BiFunction
 import io.sikorka.android.contract.DiscountContract
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.data.PendingContract
-import io.sikorka.android.data.PendingContractDataSource
+import io.sikorka.android.data.PendingContractDao
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.GethNode
@@ -28,7 +28,7 @@ class ContractRepository
 constructor(
     private val gethNode: GethNode,
     private val accountRepository: AccountRepository,
-    private val pendingContractDataSource: PendingContractDataSource,
+    private val pendingContractDao: PendingContractDao,
     private val schedulerProvider: SchedulerProvider
 ) {
 
@@ -120,7 +120,7 @@ constructor(
         dateCreated = Instant.now().epochSecond
     )
     Timber.v("pending contract: $pendingContract")
-    pendingContractDataSource.insert(pendingContract)
+    pendingContractDao.insert(pendingContract)
     return@fromCallable contract
   }
 

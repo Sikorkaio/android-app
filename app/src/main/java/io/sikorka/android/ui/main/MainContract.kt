@@ -2,7 +2,7 @@ package io.sikorka.android.ui.main
 
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
-import io.sikorka.android.node.SyncStatus
+import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.contracts.data.DeployedContractModel
 import toothpick.config.Module

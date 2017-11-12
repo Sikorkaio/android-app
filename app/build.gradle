@@ -104,9 +104,11 @@ dependencies {
 
   // Database
   def roomVersion = "1.0.0"
-  compile "android.arch.persistence.room:runtime:$roomVersion"
+  implementation "android.arch.persistence.room:runtime:$roomVersion"
   kapt "android.arch.persistence.room:compiler:$roomVersion"
-  compile "android.arch.persistence.room:rxjava2:$roomVersion"
+  implementation "android.arch.persistence.room:rxjava2:$roomVersion"
+
+  implementation "android.arch.lifecycle:extensions:1.0.0"
 
   //view injection
   implementation 'com.jakewharton:butterknife:8.8.1'
@@ -137,6 +139,7 @@ dependencies {
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.1.1'
   testImplementation "com.google.truth:truth:0.36"
+  testImplementation "android.arch.core:core-testing:1.0.0"
 }
 
 
