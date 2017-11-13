@@ -9,12 +9,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import io.sikorka.android.R
+import io.sikorka.android.eth.Account
 import io.sikorka.android.mvp.BaseViewHolder
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.show
-import org.ethereum.geth.Account
 
 class AccountViewHolder(
     itemView: View,

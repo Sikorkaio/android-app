@@ -6,6 +6,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.sikorka.android.data.syncstatus.SyncStatus
+import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.eth.converters.SikorkaAddressConverter
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.AccountModel
@@ -17,7 +18,6 @@ import io.sikorka.android.node.ethereumclient.LightClientProvider
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import timber.log.Timber
-import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,7 +29,8 @@ class GethNode
 constructor(
     private val configurationProvider: ConfigurationProvider,
     private val schedulerProvider: SchedulerProvider,
-    private val lightClientProvider: LightClientProvider
+    private val lightClientProvider: LightClientProvider,
+    private val syncStatusProvider: SyncStatusProvider
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
@@ -90,11 +91,6 @@ constructor(
     disposables.clear()
   }
 
-
-  fun getBalance(address: Address): BigDecimal {
-    val bigIntBalance = ethereumClient.getBalanceAt(ethContext, address, -1)
-    return BigDecimal(bigIntBalance.getString(10))
-  }
 
   fun createTransactOpts(
       account: AccountModel,
@@ -199,8 +195,14 @@ constructor(
     val peerCount = peers.size().toInt()
     loggingThrottler.accept(peers)
     val (current, highest) = syncProgress(ethNode.ethereumClient)
-    SyncStatus(true, peerCount, current, highest)
-  }.onErrorReturn { SyncStatus(false, 0, 0, 0) }
+    val syncStatus = SyncStatus(true, peerCount, current, highest)
+
+    if (syncStatusProvider.value != syncStatus) {
+      syncStatusProvider.postValue(syncStatus)
+    }
+
+    syncStatus
+  }.onErrorReturn { SyncStatus() }
 
   private fun logPeers(peerInfos: PeerInfos?) {
     if (peerInfos == null) {

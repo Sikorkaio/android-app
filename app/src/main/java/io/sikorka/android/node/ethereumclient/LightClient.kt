@@ -6,6 +6,8 @@ import org.ethereum.geth.Context
 import org.ethereum.geth.EthereumClient
 import org.ethereum.geth.Geth
 import org.ethereum.geth.Receipt
+import java.math.BigDecimal
+import io.sikorka.android.eth.Address as SikorkaAddress
 
 
 class LightClient(
@@ -24,5 +26,14 @@ class LightClient(
       it
     }
     return@onErrorResumeNext Single.error<Receipt>(throwable)
+  }
+
+  /**
+   * Requests the balance for the specified account.
+   */
+  fun getBalance(address: SikorkaAddress): BigDecimal {
+    val accountAddress = Geth.newAddressFromHex(address.hex)
+    val bigIntBalance = ethereumClient.getBalanceAt(context, accountAddress, -1)
+    return BigDecimal(bigIntBalance.getString(10))
   }
 }

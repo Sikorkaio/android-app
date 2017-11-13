@@ -1,5 +1,5 @@
 package io.sikorka.android.node.accounts
 
-import org.ethereum.geth.Account
+import io.sikorka.android.eth.Account
 
 data class AccountsModel(val defaultAddressHex: String, val accounts: List<Account>)

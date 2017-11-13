@@ -1,9 +1,9 @@
 package io.sikorka.android.ui.accounts
 
+import io.sikorka.android.eth.Account
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.utils.schedulers.SchedulerProvider
-import org.ethereum.geth.Account
 import javax.inject.Inject
 
 class AccountPresenterImpl

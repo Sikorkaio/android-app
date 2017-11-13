@@ -10,10 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.node.GethNode
-import io.sikorka.android.node.monitor.DeployedContractMonitor
-import io.sikorka.android.node.monitor.PendingTransactionMonitor
-import io.sikorka.android.node.monitor.PrepareTransactionStatusEvent
-import io.sikorka.android.node.monitor.TransactionStatusEvent
+import io.sikorka.android.node.monitor.*
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
@@ -29,6 +26,7 @@ class SikorkaService : Service() {
   @Inject lateinit var gethNode: GethNode
   @Inject lateinit var contractMonitor: DeployedContractMonitor
   @Inject lateinit var pendingTransactionMonitor: PendingTransactionMonitor
+  @Inject lateinit var accountBalanceMonitor: AccountBalanceMonitor
   @Inject lateinit var schedulerProvider: SchedulerProvider
   @Inject lateinit var bus: RxBus
 
@@ -80,6 +78,7 @@ class SikorkaService : Service() {
     gethNode.stop()
     contractMonitor.stop()
     pendingTransactionMonitor.stop()
+    accountBalanceMonitor.stop()
     Toothpick.closeScope(this)
     super.onDestroy()
   }
@@ -90,6 +89,7 @@ class SikorkaService : Service() {
       gethNode.start()
       contractMonitor.start()
       pendingTransactionMonitor.start()
+      accountBalanceMonitor.start()
       START_STICKY
     } catch (e: Exception) {
       stopSelf()
@@ -139,7 +139,7 @@ class SikorkaService : Service() {
         .setContentIntent(pendingIntent).build()
   }
 
-  private fun statusNotification(status: Boolean, contractAddress: String, txHash: String) : Notification {
+  private fun statusNotification(status: Boolean, contractAddress: String, txHash: String): Notification {
     val message = if (status) {
       getString(R.string.contract_deployment__status_success_notification, contractAddress, txHash)
     } else {

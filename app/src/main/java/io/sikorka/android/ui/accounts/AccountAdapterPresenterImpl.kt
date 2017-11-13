@@ -1,7 +1,7 @@
 package io.sikorka.android.ui.accounts
 
+import io.sikorka.android.eth.Account
 import io.sikorka.android.node.accounts.AccountsModel
-import org.ethereum.geth.Account
 import javax.inject.Inject
 
 class AccountAdapterPresenterImpl

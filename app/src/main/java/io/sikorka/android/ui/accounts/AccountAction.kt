@@ -1,5 +1,5 @@
 package io.sikorka.android.ui.accounts
 
-import org.ethereum.geth.Account
+import io.sikorka.android.eth.Account
 
 typealias AccountAction = (Account) -> Unit

@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room
 import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.data.PendingContractDao
 import io.sikorka.android.data.PendingTransactionDao
+import io.sikorka.android.data.balance.AccountBalanceDao
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -13,7 +14,6 @@ class AppDatabaseProvider
 constructor(private val application: Application) : Provider<AppDatabase> {
   override fun get(): AppDatabase {
     return Room.databaseBuilder(application, AppDatabase::class.java, "sikorka.db")
-        .addMigrations(AppDatabase.migration_1_2, AppDatabase.migration_2_3)
         .build()
   }
 }
@@ -28,4 +28,10 @@ class PendingTransactionDaoProvider
 @Inject
 constructor(private val database: AppDatabase) : Provider<PendingTransactionDao> {
   override fun get(): PendingTransactionDao = database.pendingTransactionDao()
+}
+
+class AccountBalanceDaoProvider
+@Inject
+constructor(private val database: AppDatabase) : Provider<AccountBalanceDao> {
+  override fun get(): AccountBalanceDao = database.accountBalanceDao()
 }

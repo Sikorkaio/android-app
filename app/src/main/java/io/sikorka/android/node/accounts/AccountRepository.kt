@@ -3,25 +3,31 @@ package io.sikorka.android.node.accounts
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toObservable
 import io.sikorka.android.di.qualifiers.KeystorePath
+import io.sikorka.android.eth.Address
 import io.sikorka.android.eth.converters.GethAccountConverter
+import io.sikorka.android.eth.converters.GethAddressConverter
 import io.sikorka.android.helpers.Lce
-import io.sikorka.android.node.GethNode
 import io.sikorka.android.node.all
+import io.sikorka.android.node.ethereumclient.LightClientProvider
 import io.sikorka.android.node.toEther
 import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.*
 import timber.log.Timber
 import javax.inject.Inject
+import io.sikorka.android.eth.Account as SikorkaAccount
 
 class AccountRepository
 @Inject constructor(
     @KeystorePath private val keystorePath: String,
     private val appPreferences: AppPreferences,
-    private val gethNode: GethNode
+    private val lightClientProvider: LightClientProvider
 ) {
 
   private val accountConverter: GethAccountConverter = GethAccountConverter()
+  private val addressConverter: GethAddressConverter = GethAddressConverter()
+
   private val keystore = KeyStore(keystorePath, Geth.LightScryptN, Geth.LightScryptP)
 
   fun createAccount(passphrase: String): Single<Account> = Single.fromCallable {
@@ -31,7 +37,7 @@ class AccountRepository
   }
 
   fun accounts(): Observable<Lce<AccountsModel>> = Observable.fromCallable {
-    val accounts = keystore.accounts.all()
+    val accounts = keystore.accounts.all().map { accountConverter.convert(it) }
     val accountsModel = AccountsModel(appPreferences.selectedAccount(), accounts.toList())
     return@fromCallable Lce.success(accountsModel)
   }.startWith(Lce.loading()).onErrorReturn { Lce.failure(it) }
@@ -39,7 +45,7 @@ class AccountRepository
   fun selectedAccount(): Single<AccountModel> = Single.fromCallable {
     val addressHex = appPreferences.selectedAccount()
     val account = getAccountByHex(addressHex)
-    val balance = gethNode.getBalance(account.address)
+    val balance = lightClientProvider.get().getBalance(Address(hex = addressHex))
     return@fromCallable AccountModel(addressHex, accountConverter.convert(account), balance.toEther())
   }.onErrorReturn {
     val addressHex = appPreferences.selectedAccount()
@@ -59,8 +65,9 @@ class AccountRepository
     return Single.fromCallable { keystore.exportKey(account, passphrase, keyPassphrase) }
   }
 
-  fun deleteAccount(account: Account, passphrase: String): Completable = Completable.fromCallable {
-    keystore.deleteAccount(account, passphrase)
+  fun deleteAccount(account: SikorkaAccount, passphrase: String): Completable = Completable.fromCallable {
+    val matchingAccount = keystore.accounts.all().first { it.address.hex == account.address.hex }
+    keystore.deleteAccount(matchingAccount, passphrase)
   }.onErrorResumeNext {
     val message = it.message ?: ""
     if (message.contains("could not decrypt key with given passphrase")) {
@@ -98,9 +105,13 @@ class AccountRepository
 
   fun accountsExist(): Single<Boolean> = Single.fromCallable { keystore.accounts.size() > 0 }
 
-  fun setDefaultAccount(account: Account): Completable = Completable.fromCallable {
+  fun setDefaultAccount(account: SikorkaAccount): Completable = Completable.fromCallable {
     val accountHex = account.address.hex
     appPreferences.selectAccount(accountHex)
   }
+
+  fun getAccountAddresses(): Observable<Address> = keystore.accounts.all()
+      .map { addressConverter.convert(it.address) }
+      .toObservable()
 
 }

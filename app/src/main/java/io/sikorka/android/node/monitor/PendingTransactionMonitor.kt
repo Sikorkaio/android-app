@@ -1,8 +1,5 @@
 package io.sikorka.android.node.monitor
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.Observer
 import io.sikorka.android.data.PendingTransactionDao
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
@@ -18,18 +15,10 @@ constructor(
     private val pendingTransactionDao: PendingTransactionDao,
     private val schedulerProvider: SchedulerProvider,
     private val lightClientProvider: LightClientProvider
-) : IMonitor, LifecycleOwner {
-
-  private val lifecycleRegistry = LifecycleRegistry(this)
-
-  init {
-    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-  }
-
-  override fun getLifecycle(): Lifecycle = lifecycleRegistry
+) : LifecycleMonitor() {
 
   override fun start() {
-    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+    super.start()
     syncStatusProvider.observe(this, Observer {
 
       if (!lightClientProvider.initialized) {
@@ -53,10 +42,6 @@ constructor(
 
 
     })
-  }
-
-  override fun stop() {
-    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
   }
 }
 

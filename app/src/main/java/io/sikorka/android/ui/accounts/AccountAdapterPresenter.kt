@@ -1,7 +1,7 @@
 package io.sikorka.android.ui.accounts
 
+import io.sikorka.android.eth.Account
 import io.sikorka.android.node.accounts.AccountsModel
-import org.ethereum.geth.Account
 
 interface AccountAdapterPresenter {
   fun setData(data: AccountsModel)
