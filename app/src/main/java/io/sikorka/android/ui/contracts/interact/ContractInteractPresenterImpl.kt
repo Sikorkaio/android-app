@@ -92,7 +92,7 @@ constructor(
 
   override fun startClaimFlow() {
     if (usesDetector) {
-      view?.startDetectorFlow()
+      attachedView().startDetectorFlow()
     } else {
       prepareGasSelection()
     }
@@ -114,7 +114,7 @@ constructor(
         .subscribe({
           attachedView().showGasSelection(it)
         }) {
-          view?.showError()
+          attachedView().showError()
         }
     )
   }

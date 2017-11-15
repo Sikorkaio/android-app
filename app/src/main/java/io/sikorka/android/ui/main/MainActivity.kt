@@ -62,7 +62,8 @@ class MainActivity : AppCompatActivity(),
     OnMapReadyCallback,
     NavigationView.OnNavigationItemSelectedListener {
 
-  @Inject internal lateinit var presenter: MainPresenter
+  @Inject
+  lateinit var presenter: MainPresenter
 
   override fun notifyTransactionMined(txHash: String, success: Boolean) {
     val message = "Your transaction has been mined. 100 Sikorka example discount tokens have been transferred to your account"
@@ -94,6 +95,7 @@ class MainActivity : AppCompatActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__main)
     Toothpick.inject(this, scope)
+    presenter.attach(this)
     val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
     mapFragment.getMapAsync(this)
 
@@ -148,6 +150,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     enableCopyAccount()
+    presenter.load()
   }
 
   @SuppressLint("MissingPermission")
@@ -267,20 +270,16 @@ class MainActivity : AppCompatActivity(),
 
 
   override fun onDestroy() {
+    presenter.detach()
+    Toothpick.closeScope(this)
     super.onDestroy()
-    Toothpick.reset()
   }
 
   override fun onStart() {
     super.onStart()
-    presenter.attach(this)
-    presenter.load()
+
   }
 
-  override fun onStop() {
-    super.onStop()
-    presenter.detach()
-  }
 
   override fun onBackPressed() {
     if (drawer_layout.isDrawerOpen(GravityCompat.START)) {

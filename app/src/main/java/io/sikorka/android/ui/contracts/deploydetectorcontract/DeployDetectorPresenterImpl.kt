@@ -50,9 +50,9 @@ constructor(
     val gasPrice = appPreferences.preferredGasPrice()
 
     if (gasLimit < 0 || gasPrice < 0) {
-      view?.showError(DeployContractCodes.NO_GAS_PREFERENCES)
+      attachedView().showError(DeployContractCodes.NO_GAS_PREFERENCES)
     } else {
-      view?.requestDeployAuthorization(ContractGas(gasPrice, gasLimit))
+      attachedView().requestDeployAuthorization(ContractGas(gasPrice, gasLimit))
     }
   }
 

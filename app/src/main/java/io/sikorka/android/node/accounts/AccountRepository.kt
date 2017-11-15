@@ -1,9 +1,12 @@
 package io.sikorka.android.node.accounts
 
+import android.arch.lifecycle.LiveData
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toObservable
+import io.sikorka.android.data.balance.AccountBalance
+import io.sikorka.android.data.balance.AccountBalanceDao
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.eth.Address
 import io.sikorka.android.eth.converters.GethAccountConverter
@@ -22,7 +25,8 @@ class AccountRepository
 @Inject constructor(
     @KeystorePath private val keystorePath: String,
     private val appPreferences: AppPreferences,
-    private val lightClientProvider: LightClientProvider
+    private val lightClientProvider: LightClientProvider,
+    private val accountBalanceDao: AccountBalanceDao
 ) {
 
   private val accountConverter: GethAccountConverter = GethAccountConverter()
@@ -44,13 +48,11 @@ class AccountRepository
 
   fun selectedAccount(): Single<AccountModel> = Single.fromCallable {
     val addressHex = appPreferences.selectedAccount()
-    val account = getAccountByHex(addressHex)
     val balance = lightClientProvider.get().getBalance(Address(hex = addressHex))
-    return@fromCallable AccountModel(addressHex, accountConverter.convert(account), balance.toEther())
+    return@fromCallable AccountModel(addressHex, balance.toEther())
   }.onErrorReturn {
     val addressHex = appPreferences.selectedAccount()
-    val account = getAccountByHex(addressHex)
-    return@onErrorReturn AccountModel(addressHex, accountConverter.convert(account))
+    return@onErrorReturn AccountModel(addressHex)
   }
 
   private fun getAccountByHex(addressHex: String): Account {
@@ -114,4 +116,7 @@ class AccountRepository
       .map { addressConverter.convert(it.address) }
       .toObservable()
 
+  fun observeDefaultAccountBalance(): LiveData<AccountBalance> {
+    return accountBalanceDao.observeBalance(appPreferences.selectedAccount())
+  }
 }

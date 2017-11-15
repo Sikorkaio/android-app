@@ -11,11 +11,11 @@ constructor(private val appPreferences: AppPreferences) : NetworkSelectionPresen
   override fun updateSelected() {
     val selectedNetwork = appPreferences.selectedNetwork()
     appPreferences.selectNetwork(selectedNetwork)
-    view?.updateNetworkSelection(selectedNetwork)
+    attachedView().updateNetworkSelection(selectedNetwork)
   }
 
   override fun selectNetwork(network: Long) {
     appPreferences.selectNetwork(network)
-    view?.updateNetworkSelection(network)
+    attachedView().updateNetworkSelection(network)
   }
 }

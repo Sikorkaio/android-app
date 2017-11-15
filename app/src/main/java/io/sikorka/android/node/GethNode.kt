@@ -97,8 +97,7 @@ constructor(
       gas: ContractGas,
       signer: TransactionSigner): Single<TransactOpts> {
     return Single.fromCallable {
-      val signerAccount = account.ethAccount
-      val signerAddress = addressConverter.convert(signerAccount.address)
+      val signerAddress = Geth.newAddressFromHex(account.addressHex)
       val opts = TransactOpts()
       opts.setContext(ethContext)
       opts.from = signerAddress

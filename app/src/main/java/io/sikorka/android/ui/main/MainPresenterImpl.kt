@@ -1,9 +1,11 @@
 package io.sikorka.android.ui.main
 
+import android.arch.lifecycle.Observer
+import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.node.GethNode
+import io.sikorka.android.node.accounts.AccountModel
 import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.node.contracts.ContractRepository
 import io.sikorka.android.node.monitor.ContractStatusEvent
@@ -17,27 +19,34 @@ class MainPresenterImpl
 constructor(
     private val accountRepository: AccountRepository,
     private val contractRepository: ContractRepository,
-    private val gethNode: GethNode,
     private val schedulerProvider: SchedulerProvider,
+    syncStatusProvider: SyncStatusProvider,
     private val bus: RxBus
 ) : MainPresenter, BasePresenter<MainView>() {
 
+  init {
+    syncStatusProvider.observe(this, Observer {
+      if (it == null) {
+        return@Observer
+      }
+      attachedView().updateSyncStatus(it)
+    })
+    accountRepository.observeDefaultAccountBalance().observe(this, Observer {
+      if (it == null) {
+        return@Observer
+      }
+      val model = AccountModel(it.addressHex, it.balance)
+      attachedView().updateAccountInfo(model)
+    })
+  }
+
   override fun attach(view: MainView) {
     super.attach(view)
-    addDisposable(gethNode.status()
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
-        .subscribe({
-          attachedView().updateSyncStatus(it)
-        }) {
-          Timber.v(it, "Failed")
-        }
-    )
     bus.register(this, TransactionStatusEvent::class.java, {
-      this.view?.notifyTransactionMined(it.txHash, it.success)
+      attachedView().notifyTransactionMined(it.txHash, it.success)
     })
     bus.register(this, ContractStatusEvent::class.java, {
-      this.view?.notifyContractMined(it.address, it.txHash, it.success)
+      attachedView().notifyContractMined(it.address, it.txHash, it.success)
     })
   }
 
