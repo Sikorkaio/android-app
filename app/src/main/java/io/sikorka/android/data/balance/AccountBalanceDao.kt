@@ -13,4 +13,7 @@ abstract class AccountBalanceDao : BaseDao<AccountBalance> {
 
   @Query("select * from account_balance where address_hex = :addressHex")
   abstract fun getBalance(addressHex: String): AccountBalance
+
+  @Query("delete from account_balance where address_hex = :hex")
+  abstract fun deleteByHex(hex: String)
 }

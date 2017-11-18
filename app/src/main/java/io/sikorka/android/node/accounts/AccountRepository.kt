@@ -70,6 +70,7 @@ class AccountRepository
   fun deleteAccount(account: SikorkaAccount, passphrase: String): Completable = Completable.fromCallable {
     val matchingAccount = keystore.accounts.all().first { it.address.hex == account.address.hex }
     keystore.deleteAccount(matchingAccount, passphrase)
+    accountBalanceDao.deleteByHex(account.address.hex)
   }.onErrorResumeNext {
     val message = it.message ?: ""
     if (message.contains("could not decrypt key with given passphrase")) {
