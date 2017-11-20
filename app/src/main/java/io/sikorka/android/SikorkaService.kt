@@ -24,7 +24,7 @@ class SikorkaService : Service() {
   private lateinit var notificationManager: NotificationManager
 
   @Inject lateinit var gethNode: GethNode
-  @Inject lateinit var contractMonitor: DeployedContractMonitor
+  @Inject lateinit var contractMonitor: PendingContractMonitor
   @Inject lateinit var pendingTransactionMonitor: PendingTransactionMonitor
   @Inject lateinit var accountBalanceMonitor: AccountBalanceMonitor
   @Inject lateinit var schedulerProvider: SchedulerProvider
@@ -55,9 +55,11 @@ class SikorkaService : Service() {
           Timber.v(it, "failed")
         })
 
-    contractMonitor.setOnDeploymentStatusUpdateListener { status, contractAddress, txHash ->
-      val notification = statusNotification(status, contractAddress, txHash)
-      notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, notification)
+    contractMonitor.setOnDeploymentStatusUpdateListener { receipt ->
+      receipt.run {
+        val notification = statusNotification(successful, contractAddressHex, txHash)
+        notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, notification)
+      }
     }
     bus.register(this, PrepareTransactionStatusEvent::class.java, {
       Timber.v("Handling status")
