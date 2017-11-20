@@ -3,21 +3,20 @@ package io.sikorka.android.ui.accounts
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import io.sikorka.android.R
 import io.sikorka.android.node.accounts.AccountsModel
 import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
+import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import timber.log.Timber
 import toothpick.Toothpick
@@ -26,7 +25,8 @@ import javax.inject.Inject
 
 
 class AccountActivity : AppCompatActivity(), AccountView {
-  @BindView(R.id.accounts__recycler_view) internal lateinit var accountsRecycler: RecyclerView
+  private val accountsRecycler: RecyclerView by bind(R.id.accounts__recycler_view)
+  private val createAccount: FloatingActionButton by bind(R.id.accounts__create_account)
 
   @Inject lateinit var presenter: AccountPresenter
   @Inject lateinit var adapter: AccountAdapter
@@ -37,13 +37,20 @@ class AccountActivity : AppCompatActivity(), AccountView {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account)
     Toothpick.inject(this, scope)
-    ButterKnife.bind(this)
+
     accountsRecycler.adapter = adapter
     accountsRecycler.layoutManager = LinearLayoutManager(this)
     supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)
       it.setDisplayHomeAsUpEnabled(true)
       it.setHomeButtonEnabled(true)
+    }
+
+    createAccount.setOnClickListener {
+      val dialog = AccountCreationDialog.newInstance(supportFragmentManager) {
+        presenter.loadAccounts()
+      }
+      dialog.show()
     }
   }
 
@@ -69,14 +76,6 @@ class AccountActivity : AppCompatActivity(), AccountView {
   override fun onStop() {
     super.onStop()
     presenter.detach()
-  }
-
-  @OnClick(R.id.accounts__create_account)
-  internal fun onCreateAccountClicked(){
-    val dialog = AccountCreationDialog.newInstance(supportFragmentManager) {
-      presenter.loadAccounts()
-    }
-    dialog.show()
   }
 
   override fun accountsLoaded(accounts: AccountsModel) {

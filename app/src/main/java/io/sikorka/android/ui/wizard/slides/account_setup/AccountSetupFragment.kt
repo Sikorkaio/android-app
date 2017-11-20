@@ -7,13 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
+import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.isVisible
 import io.sikorka.android.ui.show
 import toothpick.Toothpick
@@ -27,13 +25,16 @@ import javax.inject.Inject
  */
 class AccountSetupFragment : Fragment(), AccountSetupView {
 
-  @BindView(R.id.account_setup__account_address)
-  internal lateinit var accountAddress: TextView
+  private val accountAddress: TextView by bind(R.id.account_setup__account_address)
 
-  @Inject internal lateinit var presenter: AccountSetupPresenter
+  private val createNew: TextView by bind(R.id.account_setup__create_new)
 
-  @OnClick(R.id.account_setup__create_new)
-  internal fun onCreateNewPressed() {
+  private val importAccount: TextView by bind(R.id.account_setup__import_account)
+
+  @Inject
+  lateinit var presenter: AccountSetupPresenter
+
+  private fun onCreateNewPressed() {
     val fm = fragmentManager ?: fail("fragmentManager was null")
     val dialog = AccountCreationDialog.newInstance(fm) {
       presenter.loadAccount()
@@ -41,8 +42,7 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
     dialog.show()
   }
 
-  @OnClick(R.id.account_setup__import_account)
-  internal fun onAccountImportPressed() {
+  private fun onAccountImportPressed() {
     val context = context ?: fail("context was null")
     AccountImportActivity.start(context)
   }
@@ -64,7 +64,8 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
                             savedInstanceState: Bundle?): View? {
     // Inflate the layout for this fragment
     val view = inflater.inflate(R.layout.fragment__account_setup, container, false)
-    ButterKnife.bind(this, view)
+    createNew.setOnClickListener { onCreateNewPressed() }
+    importAccount.setOnClickListener { onAccountImportPressed() }
     return view
   }
 

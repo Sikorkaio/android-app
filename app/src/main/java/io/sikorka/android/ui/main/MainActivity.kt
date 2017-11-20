@@ -79,7 +79,8 @@ class MainActivity : AppCompatActivity(),
     Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
   }
 
-  @Inject internal lateinit var debugPreferences: DebugPreferencesStore
+  @Inject
+  lateinit var debugPreferences: DebugPreferencesStore
 
   private lateinit var scope: Scope
   private var map: GoogleMap? = null
@@ -273,11 +274,6 @@ class MainActivity : AppCompatActivity(),
     presenter.detach()
     Toothpick.closeScope(this)
     super.onDestroy()
-  }
-
-  override fun onStart() {
-    super.onStart()
-
   }
 
 

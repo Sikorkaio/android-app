@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.sikorka.android.SikorkaService
 import io.sikorka.android.R
+import io.sikorka.android.SikorkaService
 import io.sikorka.android.di.modules.SikorkaModule
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.main.MainActivity
@@ -17,7 +17,8 @@ import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
 
-  @Inject internal lateinit var appPreferences: AppPreferences
+  @Inject
+  lateinit var appPreferences: AppPreferences
 
   override fun onCreate(savedInstanceState: Bundle?) {
     val scope = Toothpick.openScope(application)

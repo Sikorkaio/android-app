@@ -110,10 +110,6 @@ dependencies {
 
   implementation "android.arch.lifecycle:extensions:1.0.0"
 
-  //view injection
-  implementation 'com.jakewharton:butterknife:8.8.1'
-  kapt 'com.jakewharton:butterknife-compiler:8.8.1'
-
   implementation 'com.afollestad.material-dialogs:core:0.9.5.0'
   implementation 'com.afollestad.material-dialogs:commons:0.9.5.0'
 

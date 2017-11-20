@@ -9,8 +9,6 @@ import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
@@ -29,17 +27,10 @@ class GasSelectionDialog : DialogFragment() {
   private lateinit var gas: ContractGas
   private lateinit var onGasSelected: (gas: ContractGas) -> Unit
 
-  @BindView(R.id.gas_selection__gas_price)
-  lateinit var gasPriceInput: TextInputLayout
-
-  @BindView(R.id.gas_selection__gas_price_currency)
-  lateinit var gasPriceUnit: Spinner
-
-  @BindView(R.id.gas_selection__gas_limit)
-  lateinit var gasLimitInput: TextInputLayout
-
-  @BindView(R.id.gas_selection__gas_limit_currency)
-  lateinit var gasLimitUnit: Spinner
+  private lateinit var gasPriceInput: TextInputLayout
+  private lateinit var gasPriceUnit: Spinner
+  private lateinit var gasLimitInput: TextInputLayout
+  private lateinit var gasLimitUnit: Spinner
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -49,7 +40,11 @@ class GasSelectionDialog : DialogFragment() {
 
     val inflater = LayoutInflater.from(context)
     val view = inflater.inflate(R.layout.dialog__gas_selection, null, false)
-    ButterKnife.bind(this, view)
+    gasPriceInput = view.findViewById(R.id.gas_selection__gas_price)
+    gasPriceUnit = view.findViewById(R.id.gas_selection__gas_price_currency)
+    gasLimitInput = view.findViewById(R.id.gas_selection__gas_limit)
+    gasLimitUnit = view.findViewById(R.id.gas_selection__gas_limit_currency)
+
 
     val builder = MaterialDialog.Builder(context)
         .title(R.string.gas_selection__dialog_title)

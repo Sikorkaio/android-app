@@ -7,8 +7,6 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.widget.EditText
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
@@ -16,14 +14,9 @@ import io.sikorka.android.node.contracts.data.ContractGas
 
 class ConfirmDeployDialog : DialogFragment() {
 
-  @BindView(R.id.confirm_deploy__gas_price_wei)
-  lateinit var gasPriceWei: TextView
-
-  @BindView(R.id.confirm_deploy__gas_limit_wei)
-  lateinit var gasLimitWei: TextView
-
-  @BindView(R.id.confirm_deploy__passphrase_input)
-  lateinit var passphraseInput: TextInputLayout
+  private lateinit var gasPriceWei: TextView
+  private lateinit var gasLimitWei: TextView
+  private lateinit var passphraseInput: TextInputLayout
 
   private lateinit var dialog: MaterialDialog
 
@@ -56,7 +49,12 @@ class ConfirmDeployDialog : DialogFragment() {
         }
         .build()
 
-    ButterKnife.bind(this, dialog.view)
+    dialog.view.run {
+      gasLimitWei = findViewById(R.id.confirm_deploy__gas_price_wei)
+      gasLimitWei = findViewById(R.id.confirm_deploy__gas_limit_wei)
+      passphraseInput = findViewById(R.id.confirm_deploy__passphrase_input)
+    }
+
     gasLimitWei.text = contractGas.limit.toString()
     gasPriceWei.text = contractGas.price.toString()
     return dialog

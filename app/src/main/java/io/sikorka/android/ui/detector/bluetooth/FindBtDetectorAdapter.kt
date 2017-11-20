@@ -6,12 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.bind
 import javax.inject.Inject
-
 
 class FindDetectorAdapter
 @Inject constructor() : RecyclerView.Adapter<FindDetectorViewHolder>() {
@@ -47,12 +45,8 @@ class FindDetectorAdapter
 }
 
 class FindDetectorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-  @BindView(R.id.find_detector__detector_name)
-  lateinit var detectorName: TextView
 
-  init {
-    ButterKnife.bind(this, itemView)
-  }
+  private val detectorName: TextView by itemView.bind(R.id.find_detector__detector_name)
 
   fun setName(name: String) {
     detectorName.text = name

@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import io.sikorka.android.R
+import io.sikorka.android.ui.bind
 
 class SelectDetectorTypeAdapter(
     context: Context,
@@ -40,16 +39,9 @@ class SelectDetectorTypeAdapter(
 
   class SelectDetectorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    @BindView(R.id.detector_type__type_icon)
-    lateinit var icon: ImageView
+    private val icon: ImageView by itemView.bind(R.id.detector_type__type_icon)
 
-    @BindView(R.id.detector_type__type_name)
-    lateinit var name: TextView
-
-
-    init {
-      ButterKnife.bind(this, itemView)
-    }
+    private val name: TextView by itemView.bind(R.id.detector_type__type_name)
 
     fun update(supportedDetector: SupportedDetector) {
       icon.setImageResource(supportedDetector.icon)

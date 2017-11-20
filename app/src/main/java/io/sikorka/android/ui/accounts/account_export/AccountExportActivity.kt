@@ -3,18 +3,18 @@ package io.sikorka.android.ui.accounts.account_export
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.ImageButton
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.node.accounts.ValidationResult
+import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.selectDirectory
 import io.sikorka.android.ui.value
 import toothpick.Toothpick
@@ -26,21 +26,19 @@ class AccountExportActivity : AppCompatActivity(),
     AccountExportView,
     FolderChooserDialog.FolderCallback {
 
-  @BindView(R.id.account_export__account_hex)
-  internal lateinit var accountHex: TextView
+  private val accountHex: TextView by bind(R.id.account_export__account_hex)
 
-  @BindView(R.id.account_export__path_input)
-  internal lateinit var exportPathInput: TextInputLayout
+  private val exportPathInput: TextInputLayout by bind(R.id.account_export__path_input)
 
-  @BindView(R.id.account_export__passphrase)
-  internal lateinit var accountPassphrase: TextInputLayout
+  private val accountPassphrase: TextInputLayout by bind(R.id.account_export__passphrase)
 
-  @BindView(R.id.account_export__encryption_passphrase)
-  internal lateinit var encryptionPassphrase: TextInputLayout
+  private val encryptionPassphrase: TextInputLayout by bind(R.id.account_export__encryption_passphrase)
 
-  @BindView(R.id.account_export__encryption_passphrase_confirmation)
-  internal lateinit var encryptionPassphraseConfirmation: TextInputLayout
+  private val encryptionPassphraseConfirmation: TextInputLayout by bind(R.id.account_export__encryption_passphrase_confirmation)
 
+  private val accountExportFab: FloatingActionButton by bind(R.id.account_export__export_fab)
+
+  private val selectDirectoryButton: ImageButton by bind(R.id.account_export__select_directory)
 
   private val account: String
     get() = accountHex.value()
@@ -60,18 +58,7 @@ class AccountExportActivity : AppCompatActivity(),
   private val hex: String
     get() = intent?.getStringExtra(ACCOUNT_HEX) ?: ""
 
-  @Inject internal lateinit var presenter: AccountExportPresenter
-
-
-  @OnClick(R.id.account_export__select_directory)
-  internal fun onSelectDirectory() {
-    selectDirectory()
-  }
-
-  @OnClick(R.id.account_export__export_fab)
-  internal fun onExport() {
-    presenter.export(account, passphrase, encryptionPass, encryptionPassConfirmation, exportPath)
-  }
+  @Inject lateinit var presenter: AccountExportPresenter
 
   private fun clearErrors() {
     exportPathInput.error = null
@@ -122,11 +109,17 @@ class AccountExportActivity : AppCompatActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_export)
     Toothpick.inject(this, scope)
-    ButterKnife.bind(this)
+
     supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)
       it.setDisplayHomeAsUpEnabled(true)
     }
+
+    accountExportFab.setOnClickListener {
+      presenter.export(account, passphrase, encryptionPass, encryptionPassConfirmation, exportPath)
+    }
+
+    selectDirectoryButton.setOnClickListener { selectDirectory() }
   }
 
   override fun onDestroy() {

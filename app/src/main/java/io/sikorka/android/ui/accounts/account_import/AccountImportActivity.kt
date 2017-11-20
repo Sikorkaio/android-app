@@ -1,17 +1,17 @@
-package io.sikorka.android.ui.accounts.account_import;
+package io.sikorka.android.ui.accounts.account_import
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
+import android.widget.ImageButton
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog
 import io.sikorka.android.R
+import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.selectFile
 import io.sikorka.android.ui.setValue
 import io.sikorka.android.ui.value
@@ -25,18 +25,17 @@ class AccountImportActivity : AppCompatActivity(),
     AccountImportView,
     FileChooserDialog.FileCallback {
 
-  @BindView(R.id.account_import__file_passphrase)
-  internal lateinit var filePassphraseInput: TextInputLayout
+  private val filePassphraseInput: TextInputLayout by bind(R.id.account_import__file_passphrase)
 
-  @BindView(R.id.account_import__account_passphrase)
-  internal lateinit var accountPassphraseInput: TextInputLayout
+  private val accountPassphraseInput: TextInputLayout by bind(R.id.account_import__account_passphrase)
 
-  @BindView(R.id.account_import__account_passphrase_confirmation)
-  internal lateinit var accountPassphraseConfirmationInput: TextInputLayout
+  private val accountPassphraseConfirmationInput: TextInputLayout by bind(R.id.account_import__account_passphrase_confirmation)
 
-  @BindView(R.id.account_import__file_path)
-  internal lateinit var filePathInput: TextInputLayout
+  private val filePathInput: TextInputLayout by bind(R.id.account_import__file_path)
 
+  private val importAction: FloatingActionButton by bind(R.id.account_import__import_action)
+
+  private val selectFileButton: ImageButton by bind(R.id.account_import__select_file_button)
 
   private val filePassphrase: String
     get() = filePassphraseInput.value()
@@ -50,21 +49,10 @@ class AccountImportActivity : AppCompatActivity(),
   private val filePath: String
     get() = filePathInput.value()
 
-
   private lateinit var scope: Scope
 
-  @Inject internal lateinit var presenter: AccountImportPresenter
-
-
-  @OnClick(R.id.account_import__import_action)
-  internal fun onImportPressed() {
-    presenter.import(filePath, filePassphrase, accountPassphrase, accountPassphraseConfirmation)
-  }
-
-  @OnClick(R.id.account_import__select_file_button)
-  internal fun onFileSelectPressed() {
-    selectFile()
-  }
+  @Inject
+  lateinit var presenter: AccountImportPresenter
 
   override fun onFileChooserDismissed(dialog: FileChooserDialog) {
     // do nothing
@@ -89,11 +77,15 @@ class AccountImportActivity : AppCompatActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_import)
     Toothpick.inject(this, scope)
-    ButterKnife.bind(this)
+
     supportActionBar?.let {
       it.setDisplayShowHomeEnabled(true)
       it.setDisplayHomeAsUpEnabled(true)
     }
+    importAction.setOnClickListener {
+      presenter.import(filePath, filePassphrase, accountPassphrase, accountPassphraseConfirmation)
+    }
+    selectFileButton.setOnClickListener { selectFile() }
   }
 
   override fun onDestroy() {

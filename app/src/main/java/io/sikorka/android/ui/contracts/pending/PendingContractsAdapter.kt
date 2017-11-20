@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import io.sikorka.android.R
 import io.sikorka.android.data.PendingContract
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.bind
 
 
 class PendingContractsAdapter : RecyclerView.Adapter<PendingContractsAdapter.PendingContractsViewHolder>() {
@@ -38,15 +37,10 @@ class PendingContractsAdapter : RecyclerView.Adapter<PendingContractsAdapter.Pen
 
 
   class PendingContractsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    @BindView(R.id.pending_contract__contract_address)
-    lateinit var address: TextView
 
-    @BindView(R.id.pending_contract__contract_transaction)
-    lateinit var transaction: TextView
+    private val address: TextView by itemView.bind(R.id.pending_contract__contract_address)
 
-    init {
-      ButterKnife.bind(this, itemView)
-    }
+    private val transaction: TextView by itemView.bind(R.id.pending_contract__contract_transaction)
 
     fun bindContract(contract: PendingContract) {
       address.text = contract.contractAddress
