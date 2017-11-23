@@ -75,21 +75,7 @@ class FindBtDetectorActivity : AppCompatActivity(), FindBtDetectorView {
 
     discover()
     find_detector__swipe_layout.setOnRefreshListener { discover() }
-  }
-
-  override fun onDestroy() {
-    Toothpick.closeScope(this)
-    if (isFinishing) {
-      Toothpick.closeScope(PRESENTER_SCOPE)
-    }
-    compositeDisposable.clear()
-    super.onDestroy()
-  }
-
-  override fun onStart() {
-    super.onStart()
     presenter.attach(this)
-
 
     detectorAdapter.setOnClickListener {
       val dialog = progress(
@@ -112,10 +98,15 @@ class FindBtDetectorActivity : AppCompatActivity(), FindBtDetectorView {
     }
   }
 
-  override fun onStop() {
-    presenter.detach()
+  override fun onDestroy() {
     detectorAdapter.setOnClickListener(null)
-    super.onStop()
+    presenter.detach()
+    Toothpick.closeScope(this)
+    if (isFinishing) {
+      Toothpick.closeScope(PRESENTER_SCOPE)
+    }
+    compositeDisposable.clear()
+    super.onDestroy()
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {

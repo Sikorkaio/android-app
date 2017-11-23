@@ -89,25 +89,16 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
         presenter.prepareDeployWithDefaults()
       }
     }
+    presenter.attach(this)
   }
 
   override fun onDestroy() {
+    presenter.detach()
     Toothpick.closeScope(this)
     if (isFinishing) {
       Toothpick.closeScope(PRESENTER_SCOPE)
     }
     super.onDestroy()
-  }
-
-  override fun onStart() {
-    super.onStart()
-    presenter.attach(this)
-  }
-
-
-  override fun onStop() {
-    super.onStop()
-    presenter.detach()
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {

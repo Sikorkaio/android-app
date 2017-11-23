@@ -52,16 +52,6 @@ class AccountActivity : AppCompatActivity(), AccountView {
       }
       dialog.show()
     }
-  }
-
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
-
-  override fun onStart() {
-    super.onStart()
     presenter.attach(this)
     presenter.loadAccounts()
     adapter.setAccountActionListeners({ account ->
@@ -73,9 +63,10 @@ class AccountActivity : AppCompatActivity(), AccountView {
     }
   }
 
-  override fun onStop() {
-    super.onStop()
+  override fun onDestroy() {
     presenter.detach()
+    Toothpick.closeScope(this)
+    super.onDestroy()
   }
 
   override fun accountsLoaded(accounts: AccountsModel) {

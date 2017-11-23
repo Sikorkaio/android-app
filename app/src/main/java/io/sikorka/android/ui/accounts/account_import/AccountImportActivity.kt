@@ -86,21 +86,13 @@ class AccountImportActivity : AppCompatActivity(),
       presenter.import(filePath, filePassphrase, accountPassphrase, accountPassphraseConfirmation)
     }
     selectFileButton.setOnClickListener { selectFile() }
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
-
-  override fun onStart() {
-    super.onStart()
     presenter.attach(this)
   }
 
-  override fun onStop() {
-    super.onStop()
+  override fun onDestroy() {
     presenter.detach()
+    Toothpick.closeScope(this)
+    super.onDestroy()
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {

@@ -120,22 +120,14 @@ class AccountExportActivity : AppCompatActivity(),
     }
 
     selectDirectoryButton.setOnClickListener { selectDirectory() }
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
-
-  override fun onStart() {
-    super.onStart()
     presenter.attach(this)
     accountHex.text = hex
   }
 
-  override fun onStop() {
-    super.onStop()
+  override fun onDestroy() {
     presenter.detach()
+    Toothpick.closeScope(this)
+    super.onDestroy()
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {

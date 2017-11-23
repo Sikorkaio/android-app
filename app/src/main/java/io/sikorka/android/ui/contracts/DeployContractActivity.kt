@@ -69,6 +69,8 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
       setDisplayHomeAsUpEnabled(true)
       setHomeButtonEnabled(true)
     }
+    presenter.attach(this)
+    presenter.load()
   }
 
   override fun showError(code: Int) {
@@ -122,19 +124,9 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     }
 
   override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
-
-  override fun onStart() {
-    super.onStart()
-    presenter.attach(this)
-    presenter.load()
-  }
-
-  override fun onStop() {
-    super.onStop()
     presenter.detach()
+    Toothpick.closeScope(this)
+    super.onDestroy()
   }
 
   override fun setSuggestedGasPrice(gasPrice: Long) {

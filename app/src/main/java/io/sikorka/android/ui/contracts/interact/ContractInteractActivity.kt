@@ -95,6 +95,8 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
     interact_contract__interact_with_detector.adapter = DetectorSpinnerAdapter(this, detectors())
     interact_contract__interact_with_detector.setSelection(0)
+    presenter.attach(this)
+    presenter.load(contractAddress)
   }
 
   override fun startDetectorFlow() {
@@ -114,23 +116,13 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
   }
 
   override fun onDestroy() {
-    super.onDestroy()
+    presenter.detach()
     Toothpick.closeScope(this)
-  }
-
-  override fun onStart() {
-    super.onStart()
-    presenter.attach(this)
-    presenter.load(contractAddress)
+    super.onDestroy()
   }
 
   override fun noDetector() {
     interact_contract__detector_address_group.gone()
-  }
-
-  override fun onStop() {
-    super.onStop()
-    presenter.detach()
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {

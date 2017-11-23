@@ -44,25 +44,17 @@ class PendingContractsActivity : AppCompatActivity(), PendingContractsView {
       setHomeButtonEnabled(true)
       title = getString(R.string.pending_contracts__title)
     }
+    presenter.attach(this)
+    presenter.load()
   }
 
   override fun onDestroy() {
+    presenter.detach()
     Toothpick.closeScope(this)
     if (isFinishing) {
       Toothpick.closeScope(PRESENTER_SCOPE)
     }
     super.onDestroy()
-  }
-
-  override fun onStart() {
-    super.onStart()
-    presenter.attach(this)
-    presenter.load()
-  }
-
-  override fun onStop() {
-    super.onStop()
-    presenter.detach()
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
