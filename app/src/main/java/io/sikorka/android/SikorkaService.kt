@@ -57,7 +57,7 @@ class SikorkaService : Service() {
 
     contractMonitor.setOnDeploymentStatusUpdateListener { receipt ->
       receipt.run {
-        val notification = statusNotification(successful, contractAddressHex, txHash)
+        val notification = statusNotification(successful, contractAddress(), txHash)
         notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, notification)
       }
     }
@@ -97,6 +97,13 @@ class SikorkaService : Service() {
       stopSelf()
       START_NOT_STICKY
     }
+  }
+
+  override fun onTaskRemoved(rootIntent: Intent?) {
+    super.onTaskRemoved(rootIntent)
+    Timber.v("Task is being removed, stopping service")
+    stopSelf()
+    notificationManager.cancel(NOTIFICATION_ID)
   }
 
   private fun createNotificationChannel() {
@@ -190,8 +197,6 @@ class SikorkaService : Service() {
         context.startService(Intent(context, SikorkaService::class.java))
       }
     }
-
-
   }
 }
 
