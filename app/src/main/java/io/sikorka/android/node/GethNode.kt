@@ -78,8 +78,6 @@ constructor(
     )
   }
 
-  fun observeHeaders(): Observable<Header> = headerRelay
-
   fun stop() {
     Timber.v("Stoping geth node.")
     try {
@@ -122,19 +120,6 @@ constructor(
   }.timeout(1, TimeUnit.SECONDS).onErrorReturn { ContractGas(0, 0) }
 
   fun ethereumClient(): Single<EthereumClient> = Single.fromCallable { ethereumClient }
-
-  fun getReceipt(transactionHex: String): Single<Receipt> = Single.fromCallable {
-    val hash = Geth.newHashFromHex(transactionHex)
-    return@fromCallable ethereumClient.getTransactionReceipt(ethContext, hash)
-  }.onErrorResumeNext {
-    val message = it.message ?: ""
-    val throwable = if (message.contains("not found", true)) {
-      TransactionNotFoundException(transactionHex, it)
-    } else {
-      it
-    }
-    return@onErrorResumeNext Single.error<Receipt>(throwable)
-  }
 
   private val ethereumClient: EthereumClient
     get() {

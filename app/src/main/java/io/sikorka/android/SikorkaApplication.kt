@@ -2,6 +2,7 @@ package io.sikorka.android
 
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.squareup.leakcanary.LeakCanary
 import io.sikorka.android.di.modules.SikorkaModule
 import timber.log.Timber
 import toothpick.Toothpick
@@ -32,6 +33,7 @@ class SikorkaApplication : Application() {
           return "${super.createStackElementTag(element)}:${element.lineNumber} [${Thread.currentThread().name}]"
         }
       })
+      LeakCanary.install(this)
     }
   }
 }

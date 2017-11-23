@@ -8,8 +8,13 @@ import javax.inject.Inject
 
 class SchedulerProviderImpl
 @Inject constructor() : SchedulerProvider {
+
   private val executor = Executors.newSingleThreadExecutor { Thread(it, "db-operations") }
+  private val monitorExecutor = Executors.newSingleThreadExecutor { Thread(it, "monitor") }
   private val dbScheduler = Schedulers.from(executor)
+  private val monitorScheduler = Schedulers.from(monitorExecutor)
+
+  override fun monitor(): Scheduler = monitorScheduler
 
   override fun db(): Scheduler = dbScheduler
 

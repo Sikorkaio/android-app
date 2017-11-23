@@ -17,7 +17,7 @@ import javax.inject.Inject
 class AccountBalanceMonitor
 @Inject constructor(
     private val lightClientProvider: LightClientProvider,
-    private val syncStatusProvider: SyncStatusProvider,
+    syncStatusProvider: SyncStatusProvider,
     private val accountBalanceDao: AccountBalanceDao,
     private val accountRepository: AccountRepository,
     private val schedulerProvider: SchedulerProvider
@@ -25,6 +25,11 @@ class AccountBalanceMonitor
 
   init {
     syncStatusProvider.observe(this, Observer {
+
+      if (it == null || !it.syncing) {
+        return@Observer
+      }
+
       accountRepository.getAccountAddresses().flatMapCompletable { address ->
         return@flatMapCompletable if (!lightClientProvider.initialized) {
           Completable.complete()
@@ -33,9 +38,7 @@ class AccountBalanceMonitor
           updateBalance(client, address)
         }
       }.subscribeOn(schedulerProvider.db())
-          .subscribe({
-            Timber.v("balance was updated")
-          }) { ex ->
+          .subscribe({ }) { ex ->
             Timber.e(ex, "Failed to update balance")
           }
     })

@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 class PendingContractMonitor
 @Inject constructor(
+    syncStatusProvider: SyncStatusProvider,
     private val lightClientProvider: LightClientProvider,
-    private val syncStatusProvider: SyncStatusProvider,
     private val pendingContractDao: PendingContractDao,
     private val schedulerProvider: SchedulerProvider,
     private val bus: RxBus
@@ -35,13 +35,16 @@ class PendingContractMonitor
 
       composite.add(pendingContractDao.getAllPendingContracts()
           .flatMap { it.toFlowable() }
-          .flatMapSingle { lightClient.getTransactionReceipt(it.transactionHash) }
-          .observeOn(schedulerProvider.io())
-          .subscribeOn(schedulerProvider.io())
+          .flatMapSingle { pending ->
+            lightClient.getTransactionReceipt(pending.transactionHash)
+                .map { it.withContractAddress(pending.contractAddress) }
+          }
+          .observeOn(schedulerProvider.monitor())
+          .subscribeOn(schedulerProvider.monitor())
           .subscribe({
-            pendingContractDao.deleteByContractAddress(it.contractAddressHex)
+            pendingContractDao.deleteByContractAddress(it.contractAddress())
             onDeploymentStatusUpdateListener?.invoke(it)
-            bus.post(ContractStatusEvent(it.contractAddressHex, it.txHash, it.successful))
+            bus.post(ContractStatusEvent(it.contractAddress(), it.txHash, it.successful))
           }) {
             Timber.e(it, "Db operation failed")
           })

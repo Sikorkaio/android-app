@@ -17,12 +17,12 @@ static def revision() {
 }
 
 android {
-  compileSdkVersion 26
+  compileSdkVersion 27
   buildToolsVersion '27.0.1'
   defaultConfig {
     applicationId "io.sikorka.android"
     minSdkVersion 17
-    targetSdkVersion 26
+    targetSdkVersion 27
     versionCode 1
     versionName "1.0.0-alpha.1"
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -59,25 +59,28 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'com.android.support:support-v4:27.0.0'
-  implementation 'com.android.support:support-v13:27.0.0'
-  implementation 'com.android.support:support-vector-drawable:27.0.0'
+  implementation 'com.android.support:support-v4:27.0.1'
+  implementation 'com.android.support:support-v13:27.0.1'
+  implementation 'com.android.support:support-vector-drawable:27.0.1'
   androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
 
   // Support libraries
-  implementation 'com.android.support:appcompat-v7:27.0.0'
-  implementation 'com.android.support:recyclerview-v7:27.0.0'
-  implementation 'com.android.support:design:27.0.0'
-  implementation 'com.android.support:preference-v7:27.0.0'
-  implementation 'com.android.support:preference-v14:27.0.0'
+  implementation 'com.android.support:appcompat-v7:27.0.1'
+  implementation 'com.android.support:recyclerview-v7:27.0.1'
+  implementation 'com.android.support:design:27.0.1'
+  implementation 'com.android.support:preference-v7:27.0.1'
+  implementation 'com.android.support:preference-v14:27.0.1'
 
   implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
 
   // Custom build of master with an addition to an unmarshal issue
   // https://github.com/ethereum/go-ethereum/issues/14832#issuecomment-322965627
-  implementation 'geth-android:geth:1.7.2-unstable'
+  // build of 049797d40 master (plus mobile single unmarshal fix)
+  implementation 'geth-android:geth:1.7.3-unstable'
+
+
   implementation 'com.squareup.okio:okio:1.13.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
