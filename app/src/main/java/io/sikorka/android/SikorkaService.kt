@@ -7,10 +7,10 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
+import io.sikorka.android.core.GethNode
+import io.sikorka.android.core.monitor.*
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.events.RxBus
-import io.sikorka.android.node.GethNode
-import io.sikorka.android.node.monitor.*
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber

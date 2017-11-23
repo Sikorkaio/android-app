@@ -9,8 +9,8 @@ import android.widget.EditText
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
+import io.sikorka.android.core.contracts.data.ContractGas
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.contracts.data.ContractGas
 
 class ConfirmDeployDialog : DialogFragment() {
 

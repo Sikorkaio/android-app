@@ -1,14 +1,14 @@
 package io.sikorka.android.ui.contracts.interact
 
 import io.sikorka.android.contract.DiscountContract
+import io.sikorka.android.core.GethNode
+import io.sikorka.android.core.contracts.ContractRepository
+import io.sikorka.android.core.contracts.data.ContractGas
 import io.sikorka.android.data.PendingTransaction
 import io.sikorka.android.data.PendingTransactionDao
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.node.GethNode
-import io.sikorka.android.node.contracts.ContractRepository
-import io.sikorka.android.node.contracts.data.ContractGas
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.Address
 import org.threeten.bp.Instant.now

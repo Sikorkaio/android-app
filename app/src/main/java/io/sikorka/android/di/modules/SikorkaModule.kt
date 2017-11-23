@@ -1,5 +1,10 @@
 package io.sikorka.android.di.modules
 
+import io.sikorka.android.core.accounts.PassphraseValidator
+import io.sikorka.android.core.accounts.PassphraseValidatorImpl
+import io.sikorka.android.core.configuration.ConfigurationProvider
+import io.sikorka.android.core.configuration.ConfigurationProviderImpl
+import io.sikorka.android.core.ethereumclient.LightClientProvider
 import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.data.PendingContractDao
 import io.sikorka.android.data.PendingTransactionDao
@@ -11,11 +16,6 @@ import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.RxBusImpl
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.StorageManagerImpl
-import io.sikorka.android.node.accounts.PassphraseValidator
-import io.sikorka.android.node.accounts.PassphraseValidatorImpl
-import io.sikorka.android.node.configuration.ConfigurationProvider
-import io.sikorka.android.node.configuration.ConfigurationProviderImpl
-import io.sikorka.android.node.ethereumclient.LightClientProvider
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.settings.AppPreferencesImpl
 import io.sikorka.android.ui.settings.DebugPreferencesStore

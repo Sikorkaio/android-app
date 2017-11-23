@@ -1,8 +1,8 @@
 package io.sikorka.android.ui.contracts.interact
 
+import io.sikorka.android.core.contracts.data.ContractGas
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
-import io.sikorka.android.node.contracts.data.ContractGas
 import toothpick.config.Module
 
 

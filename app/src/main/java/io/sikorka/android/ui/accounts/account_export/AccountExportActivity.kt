@@ -12,8 +12,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import io.sikorka.android.R
+import io.sikorka.android.core.accounts.ValidationResult
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.accounts.ValidationResult
 import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.selectDirectory
 import io.sikorka.android.ui.value

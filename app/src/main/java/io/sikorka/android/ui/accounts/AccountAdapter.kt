@@ -4,8 +4,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.sikorka.android.R
+import io.sikorka.android.core.accounts.AccountsModel
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.accounts.AccountsModel
 import javax.inject.Inject
 
 class AccountAdapter

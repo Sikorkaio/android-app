@@ -11,12 +11,12 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
+import io.sikorka.android.core.EtherUnits
+import io.sikorka.android.core.contracts.data.ContractGas
+import io.sikorka.android.core.findUnit
+import io.sikorka.android.core.valueToUnit
+import io.sikorka.android.core.valueToWei
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.EtherUnits
-import io.sikorka.android.node.contracts.data.ContractGas
-import io.sikorka.android.node.findUnit
-import io.sikorka.android.node.valueToUnit
-import io.sikorka.android.node.valueToWei
 import toothpick.Toothpick
 
 class GasSelectionDialog : DialogFragment() {

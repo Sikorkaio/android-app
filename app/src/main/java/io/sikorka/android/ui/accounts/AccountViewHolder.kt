@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import io.sikorka.android.R
-import io.sikorka.android.eth.Account
+import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BaseViewHolder
 import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.showConfirmation

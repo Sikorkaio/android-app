@@ -1,7 +1,7 @@
 package io.sikorka.android.settings
 
 import android.content.SharedPreferences
-import io.sikorka.android.node.configuration.Network
+import io.sikorka.android.core.configuration.Network
 import javax.inject.Inject
 
 class AppPreferencesImpl

@@ -12,8 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import io.sikorka.android.R
+import io.sikorka.android.core.configuration.Network
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.configuration.Network
 import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.showShortSnack
 import toothpick.Toothpick

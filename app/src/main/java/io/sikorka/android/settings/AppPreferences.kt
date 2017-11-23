@@ -1,6 +1,6 @@
 package io.sikorka.android.settings
 
-import io.sikorka.android.node.configuration.Network
+import io.sikorka.android.core.configuration.Network
 
 interface AppPreferences {
 

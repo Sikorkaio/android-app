@@ -1,9 +1,9 @@
 package io.sikorka.android.ui.accounts
 
-import io.sikorka.android.eth.Account
+import io.sikorka.android.core.accounts.AccountsModel
+import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
-import io.sikorka.android.node.accounts.AccountsModel
 
 interface AccountPresenter : Presenter<AccountView> {
   /**

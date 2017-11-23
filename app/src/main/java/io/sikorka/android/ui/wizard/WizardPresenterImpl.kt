@@ -1,7 +1,7 @@
 package io.sikorka.android.ui.wizard
 
+import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.node.accounts.AccountRepository
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import javax.inject.Inject
 

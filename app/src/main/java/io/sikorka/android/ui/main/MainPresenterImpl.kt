@@ -1,15 +1,15 @@
 package io.sikorka.android.ui.main
 
 import android.arch.lifecycle.Observer
+import io.sikorka.android.core.accounts.AccountModel
+import io.sikorka.android.core.accounts.AccountRepository
+import io.sikorka.android.core.contracts.ContractRepository
+import io.sikorka.android.core.monitor.ContractStatusEvent
+import io.sikorka.android.core.monitor.TransactionStatusEvent
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.node.accounts.AccountModel
-import io.sikorka.android.node.accounts.AccountRepository
-import io.sikorka.android.node.contracts.ContractRepository
-import io.sikorka.android.node.monitor.ContractStatusEvent
-import io.sikorka.android.node.monitor.TransactionStatusEvent
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
 import javax.inject.Inject

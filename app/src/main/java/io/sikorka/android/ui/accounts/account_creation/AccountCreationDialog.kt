@@ -10,9 +10,9 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
+import io.sikorka.android.core.accounts.ValidationResult
+import io.sikorka.android.core.accounts.ValidationResult.Code
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.accounts.ValidationResult
-import io.sikorka.android.node.accounts.ValidationResult.Code
 import io.sikorka.android.ui.asString
 import toothpick.Toothpick
 import javax.inject.Inject

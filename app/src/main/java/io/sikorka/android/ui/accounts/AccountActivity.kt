@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import io.sikorka.android.R
-import io.sikorka.android.node.accounts.AccountsModel
+import io.sikorka.android.core.accounts.AccountsModel
 import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity

@@ -1,10 +1,10 @@
 package io.sikorka.android.ui.accounts.account_import
 
+import io.sikorka.android.core.accounts.AccountRepository
+import io.sikorka.android.core.accounts.PassphraseValidator
+import io.sikorka.android.core.accounts.ValidationResult
 import io.sikorka.android.io.toByteArray
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.node.accounts.AccountRepository
-import io.sikorka.android.node.accounts.PassphraseValidator
-import io.sikorka.android.node.accounts.ValidationResult
 import org.ethereum.geth.Account
 import java.io.File
 import javax.inject.Inject

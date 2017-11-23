@@ -1,7 +1,7 @@
 package io.sikorka.android.io
 
 import android.app.Application
-import io.sikorka.android.node.configuration.ConfigurationProvider
+import io.sikorka.android.core.configuration.ConfigurationProvider
 import org.apache.commons.io.FileUtils
 import java.io.File
 import javax.inject.Inject

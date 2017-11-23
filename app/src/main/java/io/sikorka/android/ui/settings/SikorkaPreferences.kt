@@ -7,10 +7,10 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
+import io.sikorka.android.core.configuration.Network
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.bytes
-import io.sikorka.android.node.configuration.Network
 import io.sikorka.android.settings.AppPreferences
 import toothpick.Scope
 import toothpick.Toothpick
