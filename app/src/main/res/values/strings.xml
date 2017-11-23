@@ -167,6 +167,7 @@
   <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
   <string name="contract_interact__select_method">Select contract method to interact with</string>
   <string name="contract_interact__select_method_choose">Choose</string>
+  <string name="main_nav__no_syncing">Not syncing</string>
 
 
 </resources>

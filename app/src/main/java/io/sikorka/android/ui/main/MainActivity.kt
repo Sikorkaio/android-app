@@ -189,12 +189,16 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun updateSyncStatus(status: SyncStatus) {
-    val statusMessage = getString(
+    val statusMessage = if (status.syncing) {
+      getString(
         R.string.main_nav__network_statistics,
         status.peers,
         status.currentBlock,
         status.highestBlock
     )
+    } else {
+      getString(R.string.main_nav__no_syncing)
+    }
     main__nav_network_statistics.text = statusMessage
   }
 

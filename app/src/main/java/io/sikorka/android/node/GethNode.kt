@@ -179,7 +179,7 @@ constructor(
     val peerCount = peers.size().toInt()
     loggingThrottler.accept(peers)
     val (current, highest) = syncProgress(ethNode.ethereumClient)
-    val syncStatus = SyncStatus(true, peerCount, current, highest)
+    val syncStatus = SyncStatus(peerCount > 0, peerCount, current, highest)
 
     if (syncStatusProvider.value != syncStatus) {
       syncStatusProvider.postValue(syncStatus)
