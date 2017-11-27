@@ -3,12 +3,13 @@ package io.sikorka.android.ui.main
 import android.arch.lifecycle.Observer
 import io.sikorka.android.core.accounts.AccountModel
 import io.sikorka.android.core.accounts.AccountRepository
-import io.sikorka.android.core.contracts.ContractRepository
 import io.sikorka.android.core.monitor.ContractStatusEvent
 import io.sikorka.android.core.monitor.TransactionStatusEvent
+import io.sikorka.android.data.contracts.ContractRepository
+import io.sikorka.android.data.location.UserLocation
+import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.events.RxBus
-import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
@@ -20,6 +21,7 @@ constructor(
     private val accountRepository: AccountRepository,
     private val contractRepository: ContractRepository,
     private val schedulerProvider: SchedulerProvider,
+    private val locationProvider: UserLocationProvider,
     syncStatusProvider: SyncStatusProvider,
     private val bus: RxBus
 ) : MainPresenter, BasePresenter<MainView>() {
@@ -38,6 +40,10 @@ constructor(
       val model = AccountModel(it.addressHex, it.balance)
       attachedView().updateAccountInfo(model)
     })
+  }
+
+  override fun userLocation(userLocation: UserLocation) {
+    locationProvider.value = userLocation
   }
 
   override fun attach(view: MainView) {
@@ -70,29 +76,7 @@ constructor(
   }
 
   private fun loadDeployed() {
-    addDisposable(contractRepository.getDeployedContracts()
-        .toObservable()
-        .startWith(Lce.loading())
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
-        .doOnTerminate {
-          Timber.v("termin")
-          attachedView().loading(false)
-        }
-        .subscribe({
-          Timber.v("Deployed retrieval completed ${it.success()}")
-          when {
-            it.success() -> attachedView().update(it.data())
-            it.failure() -> {
-              attachedView().error(it.error())
-              Timber.v(it.error())
-            }
-            it.loading() -> attachedView().loading(true)
-          }
-        }) {
-          Timber.v(it)
-        }
-    )
+
   }
 
 }

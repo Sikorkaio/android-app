@@ -27,6 +27,7 @@ class SikorkaService : Service() {
   @Inject lateinit var contractMonitor: PendingContractMonitor
   @Inject lateinit var pendingTransactionMonitor: PendingTransactionMonitor
   @Inject lateinit var accountBalanceMonitor: AccountBalanceMonitor
+  @Inject lateinit var deployedContractMonitor: DeployedContractMonitor
   @Inject lateinit var schedulerProvider: SchedulerProvider
   @Inject lateinit var bus: RxBus
 
@@ -71,6 +72,8 @@ class SikorkaService : Service() {
             bus.post(TransactionStatusEvent(it.txHash, it.success))
           })
     })
+
+    deployedContractMonitor.start()
   }
 
   override fun onDestroy() {
@@ -81,6 +84,7 @@ class SikorkaService : Service() {
     contractMonitor.stop()
     pendingTransactionMonitor.stop()
     accountBalanceMonitor.stop()
+    deployedContractMonitor.stop()
     Toothpick.closeScope(this)
     super.onDestroy()
   }

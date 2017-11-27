@@ -12,7 +12,7 @@ import android.widget.Spinner
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
 import io.sikorka.android.core.EtherUnits
-import io.sikorka.android.core.contracts.data.ContractGas
+import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.core.findUnit
 import io.sikorka.android.core.valueToUnit
 import io.sikorka.android.core.valueToWei

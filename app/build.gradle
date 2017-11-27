@@ -111,6 +111,8 @@ dependencies {
   kapt "android.arch.persistence.room:compiler:$roomVersion"
   implementation "android.arch.persistence.room:rxjava2:$roomVersion"
 
+  implementation "android.arch.paging:runtime:1.0.0-alpha3"
+
   implementation "android.arch.lifecycle:extensions:1.0.0"
 
   implementation 'com.afollestad.material-dialogs:core:0.9.5.0'
@@ -145,5 +147,6 @@ dependencies {
 kapt {
   arguments {
     arg('toothpick_registry_package_name', 'io.sikorka.android.di')
+    arg("room.schemaLocation", "$projectDir/schemas".toString())
   }
 }

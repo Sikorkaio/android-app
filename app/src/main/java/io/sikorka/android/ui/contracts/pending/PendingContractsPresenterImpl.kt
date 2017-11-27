@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.contracts.pending
 
-import io.sikorka.android.data.PendingContractDao
+import io.sikorka.android.data.contracts.pending.PendingContractDao
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import javax.inject.Inject

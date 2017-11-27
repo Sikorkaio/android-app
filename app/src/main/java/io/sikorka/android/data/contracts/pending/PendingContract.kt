@@ -1,4 +1,4 @@
-package io.sikorka.android.data
+package io.sikorka.android.data.contracts.pending
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity

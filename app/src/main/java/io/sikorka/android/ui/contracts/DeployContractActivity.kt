@@ -15,8 +15,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.R
-import io.sikorka.android.core.contracts.data.ContractData
-import io.sikorka.android.core.contracts.data.ContractGas
+import io.sikorka.android.core.contracts.model.ContractData
+import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.ui.contracts.DeployContractCodes.NO_GAS_PREFERENCES
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.dialogs.showInfo

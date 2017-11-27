@@ -1,10 +1,8 @@
-package io.sikorka.android.core.contracts.data
+package io.sikorka.android.core.contracts.model
 
-data class DetectorContractData(
+data class ContractData(
     override val name: String,
     override val gas: ContractGas,
-    val detectorAddress: String,
-    val secondsAllowed: Int,
     override val latitude: Double,
     override val longitude: Double,
     override val totalSupply: Long

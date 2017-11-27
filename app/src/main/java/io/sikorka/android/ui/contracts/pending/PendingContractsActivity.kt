@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import io.sikorka.android.R
-import io.sikorka.android.data.PendingContract
+import io.sikorka.android.data.contracts.pending.PendingContract
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.show
 import kotlinx.android.synthetic.main.activity_pending_contracts.*

@@ -6,10 +6,11 @@ import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.ConfigurationProviderImpl
 import io.sikorka.android.core.ethereumclient.LightClientProvider
 import io.sikorka.android.data.AppDatabase
-import io.sikorka.android.data.PendingContractDao
-import io.sikorka.android.data.PendingTransactionDao
 import io.sikorka.android.data.balance.AccountBalanceDao
+import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
+import io.sikorka.android.data.contracts.pending.PendingContractDao
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
+import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.di.providers.*
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.events.RxBus
@@ -37,6 +38,7 @@ class SikorkaModule : Module() {
     bind(PendingContractDao::class.java).toProvider(PendingContractDaoProvider::class.java).providesSingletonInScope()
     bind(PendingTransactionDao::class.java).toProvider(PendingTransactionDaoProvider::class.java).providesSingletonInScope()
     bind(AccountBalanceDao::class.java).toProvider(AccountBalanceDaoProvider::class.java).providesSingletonInScope()
+    bind(DeployedSikorkaContractDao::class.java).toProvider(DeployedSikorkaContractDaoProvider::class.java).providesSingletonInScope()
 
     bind(StorageManager::class.java).to(StorageManagerImpl::class.java).singletonInScope()
     bind(DebugPreferencesStore::class.java).to(DebugPreferencesStoreImpl::class.java).singletonInScope()

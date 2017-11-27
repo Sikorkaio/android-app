@@ -8,7 +8,7 @@ import io.reactivex.disposables.Disposable
 import io.sikorka.android.core.accounts.AccountModel
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.IConfiguration
-import io.sikorka.android.core.contracts.data.ContractGas
+import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.core.ethereumclient.LightClient
 import io.sikorka.android.core.ethereumclient.LightClientProvider
 import io.sikorka.android.core.model.converters.SikorkaAddressConverter

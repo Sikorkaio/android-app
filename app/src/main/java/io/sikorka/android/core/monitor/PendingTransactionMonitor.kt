@@ -2,7 +2,7 @@ package io.sikorka.android.core.monitor
 
 import android.arch.lifecycle.Observer
 import io.sikorka.android.core.ethereumclient.LightClientProvider
-import io.sikorka.android.data.PendingTransactionDao
+import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber

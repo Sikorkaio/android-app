@@ -1,7 +1,8 @@
 package io.sikorka.android.ui.main
 
 import io.sikorka.android.core.accounts.AccountModel
-import io.sikorka.android.core.contracts.data.DeployedContractModel
+import io.sikorka.android.core.contracts.model.DeployedContractModel
+import io.sikorka.android.data.location.UserLocation
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
@@ -21,7 +22,7 @@ interface MainView : BaseView {
 
 interface MainPresenter : Presenter<MainView> {
   fun load()
-
+  fun userLocation(userLocation: UserLocation)
 }
 
 class MainModule : Module() {

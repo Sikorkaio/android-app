@@ -49,7 +49,7 @@ class AccountBalanceMonitor
     val addressHex = accountAddress.hex
     val currentBalance = AccountBalance(addressHex = addressHex, balance = accountBalance.toEther())
     val previousBalance = accountBalanceDao.getBalance(addressHex)
-    if (previousBalance.balance != currentBalance.balance) {
+    if (previousBalance == null || previousBalance.balance != currentBalance.balance) {
       accountBalanceDao.insert(currentBalance)
     }
   }

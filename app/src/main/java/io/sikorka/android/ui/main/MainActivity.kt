@@ -30,10 +30,11 @@ import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
 import io.sikorka.android.core.accounts.AccountModel
-import io.sikorka.android.core.contracts.data.DeployedContract
-import io.sikorka.android.core.contracts.data.DeployedContractModel
+import io.sikorka.android.core.contracts.model.DeployedContract
+import io.sikorka.android.core.contracts.model.DeployedContractModel
+import io.sikorka.android.data.location.UserLocation
 import io.sikorka.android.data.syncstatus.SyncStatus
-import io.sikorka.android.ui.MenuTint
+import io.sikorka.android.ui.*
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
@@ -41,13 +42,12 @@ import io.sikorka.android.ui.contracts.pending.PendingContractsActivity
 import io.sikorka.android.ui.detector.select.SelectDetectorTypeActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.useDetector
-import io.sikorka.android.ui.progressSnack
 import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.SettingsActivity
-import io.sikorka.android.ui.show
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
+import kotlinx.android.synthetic.main.content__main.*
 import kotlinx.android.synthetic.main.nav_header__main.*
 import timber.log.Timber
 import toothpick.Scope
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(),
     setContentView(R.layout.activity__main)
     Toothpick.inject(this, scope)
     presenter.attach(this)
-    val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+    val mapFragment = supportFragmentManager.findFragmentById(R.id.main__map) as SupportMapFragment
     mapFragment.getMapAsync(this)
 
     setSupportActionBar(toolbar)
@@ -184,19 +184,25 @@ class MainActivity : AppCompatActivity(),
             latitude = location.latitude
           }
 
+          presenter.userLocation(UserLocation.set(latitude, longitude))
+
           updateMyMarker(latitude, longitude, map)
         })
   }
 
   override fun updateSyncStatus(status: SyncStatus) {
     val statusMessage = if (status.syncing) {
+      main__map.view?.hide()
+      main__empty_text.show()
       getString(
-        R.string.main_nav__network_statistics,
-        status.peers,
-        status.currentBlock,
-        status.highestBlock
-    )
+          R.string.main_nav__network_statistics,
+          status.peers,
+          status.currentBlock,
+          status.highestBlock
+      )
     } else {
+      main__map.view?.show()
+      main__empty_text.gone()
       getString(R.string.main_nav__no_syncing)
     }
     main__nav_network_statistics.text = statusMessage

@@ -1,4 +1,4 @@
-package io.sikorka.android.core.contracts.data
+package io.sikorka.android.core.contracts.model
 
 interface IContractData {
   val name: String

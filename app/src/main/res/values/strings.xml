@@ -168,6 +168,7 @@
   <string name="contract_interact__select_method">Select contract method to interact with</string>
   <string name="contract_interact__select_method_choose">Choose</string>
   <string name="main_nav__no_syncing">Not syncing</string>
+  <string name="main__empty_text">Please wait for syncing to start</string>
 
 
 </resources>

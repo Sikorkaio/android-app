@@ -4,7 +4,7 @@ import android.arch.lifecycle.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.toFlowable
 import io.sikorka.android.core.ethereumclient.LightClientProvider
-import io.sikorka.android.data.PendingContractDao
+import io.sikorka.android.data.contracts.pending.PendingContractDao
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.utils.schedulers.SchedulerProvider

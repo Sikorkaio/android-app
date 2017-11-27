@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.R
-import io.sikorka.android.core.contracts.data.ContractGas
+import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.detector.select.SupportedDetector
 import io.sikorka.android.ui.detector.select.SupportedDetectors

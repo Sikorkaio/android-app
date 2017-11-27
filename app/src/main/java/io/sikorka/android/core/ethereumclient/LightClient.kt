@@ -4,6 +4,7 @@ import io.reactivex.Single
 import io.sikorka.android.core.TransactionNotFoundException
 import io.sikorka.android.core.model.TransactionReceipt
 import io.sikorka.android.core.model.converters.GethReceiptConverter
+import org.ethereum.geth.BoundContract
 import org.ethereum.geth.Context
 import org.ethereum.geth.EthereumClient
 import org.ethereum.geth.Geth
@@ -38,5 +39,9 @@ class LightClient(
     val accountAddress = Geth.newAddressFromHex(address.hex)
     val bigIntBalance = ethereumClient.getBalanceAt(context, accountAddress, -1)
     return BigDecimal(bigIntBalance.getString(10))
+  }
+
+  fun <T> bindContract(address: String, abi: String, creator: (contract: BoundContract) -> T): T {
+    return creator(Geth.bindContract(Geth.newAddressFromHex(address), abi, ethereumClient))
   }
 }

@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.contracts.pending
 
-import io.sikorka.android.data.PendingContract
+import io.sikorka.android.data.contracts.pending.PendingContract
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
 import toothpick.config.Module

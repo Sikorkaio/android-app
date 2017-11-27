@@ -11,8 +11,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import io.sikorka.android.R
-import io.sikorka.android.core.contracts.data.ContractGas
-import io.sikorka.android.core.contracts.data.DetectorContractData
+import io.sikorka.android.core.contracts.model.ContractGas
+import io.sikorka.android.core.contracts.model.DetectorContractData
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.contracts.DeployContractCodes
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog

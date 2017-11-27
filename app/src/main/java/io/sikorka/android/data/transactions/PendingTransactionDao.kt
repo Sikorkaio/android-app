@@ -1,9 +1,10 @@
-package io.sikorka.android.data
+package io.sikorka.android.data.transactions
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Query
 import io.reactivex.Flowable
+import io.sikorka.android.data.BaseDao
 
 @Dao
 abstract class PendingTransactionDao : BaseDao<PendingTransaction> {

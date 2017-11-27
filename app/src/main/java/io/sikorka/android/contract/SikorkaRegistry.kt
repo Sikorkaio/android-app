@@ -9,47 +9,17 @@ import org.ethereum.geth.*
  * @property contract instance bound to a blockchain address.
  */
 class SikorkaRegistry
-private constructor(private val contract: BoundContract) {
+constructor(private val contract: BoundContract) {
 
   /**
    * Ethereum address where this contract is located at.
    */
-  val Address: Address? = contract.address
-
-  /**
-   *Ethereum transaction in which this contract was deployed (if known!).
-   */
-  val Deployer: Transaction? = contract.deployer
+  val address: Address? = contract.address
 
   /**
    * Creates a new instance of SikorkaRegistry, bound to a specific deployed contract.
    */
   constructor(address: Address, client: EthereumClient) : this(Geth.bindContract(address, ABI, client))
-
-
-  // contractExists is a free data retrieval call binding the contract method 0x7709bc78.
-  //
-  // Solidity: function contractExists(channel address) constant returns(bool)
-  fun contractExists(opts: CallOpts?, channel: Address): Boolean {
-    var callOpts = opts
-    val args = Geth.newInterfaces(1)
-    args.set(0, Geth.newInterface())
-    args.get(0).address = channel
-
-
-    val results = Geth.newInterfaces(1)
-    val result0 = Geth.newInterface()
-    result0.setDefaultBool()
-    results.set(0, result0)
-
-
-    if (callOpts == null) {
-      callOpts = Geth.newCallOpts()
-    }
-    this.contract.call(callOpts, results, "contractExists", args)
-    return results.get(0).bool
-
-  }
 
 
   /**
@@ -78,16 +48,6 @@ private constructor(private val contract: BoundContract) {
 
 
   /**
-   * SikorkaContractResults is the output of a call to sikorka_contracts.
-   */
-  inner class SikorkaContractResults {
-    var Contract_address: Address? = null
-    var Latitude: BigInt? = null
-    var Longitude: BigInt? = null
-
-  }
-
-  /**
    * getContractCoordinates is a free data retrieval call binding the contract method 0xde866a70.
    *
    * ```Solidity: function getContractCoordinates() constant returns(uint256[])```
@@ -108,46 +68,6 @@ private constructor(private val contract: BoundContract) {
     }
     this.contract.call(callOpts, results, "getContractCoordinates", args)
     return results.get(0).bigInts
-
-  }
-
-
-  /**
-   * sikorka_contracts is a free data retrieval call binding the contract method 0xf7d2b101.
-   *
-   * ```Solidity: function sikorka_contracts( uint256) constant returns(contract_address address, latitude uint256, longitude uint256)```
-   */
-  fun sikorkaContracts(opts: CallOpts?, arg0: BigInt): SikorkaContractResults {
-    var callOpts = opts
-    val args = Geth.newInterfaces(1)
-    val newInterface = Geth.newInterface()
-    newInterface.bigInt = arg0
-    args.set(0, newInterface)
-
-
-    val results = Geth.newInterfaces(3)
-    val result0 = Geth.newInterface()
-    result0.setDefaultAddress()
-    results.set(0, result0)
-    val result1 = Geth.newInterface()
-    result1.setDefaultBigInt()
-    results.set(1, result1)
-    val result2 = Geth.newInterface()
-    result2.setDefaultBigInt()
-    results.set(2, result2)
-
-
-    if (callOpts == null) {
-      callOpts = Geth.newCallOpts()
-    }
-    this.contract.call(callOpts, results, "sikorka_contracts", args)
-
-    val result = SikorkaContractResults()
-    result.Contract_address = results.get(0).address
-    result.Latitude = results.get(1).bigInt
-    result.Longitude = results.get(2).bigInt
-
-    return result
 
   }
 
