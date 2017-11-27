@@ -62,18 +62,21 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
-    val view = inflater.inflate(R.layout.fragment__network_selection, container, false)
+    // Inflate the layout for this fragment
+    return inflater.inflate(R.layout.fragment__network_selection, container, false)
+  }
+
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
     mainnetSelection.setOnClickListener {
-      view.showShortSnack(R.string.network_selection__network_not_available)
+      mainnetSelection.showShortSnack(R.string.network_selection__network_not_available)
     }
 
     rinkebySelection.setOnClickListener {
-      view.showShortSnack(R.string.network_selection__network_not_available)
+      rinkebySelection.showShortSnack(R.string.network_selection__network_not_available)
     }
 
     ropstenSelection.setOnClickListener { presenter.selectNetwork(Network.ROPSTEN) }
-    // Inflate the layout for this fragment
-    return view
   }
 
   override fun updateNetworkSelection(@Network.Selection network: Long) {

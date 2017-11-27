@@ -63,10 +63,13 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
     // Inflate the layout for this fragment
-    val view = inflater.inflate(R.layout.fragment__account_setup, container, false)
+    return inflater.inflate(R.layout.fragment__account_setup, container, false)
+  }
+
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
     createNew.setOnClickListener { onCreateNewPressed() }
     importAccount.setOnClickListener { onAccountImportPressed() }
-    return view
   }
 
   override fun onStart() {
