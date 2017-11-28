@@ -9,6 +9,7 @@ import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
 import io.sikorka.android.data.location.UserLocationProvider
+import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
@@ -26,20 +27,31 @@ constructor(
 ) : LifecycleMonitor() {
 
   init {
+    val observer = Observer<SyncStatus> {
+      cacheContracts()
+      syncStatusProvider.removeObservers(this)
+    }
+
     userLocation.observe(this, Observer {
+      Timber.v("location-updated")
       val value = syncStatusProvider.value ?: return@Observer
 
       if (!value.syncing) {
+        syncStatusProvider.observe(this, observer)
         return@Observer
       }
 
-      cache().subscribeOn(schedulerProvider.monitor())
-          .subscribe({
-            Timber.v("done")
-          }) {
-            Timber.e(it, "failed")
-          }
+      cacheContracts()
     })
+  }
+
+  private fun cacheContracts() {
+    cache().subscribeOn(schedulerProvider.monitor())
+        .subscribe({
+          Timber.v("done")
+        }) {
+          Timber.e(it, "failed")
+        }
   }
 
   private fun cache(): Completable = Completable.fromAction {
@@ -64,8 +76,13 @@ constructor(
     for (i in 0 until contractCoordinates.size() step 2) {
       val address = contractAddresses[i / 2]
       val modifier = BigDecimal(ContractRepository.COORDINATES_MODIFIER)
-      val latitude = BigDecimal(contractCoordinates[i].getString(10)).divide(modifier)
-      val longitude = BigDecimal(contractCoordinates[i + 1].getString(10)).divide(modifier)
+
+      val cordLat = contractCoordinates[i].int64
+      val cordLong = contractCoordinates[i + 1].int64
+      Timber.v("hex: ${address.hex} ($cordLat, $cordLong)")
+
+      val latitude = BigDecimal(cordLat).divide(modifier)
+      val longitude = BigDecimal(cordLong).divide(modifier)
       val contract = lightClient.bindContract(address.hex, BasicInterface.ABI, { BasicInterface(it) })
       val deployed = DeployedSikorkaContract(
           name = contract.name(),

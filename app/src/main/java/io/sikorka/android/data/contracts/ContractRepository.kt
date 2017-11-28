@@ -1,29 +1,24 @@
 package io.sikorka.android.data.contracts
 
+import android.arch.lifecycle.LiveData
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.sikorka.android.contract.BasicInterface
 import io.sikorka.android.contract.DiscountContract
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.core.GethNode
-import io.sikorka.android.core.NoContractCodeAtGivenAddressException
-import io.sikorka.android.core.NoSuitablePeersAvailableException
 import io.sikorka.android.core.accounts.AccountRepository
-import io.sikorka.android.core.contracts.model.*
-import io.sikorka.android.core.ethereumclient.LightClientProvider
-import io.sikorka.android.core.messageValue
+import io.sikorka.android.core.contracts.model.ContractGas
+import io.sikorka.android.core.contracts.model.DetectorContractData
+import io.sikorka.android.core.contracts.model.IContractData
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract
+import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
 import io.sikorka.android.data.contracts.pending.PendingContract
 import io.sikorka.android.data.contracts.pending.PendingContractDao
-import io.sikorka.android.data.syncstatus.SyncStatusProvider
-import io.sikorka.android.helpers.Lce
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.utils.schedulers.SchedulerProvider
 import org.ethereum.geth.*
 import org.threeten.bp.Instant
 import timber.log.Timber
 import java.math.BigDecimal
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -32,9 +27,13 @@ class ContractRepository
 constructor(
     private val gethNode: GethNode,
     private val accountRepository: AccountRepository,
-    private val pendingContractDao: PendingContractDao
+    private val pendingContractDao: PendingContractDao,
+    private val deployedSikorkaContractDao: DeployedSikorkaContractDao
 ) {
 
+  fun getDeployedContracts(): LiveData<List<DeployedSikorkaContract>> {
+    return deployedSikorkaContractDao.getDeployedContracts()
+  }
 
   fun deployContract(passphrase: String, data: IContractData): Single<DiscountContract> {
     val signer = signer(passphrase, data.gas)

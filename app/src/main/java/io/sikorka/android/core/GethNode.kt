@@ -150,8 +150,8 @@ constructor(
     val currentBlock = ec.getBlockByNumber(ethContext, -1)
     val highestBlock = syncProgress?.highestBlock ?: currentBlock.number
     Pair(currentBlock.number, highestBlock)
-  } catch (ex: Exception) {
-    Timber.v(ex)
+  } catch (ex: Throwable) {
+    Timber.v(ex.message?.substring(0, 125))
     Pair(0, 0)
   }
 

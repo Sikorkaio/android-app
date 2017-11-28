@@ -9,6 +9,7 @@ import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.data.balance.AccountBalanceDao
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
 import io.sikorka.android.data.contracts.pending.PendingContractDao
+import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.di.providers.*
@@ -47,5 +48,6 @@ class SikorkaModule : Module() {
 
     bind(SyncStatusProvider::class.java).singletonInScope()
     bind(LightClientProvider::class.java).singletonInScope()
+    bind(UserLocationProvider::class.java).singletonInScope()
   }
 }

@@ -2,6 +2,7 @@ package io.sikorka.android.ui.main
 
 import io.sikorka.android.core.accounts.AccountModel
 import io.sikorka.android.core.contracts.model.DeployedContractModel
+import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract
 import io.sikorka.android.data.location.UserLocation
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.mvp.BaseView
@@ -16,6 +17,7 @@ interface MainView : BaseView {
   fun error(error: Throwable)
   fun notifyTransactionMined(txHash: String, success: Boolean)
   fun notifyContractMined(address: String, txHash: String, success: Boolean)
+  fun updateDeployed(data: List<DeployedSikorkaContract>)
 
 }
 

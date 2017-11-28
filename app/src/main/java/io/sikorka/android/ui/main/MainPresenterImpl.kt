@@ -40,6 +40,11 @@ constructor(
       val model = AccountModel(it.addressHex, it.balance)
       attachedView().updateAccountInfo(model)
     })
+    contractRepository.getDeployedContracts().observe(this, Observer {
+      val data = it ?: return@Observer
+
+      attachedView().updateDeployed(data)
+    })
   }
 
   override fun userLocation(userLocation: UserLocation) {

@@ -54,7 +54,7 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
     supportActionBar?.apply {
       setHomeButtonEnabled(true)
       setDisplayHomeAsUpEnabled(true)
-      title = ""
+      title = intent?.getStringExtra(NAME) ?: ""
     }
 
     contract_interact__verify.setOnClickListener {
@@ -235,12 +235,14 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
 
   companion object {
+    private const val NAME = "io.sikorka.android.extras.NAME"
     private const val CONTRACT_ADDRESS = "io.sikorka.android.extras.CONTRACT_ADDRESS"
     private const val CONTRACT_LOCATION = "io.sikorka.android.extras.CONTRACT_LOCATION"
     private const val MY_LOCATION = "io.sikorka.android.extras.MY_LOCATION"
 
-    fun start(context: Context, contractAddress: String, me: LatLng, contract: LatLng) {
+    fun start(context: Context, name: String, contractAddress: String, me: LatLng, contract: LatLng) {
       val intent = Intent(context, ContractInteractActivity::class.java)
+      intent.putExtra(NAME, name)
       intent.putExtra(CONTRACT_ADDRESS, contractAddress)
       intent.putExtra(CONTRACT_LOCATION, contract)
       intent.putExtra(MY_LOCATION, me)

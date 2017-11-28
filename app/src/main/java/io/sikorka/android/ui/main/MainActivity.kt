@@ -30,11 +30,11 @@ import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
 import io.sikorka.android.core.accounts.AccountModel
-import io.sikorka.android.core.contracts.model.DeployedContract
 import io.sikorka.android.core.contracts.model.DeployedContractModel
+import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract
 import io.sikorka.android.data.location.UserLocation
 import io.sikorka.android.data.syncstatus.SyncStatus
-import io.sikorka.android.ui.*
+import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
@@ -42,8 +42,11 @@ import io.sikorka.android.ui.contracts.pending.PendingContractsActivity
 import io.sikorka.android.ui.detector.select.SelectDetectorTypeActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.useDetector
+import io.sikorka.android.ui.hide
+import io.sikorka.android.ui.progressSnack
 import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.SettingsActivity
+import io.sikorka.android.ui.show
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
@@ -89,6 +92,8 @@ class MainActivity : AppCompatActivity(),
 
   private var latitude: Double = 0.0
   private var longitude: Double = 0.0
+
+  private val markers = ArrayList<Marker>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
@@ -190,10 +195,32 @@ class MainActivity : AppCompatActivity(),
         })
   }
 
+  override fun updateDeployed(data: List<DeployedSikorkaContract>) {
+    val googleMap = map ?: return
+
+    markers.forEach {
+      it.remove()
+    }
+    markers.clear()
+
+    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_ethereum_icon)
+    val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
+
+    data.forEach {
+      val markerOptions = MarkerOptions()
+          .position(LatLng(it.latitude, it.longitude))
+          .title(it.name)
+          .icon(icon)
+
+      val marker = googleMap.addMarker(markerOptions)
+      marker.tag = it
+      markers.add(marker)
+    }
+  }
+
   override fun updateSyncStatus(status: SyncStatus) {
+    onSyncStatus(status.syncing)
     val statusMessage = if (status.syncing) {
-      main__map.view?.hide()
-      main__empty_text.show()
       getString(
           R.string.main_nav__network_statistics,
           status.peers,
@@ -201,11 +228,21 @@ class MainActivity : AppCompatActivity(),
           status.highestBlock
       )
     } else {
-      main__map.view?.show()
-      main__empty_text.gone()
       getString(R.string.main_nav__no_syncing)
     }
     main__nav_network_statistics.text = statusMessage
+  }
+
+  private fun onSyncStatus(syncing: Boolean) {
+    if (syncing) {
+      main__map.view?.show()
+      main__empty_text.hide()
+      main__deploy_fab.show()
+    } else {
+      main__map.view?.hide()
+      main__empty_text.show()
+      main__deploy_fab.hide()
+    }
   }
 
   override fun updateAccountInfo(model: AccountModel) {
@@ -338,17 +375,18 @@ class MainActivity : AppCompatActivity(),
     map = googleMap
 
     map?.setOnInfoWindowClickListener { marker ->
-      val contract = marker.tag as DeployedContract? ?: return@setOnInfoWindowClickListener
+      val contract = marker.tag as DeployedSikorkaContract? ?: return@setOnInfoWindowClickListener
 
       showConfirmation(
           R.string.main__contract_intration_dialog_title,
           R.string.main__contract_intration_dialog_content,
-          contract.addressHex
+          contract.name
       ) {
 
 
         ContractInteractActivity.start(
             this,
+            contract.name,
             contract.addressHex,
             LatLng(latitude, longitude),
             LatLng(contract.latitude, contract.longitude)
