@@ -51,7 +51,7 @@ class ConfirmDeployDialog : DialogFragment() {
 
     dialog.view.run {
       gasLimitWei = findViewById(R.id.confirm_deploy__gas_price_wei)
-      gasLimitWei = findViewById(R.id.confirm_deploy__gas_limit_wei)
+      gasPriceWei = findViewById(R.id.confirm_deploy__gas_limit_wei)
       passphraseInput = findViewById(R.id.confirm_deploy__passphrase_input)
     }
 

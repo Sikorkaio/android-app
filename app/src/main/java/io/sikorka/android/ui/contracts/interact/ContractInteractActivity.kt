@@ -1,6 +1,8 @@
 package io.sikorka.android.ui.contracts.interact
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -8,6 +10,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -95,6 +98,19 @@ class ContractInteractActivity : AppCompatActivity(), ContractInteractView {
 
     interact_contract__interact_with_detector.adapter = DetectorSpinnerAdapter(this, detectors())
     interact_contract__interact_with_detector.setSelection(0)
+
+    interact_contract__detector_address.setOnClickListener { view ->
+      val addressTextView = view as TextView
+      val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+      clipboardManager.primaryClip = ClipData.newPlainText("Account", addressTextView.text)
+    }
+
+    contract_interact__contract_address.setOnClickListener { view ->
+      val addressTextView = view as TextView
+      val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+      clipboardManager.primaryClip = ClipData.newPlainText("Account", addressTextView.text)
+    }
+
     presenter.attach(this)
     presenter.load(contractAddress)
   }

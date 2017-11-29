@@ -270,7 +270,7 @@ private constructor(private val contract: BoundContract) {
     val dataInterface = Geth.newInterface()
     dataInterface.binary = data
     args.set(0, dataInterface)
-    return this.contract.transact(opts, "claimToken", args)
+    return this.contract.transact(opts, "claimTokens", args)
   }
 
   // transfer is a paid mutator transaction binding the contract method 0xbe45fd62.
