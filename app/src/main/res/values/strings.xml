@@ -106,7 +106,7 @@
   <string name="main__nav_randomized_debug_location">Use randomized location</string>
   <string name="preferences__storage">Storage</string>
   <string name="preferences__usage">Usage</string>
-  <string name="preferences__usage_key">pref_key_storage_usage</string>
+  <string name="preferences__usage_key" translatable="false">pref_key_storage_usage</string>
   <string name="notification__not_syncing">No syncing in progress</string>
   <string name="preferences__usage_summary">The data directory uses %s</string>
   <string name="action_reload">Reload</string>
@@ -169,6 +169,17 @@
   <string name="contract_interact__select_method_choose">Choose</string>
   <string name="main_nav__no_syncing">Not syncing</string>
   <string name="main__empty_text">There are currently no peers available.</string>
+  <string name="preferences__misc">Miscellaneous</string>
+  <string name="preferences__balance_precision_title">Balance precision (digits)</string>
+  <plurals name="preferences__balance_precision_summary">
+    <item quantity="one">%d digit</item>
+    <item quantity="other">%d digits</item>
+  </plurals>
+  <string name="preferences__balance_precision_key" translatable="false">pref_key_balance_precision</string>
+  <string name="balance_precision__precision_digits_hint">Precision (digits)</string>
+  <string name="balance_precision__invalid_input">Invalid input value</string>
+  <string name="balance_precision__invalid_range">You have to select a number between 0–10</string>
+  <string name="balance_precision__title">Select the number of decimal digits</string>
 
 
 </resources>

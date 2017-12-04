@@ -12,6 +12,7 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.bytes
 import io.sikorka.android.settings.AppPreferences
+import io.sikorka.android.ui.dialogs.balancePrecisionDialog
 import toothpick.Scope
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -45,7 +46,28 @@ class SikorkaPreferences : PreferenceFragmentCompat() {
       val summaryText = getString(R.string.preferences__usage_summary, size)
       summary = summaryText
     }
+
+    with(findPreference(R.string.preferences__balance_precision_key)) {
+      val digits = appPreferences.preferredBalancePrecision()
+      summary = precisionSummary(digits)
+      setOnPreferenceClickListener {
+
+        val activity = activity ?: return@setOnPreferenceClickListener false
+
+        val dialog = activity.balancePrecisionDialog { digits ->
+          appPreferences.setPreferredBalancePrecision(digits)
+          summary = precisionSummary(digits)
+        }
+
+        dialog.show()
+        return@setOnPreferenceClickListener true
+      }
+    }
+
   }
+
+  private fun precisionSummary(digits: Int) =
+      resources.getQuantityString(R.plurals.preferences__balance_precision_summary, digits, digits)
 
   private fun networkSummary(): String {
     val selectedNetwork = appPreferences.selectedNetwork()

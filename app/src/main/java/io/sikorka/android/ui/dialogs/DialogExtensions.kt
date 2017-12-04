@@ -1,15 +1,21 @@
 package io.sikorka.android.ui.dialogs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.support.annotation.StringRes
+import android.support.design.widget.TextInputEditText
+import android.support.design.widget.TextInputLayout
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
+import android.view.LayoutInflater
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import io.sikorka.android.R
+import io.sikorka.android.ui.value
 
 fun Context.showConfirmation(
     @StringRes title: Int,
@@ -165,3 +171,48 @@ fun Context.useDetector(
     }
     .onNegative { dialog, _ -> dialog.dismiss() }
     .build()
+
+
+@SuppressLint("InflateParams")
+fun Context.balancePrecisionDialog(callback: (digits: Int) -> Unit): AlertDialog {
+  val inflater = LayoutInflater.from(this@balancePrecisionDialog)
+  val builder = AlertDialog.Builder(this)
+  val view = inflater.inflate(R.layout.dialog__balance_precision, null)
+  val inputLayout: TextInputLayout = view.findViewById(R.id.balance_precision__digits_input)
+  val editText: TextInputEditText = view.findViewById(R.id.balance_precision__digits_text)
+  builder.setView(view)
+      .setTitle(R.string.balance_precision__title)
+      .setCancelable(false)
+  val dialog = builder.setPositiveButton(android.R.string.ok, { _, _ -> })
+      .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+        with(dialog) {
+          cancel()
+          dismiss()
+        }
+      }.create()
+
+  dialog.setOnShowListener {
+    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+      val value = editText.value()
+      val number = value.toIntOrNull()
+
+      inputLayout.error = null
+
+      if (number == null) {
+        inputLayout.error = getString(R.string.balance_precision__invalid_input)
+        return@setOnClickListener
+      }
+
+      if (number < 0 || number > 10) {
+        inputLayout.error = getString(R.string.balance_precision__invalid_range)
+        return@setOnClickListener
+      }
+
+      callback(number)
+      dialog.dismiss()
+    }
+  }
+
+
+  return dialog
+}
