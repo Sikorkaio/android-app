@@ -56,6 +56,7 @@ import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
+import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -195,6 +196,11 @@ class MainActivity : AppCompatActivity(),
         })
   }
 
+  override fun onStart() {
+    super.onStart()
+    presenter.load()
+  }
+
   override fun updateDeployed(data: List<DeployedSikorkaContract>) {
     val googleMap = map ?: return
 
@@ -245,13 +251,16 @@ class MainActivity : AppCompatActivity(),
     }
   }
 
-  override fun updateAccountInfo(model: AccountModel) {
+  override fun updateAccountInfo(model: AccountModel, preferredBalancePrecision: Int) {
     val view = main__nav_view.getHeaderView(0)
     view.findViewById<TextView>(R.id.main__header_account).text = model.addressHex
     view.findViewById<TextView>(R.id.main__header_balance).text = if (model.ethBalance < 0) {
       getString(R.string.main_nav__header_no_balance)
     } else {
-      getString(R.string.main_nav_balance_eth, model.ethBalance)
+      val nf = NumberFormat.getInstance()
+      nf.minimumFractionDigits = preferredBalancePrecision
+      nf.maximumFractionDigits = preferredBalancePrecision
+      getString(R.string.main_nav_balance_eth, nf.format(model.ethBalance))
     }
   }
 

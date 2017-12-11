@@ -52,7 +52,7 @@
   <string name="main_nav__accounts">Accounts</string>
   <string name="main_nav__network_statistics">%d Peers | %d of %d Blocks</string>
   <string name="main_nav__header_no_balance">No balance information</string>
-  <string name="main_nav_balance_eth">%.3f ether</string>
+  <string name="main_nav_balance_eth">%s ether</string>
 
   <string name="notification__network_statistics">%d Peers | %d of %d Blocks</string>
 

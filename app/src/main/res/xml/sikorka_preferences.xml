@@ -13,7 +13,7 @@
     <CheckBoxPreference
         android:key=""
         android:summary="Enables the client sync of mobile data"
-        android:title="Allow mobile sync"></CheckBoxPreference>
+        android:title="Allow mobile sync" />
 
   </PreferenceCategory>
 

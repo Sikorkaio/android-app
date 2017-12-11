@@ -54,7 +54,7 @@ class SikorkaPreferences : PreferenceFragmentCompat() {
 
         val activity = activity ?: return@setOnPreferenceClickListener false
 
-        val dialog = activity.balancePrecisionDialog { digits ->
+        val dialog = activity.balancePrecisionDialog(digits) { digits ->
           appPreferences.setPreferredBalancePrecision(digits)
           summary = precisionSummary(digits)
         }

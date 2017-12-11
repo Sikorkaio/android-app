@@ -60,7 +60,7 @@ fun BigDecimal.toEther(): Double {
   val value = unitToValue(ETHER)
   val divisor = BigDecimal(value)
   val division = this.divide(divisor)
-  return division.setScale(2, RoundingMode.DOWN).toDouble()
+  return division.setScale(20, RoundingMode.DOWN).toDouble()
 }
 
 private fun BigInt.toUnit(@Currency unit: String): Double = this.int64.toDouble() / unitToValue(unit)

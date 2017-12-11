@@ -11,6 +11,7 @@ import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.mvp.BasePresenter
+import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,6 +23,7 @@ constructor(
     private val contractRepository: ContractRepository,
     private val schedulerProvider: SchedulerProvider,
     private val locationProvider: UserLocationProvider,
+    private val appPreferences: AppPreferences,
     syncStatusProvider: SyncStatusProvider,
     private val bus: RxBus
 ) : MainPresenter, BasePresenter<MainView>() {
@@ -38,7 +40,7 @@ constructor(
         return@Observer
       }
       val model = AccountModel(it.addressHex, it.balance)
-      attachedView().updateAccountInfo(model)
+      attachedView().updateAccountInfo(model, appPreferences.preferredBalancePrecision())
     })
     contractRepository.getDeployedContracts().observe(this, Observer {
       val data = it ?: return@Observer
@@ -71,17 +73,11 @@ constructor(
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.main())
         .subscribe({
-          attachedView().updateAccountInfo(it)
+          attachedView().updateAccountInfo(it, appPreferences.preferredBalancePrecision())
           Timber.v(it.toString())
         }) {
           Timber.v(it)
         }
     )
-    loadDeployed()
   }
-
-  private fun loadDeployed() {
-
-  }
-
 }

@@ -174,7 +174,7 @@ fun Context.useDetector(
 
 
 @SuppressLint("InflateParams")
-fun Context.balancePrecisionDialog(callback: (digits: Int) -> Unit): AlertDialog {
+fun Context.balancePrecisionDialog(currentPrecision: Int, callback: (digits: Int) -> Unit): AlertDialog {
   val inflater = LayoutInflater.from(this@balancePrecisionDialog)
   val builder = AlertDialog.Builder(this)
   val view = inflater.inflate(R.layout.dialog__balance_precision, null)
@@ -191,6 +191,8 @@ fun Context.balancePrecisionDialog(callback: (digits: Int) -> Unit): AlertDialog
         }
       }.create()
 
+  editText.setText(currentPrecision.toString())
+
   dialog.setOnShowListener {
     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
       val value = editText.value()
@@ -203,7 +205,7 @@ fun Context.balancePrecisionDialog(callback: (digits: Int) -> Unit): AlertDialog
         return@setOnClickListener
       }
 
-      if (number < 0 || number > 10) {
+      if (number < 0 || number > 18) {
         inputLayout.error = getString(R.string.balance_precision__invalid_range)
         return@setOnClickListener
       }

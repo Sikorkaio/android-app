@@ -10,7 +10,7 @@ import io.sikorka.android.mvp.Presenter
 import toothpick.config.Module
 
 interface MainView : BaseView {
-  fun updateAccountInfo(model: AccountModel)
+  fun updateAccountInfo(model: AccountModel, preferredBalancePrecision: Int)
   fun updateSyncStatus(status: SyncStatus)
   fun loading(loading: Boolean)
   fun update(model: DeployedContractModel)
