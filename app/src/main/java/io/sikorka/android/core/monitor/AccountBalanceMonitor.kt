@@ -50,6 +50,7 @@ class AccountBalanceMonitor
     val currentBalance = AccountBalance(addressHex = addressHex, balance = accountBalance.toEther())
     val previousBalance = accountBalanceDao.getBalance(addressHex)
     if (previousBalance == null || previousBalance.balance != currentBalance.balance) {
+      Timber.v("updating account balance from ${previousBalance?.balance} to ${currentBalance.balance}")
       accountBalanceDao.insert(currentBalance)
     }
   }

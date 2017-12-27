@@ -5,12 +5,11 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toObservable
+import io.sikorka.android.core.accounts.AccountModel.Companion.NO_BALANCE
 import io.sikorka.android.core.all
-import io.sikorka.android.core.ethereumclient.LightClientProvider
 import io.sikorka.android.core.model.Address
 import io.sikorka.android.core.model.converters.GethAccountConverter
 import io.sikorka.android.core.model.converters.GethAddressConverter
-import io.sikorka.android.core.toEther
 import io.sikorka.android.data.balance.AccountBalance
 import io.sikorka.android.data.balance.AccountBalanceDao
 import io.sikorka.android.di.qualifiers.KeystorePath
@@ -25,7 +24,6 @@ class AccountRepository
 @Inject constructor(
     @KeystorePath private val keystorePath: String,
     private val appPreferences: AppPreferences,
-    private val lightClientProvider: LightClientProvider,
     private val accountBalanceDao: AccountBalanceDao
 ) {
 
@@ -48,8 +46,8 @@ class AccountRepository
 
   fun selectedAccount(): Single<AccountModel> = Single.fromCallable {
     val addressHex = appPreferences.selectedAccount()
-    val balance = lightClientProvider.get().getBalance(Address(hex = addressHex))
-    return@fromCallable AccountModel(addressHex, balance.toEther())
+    val balance = accountBalanceDao.getBalance(addressHex)
+    return@fromCallable AccountModel(addressHex, balance?.balance ?: NO_BALANCE)
   }.onErrorReturn {
     val addressHex = appPreferences.selectedAccount()
     return@onErrorReturn AccountModel(addressHex)
