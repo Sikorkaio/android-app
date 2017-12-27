@@ -57,23 +57,29 @@ android {
 
 }
 
+ext.versions = [
+    support_library_version: '27.0.2',
+    play_services_version  : '11.8.0',
+    room_version: '1.0.0'
+]
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'com.android.support:support-v4:27.0.1'
-  implementation 'com.android.support:support-v13:27.0.1'
-  implementation 'com.android.support:support-vector-drawable:27.0.1'
+  implementation "com.android.support:support-v4:${versions.support_library_version}"
+  implementation "com.android.support:support-v13:${versions.support_library_version}"
+  implementation "com.android.support:support-vector-drawable:${versions.support_library_version}"
   androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
 
   // Support libraries
-  implementation 'com.android.support:appcompat-v7:27.0.1'
-  implementation 'com.android.support:recyclerview-v7:27.0.1'
-  implementation 'com.android.support:design:27.0.1'
-  implementation 'com.android.support:preference-v7:27.0.1'
-  implementation 'com.android.support:preference-v14:27.0.1'
+  implementation "com.android.support:appcompat-v7:${versions.support_library_version}"
+  implementation "com.android.support:recyclerview-v7:${versions.support_library_version}"
+  implementation "com.android.support:design:${versions.support_library_version}"
+  implementation "com.android.support:preference-v7:${versions.support_library_version}"
+  implementation "com.android.support:preference-v14:${versions.support_library_version}"
 
-  implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+  implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
 
   // Custom build of master with an addition to an unmarshal issue
   // https://github.com/ethereum/go-ethereum/issues/14832#issuecomment-322965627
@@ -88,8 +94,8 @@ dependencies {
   implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
-  implementation 'io.reactivex.rxjava2:rxjava:2.1.6'
-  implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+  implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
+  implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
 
   implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
 
@@ -106,17 +112,16 @@ dependencies {
   //android persistance (SQLite)
 
   // Database
-  def roomVersion = "1.0.0"
-  implementation "android.arch.persistence.room:runtime:$roomVersion"
-  kapt "android.arch.persistence.room:compiler:$roomVersion"
-  implementation "android.arch.persistence.room:rxjava2:$roomVersion"
+  implementation "android.arch.persistence.room:runtime:${versions.room_version}"
+  kapt "android.arch.persistence.room:compiler:${versions.room_version}"
+  implementation "android.arch.persistence.room:rxjava2:${versions.room_version}"
 
-  implementation "android.arch.paging:runtime:1.0.0-alpha3"
+  implementation "android.arch.paging:runtime:1.0.0-alpha4-1"
 
   implementation "android.arch.lifecycle:extensions:1.0.0"
 
-  implementation 'com.afollestad.material-dialogs:core:0.9.5.0'
-  implementation 'com.afollestad.material-dialogs:commons:0.9.5.0'
+  implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+  implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
 
   implementation 'com.github.apl-devs:appintro:v4.2.2'
 
@@ -126,9 +131,9 @@ dependencies {
   implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
   //Location
-  implementation 'com.google.android.gms:play-services-gcm:11.6.0'
-  implementation 'com.google.android.gms:play-services-location:11.6.0'
-  implementation 'com.google.android.gms:play-services-maps:11.6.0'
+  implementation "com.google.android.gms:play-services-gcm:${versions.play_services_version}"
+  implementation "com.google.android.gms:play-services-location:${versions.play_services_version}"
+  implementation "com.google.android.gms:play-services-maps:${versions.play_services_version}"
 
   //QR support
   implementation 'me.dm7.barcodescanner:zxing:1.9.8'
@@ -139,7 +144,7 @@ dependencies {
   //Unit testing
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.1.1'
-  testImplementation "com.google.truth:truth:0.36"
+  testImplementation "com.google.truth:truth:0.37"
   testImplementation "android.arch.core:core-testing:1.0.0"
 }
 
