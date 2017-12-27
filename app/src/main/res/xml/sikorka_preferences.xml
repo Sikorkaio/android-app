@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <PreferenceCategory
+  <android.support.v7.preference.PreferenceCategory
       android:key="@string/preferences__network_key"
       android:title="@string/preferences__network_title">
 
-    <Preference
+    <android.support.v7.preference.Preference
         android:key="@string/preferences__selected_network_key"
         android:title="@string/preferences__selected_network_title" />
 
-    <CheckBoxPreference
+    <android.support.v7.preference.CheckBoxPreference
         android:key=""
         android:summary="Enables the client sync of mobile data"
         android:title="Allow mobile sync" />
 
-  </PreferenceCategory>
+  </android.support.v7.preference.PreferenceCategory>
 
-  <PreferenceCategory
+  <android.support.v7.preference.PreferenceCategory
       android:key="pref_key_storage"
       android:title="@string/preferences__storage">
 
-    <Preference
+    <android.support.v7.preference.Preference
         android:key="@string/preferences__usage_key"
         android:title="@string/preferences__usage" />
 
-  </PreferenceCategory>
+  </android.support.v7.preference.PreferenceCategory>
 
-  <PreferenceCategory
+  <android.support.v7.preference.PreferenceCategory
       android:key="pref_key_misc"
       android:title="@string/preferences__misc">
 
-    <Preference
+    <android.support.v7.preference.Preference
         android:key="@string/preferences__balance_precision_key"
         android:title="@string/preferences__balance_precision_title" />
 
-  </PreferenceCategory>
+  </android.support.v7.preference.PreferenceCategory>
 
-  <PreferenceCategory
+  <android.support.v7.preference.PreferenceCategory
       android:key="pref_key_about"
       android:title="@string/preferences__about_title">
 
-    <Preference
+    <android.support.v7.preference.Preference
         android:key="@string/preferences__about_version_key"
         android:title="@string/preferences__about_version_title" />
-  </PreferenceCategory>
-</PreferenceScreen>
+  </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>
