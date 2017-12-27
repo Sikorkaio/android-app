@@ -178,7 +178,7 @@
   <string name="preferences__balance_precision_key" translatable="false">pref_key_balance_precision</string>
   <string name="balance_precision__precision_digits_hint">Precision (digits)</string>
   <string name="balance_precision__invalid_input">Invalid input value</string>
-  <string name="balance_precision__invalid_range">You have to select a number between 0–10</string>
+  <string name="balance_precision__invalid_range">You have to select a number between %d–%d</string>
   <string name="balance_precision__title">Select the number of decimal digits</string>
 
 

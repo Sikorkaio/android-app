@@ -205,8 +205,11 @@ fun Context.balancePrecisionDialog(currentPrecision: Int, callback: (digits: Int
         return@setOnClickListener
       }
 
-      if (number < 0 || number > 18) {
-        inputLayout.error = getString(R.string.balance_precision__invalid_range)
+      val rangeStart = 0
+      val rangeEnd = 15
+
+      if (number < rangeStart || number > rangeEnd) {
+        inputLayout.error = getString(R.string.balance_precision__invalid_range, rangeStart, rangeEnd)
         return@setOnClickListener
       }
 
