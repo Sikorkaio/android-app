@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    tools:context="io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity">
+
+  <TextView
+      android:id="@+id/deploy_detector__title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:fontFamily="@font/roboto_light"
+      android:text="@string/deploy_detector__title"
+      android:textSize="28sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <fragment
+      android:id="@+id/deploy_detector__map"
+      android:name="com.google.android.gms.maps.SupportMapFragment"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      app:layout_constraintBottom_toTopOf="@+id/deploy_detector__guideline"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__title" />
+
+  <android.support.constraint.Guideline
+      android:id="@+id/deploy_detector__guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.4" />
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/deploy_detector__contract_name"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__detector_address"
+      app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/deploy_detector__contract_name"
+        android:inputType="text" />
+  </android.support.design.widget.TextInputLayout>
+
+  <TextView
+      app:layout_constraintHorizontal_bias="0.0"
+      android:id="@+id/deploy_detector__bound_detector"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:fontFamily="@font/roboto_light"
+      android:text="@string/deploy_detector__contract_detector"
+      android:textSize="18sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/deploy_detector__guideline" />
+
+  <TextView
+      android:id="@+id/deploy_detector__detector_address"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:fontFamily="sans-serif-condensed"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__bound_detector"
+      tools:text="0x82641569b2062B545431cF6D7F0A418582865ba7" />
+
+
+  <TextView
+      android:id="@+id/deploy_detector__authorization_duration_unit"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginTop="8dp"
+      android:fontFamily="sans-serif-condensed"
+      android:text="@string/deploy_detector__authorization_duration_unit"
+      app:layout_constraintBottom_toBottomOf="@+id/deploy_detector__authorization_duration"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/deploy_detector__authorization_duration" />
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/deploy_detector__authorization_duration"
+      android:layout_width="0dp"
+      android:layout_height="58dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      app:layout_constraintEnd_toStartOf="@id/deploy_detector__authorization_duration_unit"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__contract_name"
+      app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/deploy_detector__authorization_duration"
+        android:inputType="number" />
+  </android.support.design.widget.TextInputLayout>
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/deploy_detector__contract_tokens"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__authorization_duration"
+      app:passwordToggleEnabled="true">
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/deploy_detector__contract_tokens"
+        android:inputType="number" />
+  </android.support.design.widget.TextInputLayout>
+
+  <CheckBox
+      android:id="@+id/deploy_detector__advanced_options"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:enabled="true"
+      android:text="@string/deploy_detector__advanced_options"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/deploy_detector__contract_tokens" />
+
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/deploy_detector__deploy_fab"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="8dp"
+      android:tint="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:srcCompat="@drawable/ic_insert_drive_file_black_24dp" />
+
+</android.support.constraint.ConstraintLayout>

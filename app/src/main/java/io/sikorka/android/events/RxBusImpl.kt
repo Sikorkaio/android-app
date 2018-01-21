@@ -3,11 +3,10 @@ package io.sikorka.android.events
 
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 class RxBusImpl
 @Inject
@@ -25,11 +24,6 @@ constructor() : RxBus {
     updateSubscriptions(receiver, subscription)
   }
 
-  override fun <T> register(receiver: Any, eventClass: Class<T>, main: Boolean, onNext: (T) -> Unit) {
-    val subscription = register(eventClass, true, onNext)
-    updateSubscriptions(receiver, subscription)
-  }
-
   private fun updateSubscriptions(receiver: Any, subscription: Disposable) {
     val subscriptions: MutableList<Disposable> = activeSubscriptions[receiver] ?: LinkedList<Disposable>()
     subscriptions.add(subscription)
@@ -44,11 +38,8 @@ constructor() : RxBus {
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun <T> register(eventClass: Class<T>, main: Boolean, onNext: (T) -> Unit): Disposable {
-    //noinspection unchecked
-    val observable = serializedRelay.filter { it.javaClass == eventClass }.map { obj -> obj as T }
-    val scheduler = if (main) AndroidSchedulers.mainThread() else Schedulers.trampoline()
-    return observable.observeOn(scheduler).subscribe(onNext)
+  override fun <T : Any> observe(receiver: Any, eventClass: KClass<T>): Observable<T> {
+    return serializedRelay.filter { it.javaClass == eventClass }.map { obj -> obj as T }
   }
 
   override fun post(event: Any) {

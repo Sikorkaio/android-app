@@ -7,29 +7,16 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.widget.EditText
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
+import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.contracts.ContractGas
 
 class ConfirmDeployDialog : DialogFragment() {
 
-  @BindView(R.id.confirm_deploy__gas_price_ether)
-  lateinit var gasPriceEther: TextView
-
-  @BindView(R.id.confirm_deploy__gas_price_wei)
-  lateinit var gasPriceWei: TextView
-
-  @BindView(R.id.confirm_deploy__gas_limit_ether)
-  lateinit var gasLimitEther: TextView
-
-  @BindView(R.id.confirm_deploy__gas_limit_wei)
-  lateinit var gasLimitWei: TextView
-
-  @BindView(R.id.confirm_deploy__passphrase_input)
-  lateinit var passphraseInput: TextInputLayout
+  private lateinit var gasPriceWei: TextView
+  private lateinit var gasLimitWei: TextView
+  private lateinit var passphraseInput: TextInputLayout
 
   private lateinit var dialog: MaterialDialog
 
@@ -41,8 +28,10 @@ class ConfirmDeployDialog : DialogFragment() {
     get() = passphraseInput.editText ?: fail("passphraseInput edittext was null")
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    val context = context ?: fail("null context")
     dialog = MaterialDialog.Builder(context)
         .title(R.string.confirm_deploy__dialog_title)
+        .titleColorRes(R.color.colorAccent)
         .positiveText(R.string.confirm_deploy__positive_button)
         .negativeText(android.R.string.cancel)
         .customView(R.layout.dialog__confirm_deploy, false)
@@ -60,7 +49,12 @@ class ConfirmDeployDialog : DialogFragment() {
         }
         .build()
 
-    ButterKnife.bind(this, dialog.view)
+    dialog.view.run {
+      gasLimitWei = findViewById(R.id.confirm_deploy__gas_price_wei)
+      gasPriceWei = findViewById(R.id.confirm_deploy__gas_limit_wei)
+      passphraseInput = findViewById(R.id.confirm_deploy__passphrase_input)
+    }
+
     gasLimitWei.text = contractGas.limit.toString()
     gasPriceWei.text = contractGas.price.toString()
     return dialog

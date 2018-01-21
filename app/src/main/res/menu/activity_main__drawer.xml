@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:showIn="navigation_view">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
-  <group android:checkableBehavior="single">
+  <group>
     <item
-      android:id="@+id/main__nav_accounts"
-      android:icon="@drawable/ic_vpn_key_black_24dp"
-      android:title="@string/main_nav__accounts"/>
+        android:id="@+id/main__nav_accounts"
+        android:icon="@drawable/ic_vpn_key_black_24dp"
+        android:title="@string/main_nav__accounts" />
+    <item
+        android:id="@+id/main__nav_pending_contracts"
+        android:icon="@drawable/ic_code_black_24dp"
+        android:title="@string/main_nav__pending_contracts" />
   </group>
 
 </menu>

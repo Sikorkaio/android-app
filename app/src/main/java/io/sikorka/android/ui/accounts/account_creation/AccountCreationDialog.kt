@@ -8,37 +8,24 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.widget.EditText
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.sikorka.android.R
-import io.sikorka.android.node.accounts.ValidationResult
-import io.sikorka.android.node.accounts.ValidationResult.Code
+import io.sikorka.android.core.accounts.ValidationResult
+import io.sikorka.android.core.accounts.ValidationResult.Code
+import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.asString
-import timber.log.Timber
 import toothpick.Toothpick
-import toothpick.smoothie.provider.SupportFragmentManagerProvider
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
-  @BindView(R.id.accounts__passphrase)
-  internal lateinit var passphraseField: EditText
-
-  @BindView(R.id.accounts__passphrase_confirmation)
-  internal lateinit var passphraseConfirmationField: EditText
-
-  @BindView(R.id.accounts__passphrase_input)
-  internal lateinit var passphraseInput: TextInputLayout
-
-  @BindView(R.id.accounts__passphrase_confirmation_input)
-  internal lateinit var passphraseConfirmationInput: TextInputLayout
+  private lateinit var passphraseField: EditText
+  private lateinit var passphraseConfirmationField: EditText
+  private lateinit var passphraseInput: TextInputLayout
+  private lateinit var passphraseConfirmationInput: TextInputLayout
 
   @Inject
-  internal lateinit var presenter: AccountCreationDialogPresenter
+  lateinit var presenter: AccountCreationDialogPresenter
 
   private lateinit var dialog: MaterialDialog
 
@@ -53,13 +40,19 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    val context = context ?: fail("context was null")
     val scope = Toothpick.openScopes(context.applicationContext, context, this)
     scope.installModules(AccountCreationModule())
     Toothpick.inject(this, scope)
 
     val inflater = LayoutInflater.from(context)
     val view = inflater.inflate(R.layout.dialog__account_create, null, false)
-    ButterKnife.bind(this, view)
+    view.run {
+      passphraseField = findViewById(R.id.accounts__passphrase)
+      passphraseConfirmationField = findViewById(R.id.accounts__passphrase_confirmation)
+      passphraseInput = findViewById(R.id.accounts__passphrase_input)
+      passphraseConfirmationInput = findViewById(R.id.accounts__passphrase_confirmation_input)
+    }
 
     val builder = MaterialDialog.Builder(context)
         .title(R.string.account__create_account)

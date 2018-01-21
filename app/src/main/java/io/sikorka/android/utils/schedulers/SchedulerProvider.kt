@@ -10,4 +10,8 @@ interface SchedulerProvider {
 
   fun main(): Scheduler
 
+  fun db(): Scheduler
+
+  fun monitor(): Scheduler
+
 }

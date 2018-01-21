@@ -1,20 +1,20 @@
 package io.sikorka.android.ui.wizard.slides.network_selection
 
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.content.res.AppCompatResources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import io.sikorka.android.R
+import io.sikorka.android.core.configuration.Network
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.node.configuration.Network
+import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.showShortSnack
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -26,34 +26,18 @@ import javax.inject.Inject
  * create an instance of this fragment.
  */
 class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
-  @BindView(R.id.network_selection__ropsten)
-  internal lateinit var ropstenSelection: TextView
 
-  @BindView(R.id.network_selection__mainnet)
-  internal lateinit var mainnetSelection: TextView
+  private val ropstenSelection: TextView by bind(R.id.network_selection__ropsten)
 
-  @BindView(R.id.network_selection__rinkeby)
-  internal lateinit var rinkebySelection: TextView
+  private val mainnetSelection: TextView by bind(R.id.network_selection__mainnet)
 
+  private val rinkebySelection: TextView by bind(R.id.network_selection__rinkeby)
 
-  @OnClick(R.id.network_selection__mainnet)
-  internal fun onMainNetworkPressed(view: View) {
-    view.showShortSnack(R.string.network_selection__network_not_available)
-  }
-
-  @OnClick(R.id.network_selection__rinkeby)
-  internal fun onRinkebyPressed(view: View) {
-    view.showShortSnack(R.string.network_selection__network_not_available)
-  }
-
-  @OnClick(R.id.network_selection__ropsten)
-  internal fun onRopstenPressed() {
-    presenter.selectNetwork(Network.ROPSTEN)
-  }
-
-  @Inject internal lateinit var presenter: NetworkSelectionPresenter
+  @Inject
+  lateinit var presenter: NetworkSelectionPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    val context = context ?: fail("context was null")
     val scope = Toothpick.openScopes(context.applicationContext, this)
     scope.installModules(NetworkSelectionModule())
     Toothpick.inject(this, scope)
@@ -76,14 +60,23 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
     presenter.detach()
   }
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
-
-    val layoutInflater = inflater ?: fail("no inflater?")
-    val view = layoutInflater.inflate(R.layout.fragment__network_selection, container, false)
-    ButterKnife.bind(this, view)
     // Inflate the layout for this fragment
-    return view
+    return inflater.inflate(R.layout.fragment__network_selection, container, false)
+  }
+
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    mainnetSelection.setOnClickListener {
+      mainnetSelection.showShortSnack(R.string.network_selection__network_not_available)
+    }
+
+    rinkebySelection.setOnClickListener {
+      rinkebySelection.showShortSnack(R.string.network_selection__network_not_available)
+    }
+
+    ropstenSelection.setOnClickListener { presenter.selectNetwork(Network.ROPSTEN) }
   }
 
   override fun updateNetworkSelection(@Network.Selection network: Long) {
@@ -97,7 +90,8 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
       else -> null
     }
 
-    var drawable = ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp)
+    val context = this.context ?: fail("null context")
+    var drawable: Drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_black_24dp) ?: return
     drawable = DrawableCompat.wrap(drawable)
     DrawableCompat.setTint(drawable, ContextCompat.getColor(context, R.color.colorAccent))
     selection?.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)

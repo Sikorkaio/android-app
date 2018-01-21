@@ -52,21 +52,17 @@
   <string name="main_nav__accounts">Accounts</string>
   <string name="main_nav__network_statistics">%d Peers | %d of %d Blocks</string>
   <string name="main_nav__header_no_balance">No balance information</string>
-  <string name="main_nav_balance_eth">%.2f ether</string>
+  <string name="main_nav_balance_eth">%s ether</string>
+
+  <string name="notification__network_statistics">%d Peers | %d of %d Blocks</string>
 
   <string name="dialog__passphrase_title">Verify your Passphrase</string>
-  <string name="dialog__passphrase_content">In order to process you need to insert the passphrase for this account.</string>
+  <string name="dialog__passphrase_content">In order to proceed you need to insert the passphrase for this account.</string>
   <string name="dialog__input_hint">Passphrase</string>
   <string name="dialog_passphrase__input_prefill" />
 
   <string name="deploy_contract__title">Deploy your Contract</string>
-  <string name="deploy_contract__question">Question</string>
-  <string name="deploy_contract__answer">Answer</string>
-  <string name="deploy_contract__gas_price">Gas Price</string>
-  <string name="deploy_contract__gas_price_value">%.10f</string>
-  <string name="deploy_contract__gas_price_currency">wei</string>
-  <string name="deploy_contract__gas_limit">Gas Limit</string>
-  <string name="deploy_contract__question_empty">Question can\'t be empty</string>
+  <string name="deploy_contract__specify_contract_name">Please specify a contract name</string>
   <string name="deploy_contract__answer_empty">Answer is empty.</string>
   <string name="deploy_contract__contract_creation_submitted">Contract creation submitted (%s)</string>
 
@@ -99,6 +95,91 @@
   <string name="title_activity_settings">Settings</string>
   <string name="preferences__about_version_title">Version</string>
   <string name="preferences__about_version_key" translatable="false">pref_key_about_version</string>
+  <string name="preferences__network_key" translatable="false">pref_key_network</string>
+  <string name="preferences__network_title">Network</string>
+  <string name="preferences__selected_network_key" translatable="false">pref_key_selected_network</string>
+  <string name="preferences__selected_network_title">Selected Network</string>
+
+  <string name="networks__ropsten">Ropsten</string>
+  <string name="networks__rinkeby">Rinkeby</string>
+  <string name="networks__mainnet">Mainnet</string>
+  <string name="main__nav_randomized_debug_location">Use randomized location</string>
+  <string name="preferences__storage">Storage</string>
+  <string name="preferences__usage">Usage</string>
+  <string name="preferences__usage_key" translatable="false">pref_key_storage_usage</string>
+  <string name="notification__not_syncing">No syncing in progress</string>
+  <string name="preferences__usage_summary">The data directory uses %s</string>
+  <string name="action_reload">Reload</string>
+  <string name="gas_selection__gas_price">Gas Price</string>
+  <string name="gas_selection__gas_limit">Gas Limit</string>
+  <string name="gas_selection__dialog_title">Select Gas Price</string>
+  <string name="find_detector__searching_for_detectors">Searching for detectors</string>
+  <string name="find_detector__no_devices_found">No detectors found</string>
+  <string name="find_detector__connecting_title">Connecting to detector</string>
+  <string name="find_detector__connecting_content">Please wait while a connection is established</string>
+  <string name="use_detectors__dialog_title">Use detectors</string>
+  <string name="use_detectors__dialog_content">Do you want to deploy a contract that makes use of detectors?</string>
+  <string name="use_detectors__positive">Yes</string>
+  <string name="use_detectors__neutral">No</string>
+  <string name="find_detector__title">Find Detector</string>
+  <string name="find_detector__discovery_failed">Detector discovery was unsuccessful</string>
+  <string name="find_detector__connection_failed">Couldn\'t establish a connection with the detector.</string>
+  <string name="deploy_contract__advanced_options">Advanced Options</string>
+  <string name="gas_selection__positive_text">Confirm</string>
+  <string name="deploy_contract__no_gas_preferences">Gas preferences have not been set, please set manually</string>
+  <string name="deploy_detector__contract_detector">Contract Detector</string>
+  <string name="deploy_detector__advanced_options">Advanced Options</string>
+  <string name="deploy_detector__title">Deploy Contract</string>
+  <string name="deploy_detector__authorization_duration">Authorization Duration</string>
+  <string name="deploy_detector__authorization_duration_unit">secs</string>
+  <string name="deploy_detector__authorization_duration_not_set">Authorization duration must be greater than zero</string>
+  <string name="deploy_detector__contract_name">Contract Name</string>
+  <string name="select_detector_type__title">Select detector type</string>
+  <string name="select_detector_type__detector_bluetooth">Bluetooth</string>
+  <string name="main_nav__pending_contracts">Pending Contracts</string>
+  <string name="pending_contracts__title">Pending Contracts</string>
+  <string name="pending_contract__no_data_label">No Pending Contracts…</string>
+  <string name="contract_deployment__status_success_notification">Contract %s has been successfully deployed by transaction %s</string>
+  <string name="notification_channel__deployment_status">Deployment Status Updates</string>
+  <string name="deploy_contract__name">Contract Name</string>
+  <string name="interact_contract__detector_address">Detector Address</string>
+  <string name="select_detector_type__detector_manual">Manually Specify</string>
+  <string name="select_detector__manual_dialog_title">Specify detector address</string>
+  <string name="select_detector__manual_dialog_content">Please specify the hex address of the detector</string>
+  <string name="select_detector__manual_dialog_hint">Detector address</string>
+  <string name="select_detector__manual_dialog_prefill" />
+  <string name="deploy_contract__token_supply">Total token supply</string>
+  <string name="deploy_detector__contract_tokens">Token supply</string>
+  <string name="contract_deployment__transaction_sent_title">Contract transaction sent</string>
+  <string name="contract_deployment__transaction_sent_content">Your contract (%s) has been sent, you will be notified as soon as it is mined.</string>
+  <string name="contact_interact__contract_address">Contract Address</string>
+  <string name="select_detector_type__detector_qr">QR Code</string>
+  <string name="interact_contract__interact_with_label">Interact with the detector using</string>
+  <string name="contract_interact__success_title">Transaction sent</string>
+  <string name="contract_interact__success_content">Your claimTokens transaction has been sent you will be notified as soon as it is mined.</string>
+  <string name="contract_interact__claiming_tokens_title">Please wait</string>
+  <string name="contact_interact__claiming_tokens">Please wait while your tokens are being claimed.</string>
+  <string name="deploy_contract__token_supply_empty">Token supply should not be empty</string>
+  <string name="deploy_detector__token_supply_empty">Token supply cannot be empty</string>
+  <string name="interact_contract__select_gas_before_transaction">Select gas before transaction</string>
+  <string name="contract_deployment__status_failed_notification" >Contract %s deployment failed %s</string>
+  <string name="contract_interact__proceed_with_claiming">Claim Your Tokens</string>
+  <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
+  <string name="contract_interact__select_method">Select contract method to interact with</string>
+  <string name="contract_interact__select_method_choose">Choose</string>
+  <string name="main_nav__no_syncing">Not syncing</string>
+  <string name="main__empty_text">There are currently no peers available.</string>
+  <string name="preferences__misc">Miscellaneous</string>
+  <string name="preferences__balance_precision_title">Balance precision (digits)</string>
+  <plurals name="preferences__balance_precision_summary">
+    <item quantity="one">%d digit</item>
+    <item quantity="other">%d digits</item>
+  </plurals>
+  <string name="preferences__balance_precision_key" translatable="false">pref_key_balance_precision</string>
+  <string name="balance_precision__precision_digits_hint">Precision (digits)</string>
+  <string name="balance_precision__invalid_input">Invalid input value</string>
+  <string name="balance_precision__invalid_range">You have to select a number between %d–%d</string>
+  <string name="balance_precision__title">Select the number of decimal digits</string>
 
 
 </resources>

@@ -6,10 +6,13 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <uses-permission android:name="android.permission.CAMERA" />
 
   <application
       android:name=".SikorkaApplication"
-      android:allowBackup="true"
+      android:allowBackup="false"
       android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
       android:roundIcon="@mipmap/ic_launcher_round"
@@ -20,7 +23,7 @@
         android:value="@string/google_maps_key" />
 
     <service
-        android:name=".GethService"
+        android:name=".SikorkaService"
         android:enabled="true"
         android:exported="false" />
 
@@ -43,12 +46,19 @@
     <activity
         android:name=".ui.main.MainActivity"
         android:label="@string/main_screen__title"
+        android:launchMode="singleTask"
         android:theme="@style/AppTheme.NoActionBar" />
     <activity android:name=".ui.contracts.DeployContractActivity" />
     <activity android:name=".ui.contracts.interact.ContractInteractActivity" />
     <activity
         android:name=".ui.settings.SettingsActivity"
         android:label="@string/title_activity_settings" />
+    <activity android:name=".ui.detector.bluetooth.FindBtDetectorActivity" />
+    <activity android:name=".ui.contracts.deploydetectorcontract.DeployDetectorActivity" />
+    <activity android:name=".ui.detector.select.SelectDetectorTypeActivity" />
+    <activity android:name=".ui.contracts.pending.PendingContractsActivity" />
+    <activity android:name="me.dm7.barcodescanner.zxing.sample.QrScannerActivity" />
+    <activity android:name=".ui.detector.userselect.UserSelectDetectorTypeActivity" />
   </application>
 
 </manifest>

@@ -2,52 +2,61 @@ package io.sikorka.android.ui.main
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.os.Build
 import android.os.Bundle
-import android.support.annotation.DrawableRes
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageButton
 import android.widget.TextView
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import io.sikorka.android.BuildConfig
-import io.sikorka.android.GethService
 import io.sikorka.android.R
-import io.sikorka.android.node.SyncStatus
-import io.sikorka.android.node.accounts.AccountModel
-import io.sikorka.android.node.contracts.DeployedContractModel
+import io.sikorka.android.SikorkaService
+import io.sikorka.android.core.accounts.AccountModel
+import io.sikorka.android.core.contracts.model.DeployedContractModel
+import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract
+import io.sikorka.android.data.location.UserLocation
+import io.sikorka.android.data.syncstatus.SyncStatus
+import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.AccountActivity
 import io.sikorka.android.ui.contracts.DeployContractActivity
 import io.sikorka.android.ui.contracts.interact.ContractInteractActivity
+import io.sikorka.android.ui.contracts.pending.PendingContractsActivity
+import io.sikorka.android.ui.detector.select.SelectDetectorTypeActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
+import io.sikorka.android.ui.dialogs.useDetector
+import io.sikorka.android.ui.hide
 import io.sikorka.android.ui.progressSnack
+import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.SettingsActivity
+import io.sikorka.android.ui.show
+import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__main.*
 import kotlinx.android.synthetic.main.app_bar__main.*
+import kotlinx.android.synthetic.main.content__main.*
+import kotlinx.android.synthetic.main.nav_header__main.*
+import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
+import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -57,27 +66,56 @@ class MainActivity : AppCompatActivity(),
     OnMapReadyCallback,
     NavigationView.OnNavigationItemSelectedListener {
 
-  @Inject internal lateinit var presenter: MainPresenter
+  @Inject
+  lateinit var presenter: MainPresenter
+
+  override fun notifyTransactionMined(txHash: String, success: Boolean) {
+    val message = "Your transaction has been mined. 100 Sikorka example discount tokens have been transferred to your account"
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
+  }
+
+  override fun notifyContractMined(address: String, txHash: String, success: Boolean) {
+    val message = if (success) {
+      "Contract $address was mined successfully"
+    } else {
+      "Contract $address was not mined successfully"
+    }
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
+  }
+
+  @Inject
+  lateinit var debugPreferences: DebugPreferencesStore
 
   private lateinit var scope: Scope
   private var map: GoogleMap? = null
 
+  private var myMarker: Marker? = null
+
   private var latitude: Double = 0.0
   private var longitude: Double = 0.0
+
+  private val markers = ArrayList<Marker>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
     scope.installModules(SmoothieSupportActivityModule(this), MainModule())
-    Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__main)
-    val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+    Toothpick.inject(this, scope)
+    presenter.attach(this)
+    val mapFragment = supportFragmentManager.findFragmentById(R.id.main__map) as SupportMapFragment
     mapFragment.getMapAsync(this)
 
     setSupportActionBar(toolbar)
 
     main__deploy_fab.setOnClickListener {
-      DeployContractActivity.start(this, latitude, longitude)
+      useDetector { use ->
+        if (use) {
+          SelectDetectorTypeActivity.start(this, latitude, longitude)
+        } else {
+          DeployContractActivity.start(this, latitude, longitude)
+        }
+      }.show()
     }
 
     val toggle = ActionBarDrawerToggle(
@@ -97,16 +135,29 @@ class MainActivity : AppCompatActivity(),
     }
 
     if (!checkWritePermissions()) {
+      Timber.v("Didn't have storage write permissions")
       startWritePermissionRequest()
     }
 
     main__nav_exit.setOnClickListener {
-      GethService.stop(this)
+      SikorkaService.stop(this)
       finish()
       drawer_layout.closeDrawer(GravityCompat.START)
     }
 
     main__nav_network_statistics.setText(R.string.main__no_peers_available)
+
+    if (BuildConfig.DEBUG) {
+      main__nav_debug_randomize.show()
+      main__nav_debug_randomize.isChecked = debugPreferences.isLocationRandomizationEnabled()
+      main__nav_debug_randomize.setOnCheckedChangeListener { _, enabled ->
+        debugPreferences.setLocationRandomiztion(enabled)
+        getLocation()
+      }
+    }
+
+    enableCopyAccount()
+    presenter.load()
   }
 
   @SuppressLint("MissingPermission")
@@ -120,7 +171,7 @@ class MainActivity : AppCompatActivity(),
           val map = map ?: return@addOnCompleteListener
           val location = it.result ?: return@addOnCompleteListener
 
-          if (BuildConfig.DEBUG) {
+          if (BuildConfig.DEBUG && debugPreferences.isLocationRandomizationEnabled()) {
             val random = Random()
             val longAdd = random.nextBoolean()
             val latAdd = random.nextBoolean()
@@ -139,34 +190,95 @@ class MainActivity : AppCompatActivity(),
             latitude = location.latitude
           }
 
+          presenter.userLocation(UserLocation.set(latitude, longitude))
+
           updateMyMarker(latitude, longitude, map)
         })
   }
 
+  override fun onStart() {
+    super.onStart()
+    presenter.load()
+  }
+
+  override fun updateDeployed(data: List<DeployedSikorkaContract>) {
+    val googleMap = map ?: return
+
+    markers.forEach {
+      it.remove()
+    }
+    markers.clear()
+
+    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_ethereum_icon)
+    val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
+
+    data.forEach {
+      val markerOptions = MarkerOptions()
+          .position(LatLng(it.latitude, it.longitude))
+          .title(it.name)
+          .icon(icon)
+
+      val marker = googleMap.addMarker(markerOptions)
+      marker.tag = it
+      markers.add(marker)
+    }
+  }
+
   override fun updateSyncStatus(status: SyncStatus) {
-    val statusMessage = getString(
-        R.string.main_nav__network_statistics,
-        status.peers,
-        status.currentBlock,
-        status.highestBlock
-    )
+    onSyncStatus(status.syncing)
+    val statusMessage = if (status.syncing) {
+      getString(
+          R.string.main_nav__network_statistics,
+          status.peers,
+          status.currentBlock,
+          status.highestBlock
+      )
+    } else {
+      getString(R.string.main_nav__no_syncing)
+    }
     main__nav_network_statistics.text = statusMessage
   }
 
-  override fun updateAccountInfo(model: AccountModel) {
+  private fun onSyncStatus(syncing: Boolean) {
+    if (syncing) {
+      main__map.view?.show()
+      main__empty_text.hide()
+      main__deploy_fab.show()
+    } else {
+      main__map.view?.hide()
+      main__empty_text.show()
+      main__deploy_fab.hide()
+    }
+  }
+
+  override fun updateAccountInfo(model: AccountModel, preferredBalancePrecision: Int) {
     val view = main__nav_view.getHeaderView(0)
     view.findViewById<TextView>(R.id.main__header_account).text = model.addressHex
     view.findViewById<TextView>(R.id.main__header_balance).text = if (model.ethBalance < 0) {
       getString(R.string.main_nav__header_no_balance)
     } else {
-      getString(R.string.main_nav_balance_eth, model.ethBalance)
+      val nf = NumberFormat.getInstance()
+      nf.minimumFractionDigits = preferredBalancePrecision
+      nf.maximumFractionDigits = preferredBalancePrecision
+      getString(R.string.main_nav_balance_eth, nf.format(model.ethBalance))
+    }
+  }
+
+  private fun enableCopyAccount() {
+    val view = main__nav_view.getHeaderView(0)
+    view.findViewById<ImageButton>(R.id.main__header_copy_account).setOnClickListener {
+      val account = main__header_account.text
+      val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+      clipboardManager.primaryClip = ClipData.newPlainText("Account", account)
     }
   }
 
   private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {
+    myMarker?.remove()
+
     val me = LatLng(latitude, longitude)
 
-    val bitmap = getBitmapFromVectorDrawable(this, R.drawable.ic_person_pin_circle_black_24dp)
+    val bitmap = getBitmapFromVectorDrawable(R.drawable.ic_person_pin_circle_black_24dp)
     val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
     val position = CameraPosition.builder()
@@ -179,7 +291,7 @@ class MainActivity : AppCompatActivity(),
     map.run {
       animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
       moveCamera(CameraUpdateFactory.newCameraPosition(position))
-      addMarker(MarkerOptions().position(me).title("Me").icon(icon))
+      myMarker = addMarker(MarkerOptions().position(me).title("Me").icon(icon))
     }
   }
 
@@ -215,20 +327,11 @@ class MainActivity : AppCompatActivity(),
 
 
   override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.reset()
-  }
-
-  override fun onStart() {
-    super.onStart()
-    presenter.attach(this)
-    presenter.load(latitude, longitude)
-  }
-
-  override fun onStop() {
-    super.onStop()
     presenter.detach()
+    Toothpick.closeScope(this)
+    super.onDestroy()
   }
+
 
   override fun onBackPressed() {
     if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -241,6 +344,7 @@ class MainActivity : AppCompatActivity(),
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     // Inflate the menu; this adds items to the action bar if it is present.
     menuInflater.inflate(R.menu.main, menu)
+    MenuTint.on(menu).setMenuItemIconColor(ContextCompat.getColor(this, R.color.white)).apply(this)
     return true
   }
 
@@ -253,6 +357,10 @@ class MainActivity : AppCompatActivity(),
         SettingsActivity.start(this)
         true
       }
+      R.id.action_reload -> {
+        presenter.load()
+        true
+      }
       else -> super.onOptionsItemSelected(item)
     }
   }
@@ -262,6 +370,9 @@ class MainActivity : AppCompatActivity(),
     when (item.itemId) {
       R.id.main__nav_accounts -> {
         AccountActivity.start(this)
+      }
+      R.id.main__nav_pending_contracts -> {
+        PendingContractsActivity.start(this)
       }
     }
 
@@ -273,14 +384,22 @@ class MainActivity : AppCompatActivity(),
     map = googleMap
 
     map?.setOnInfoWindowClickListener { marker ->
-      val contractAddress = marker.tag as String? ?: return@setOnInfoWindowClickListener
+      val contract = marker.tag as DeployedSikorkaContract? ?: return@setOnInfoWindowClickListener
 
       showConfirmation(
           R.string.main__contract_intration_dialog_title,
           R.string.main__contract_intration_dialog_content,
-          contractAddress
+          contract.name
       ) {
-        ContractInteractActivity.start(this, contractAddress)
+
+
+        ContractInteractActivity.start(
+            this,
+            contract.name,
+            contract.addressHex,
+            LatLng(latitude, longitude),
+            LatLng(contract.latitude, contract.longitude)
+        )
       }
 
     }
@@ -291,7 +410,6 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun error(error: Throwable) {
-    loading(false)
     val message = error.message ?: getString(R.string.errors__generic_error)
     Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_SHORT).show()
   }
@@ -302,6 +420,7 @@ class MainActivity : AppCompatActivity(),
     if (loading) {
       main__deploy_fab.hide()
       progress = main__deploy_fab.progressSnack(R.string.main__loading_message, Snackbar.LENGTH_INDEFINITE)
+      progress?.show()
     } else {
       main__deploy_fab.show()
       progress?.dismiss()
@@ -309,7 +428,6 @@ class MainActivity : AppCompatActivity(),
   }
 
   override fun update(model: DeployedContractModel) {
-    loading(false)
     val googleMap = map ?: return
 
     val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_ethereum_icon)
@@ -322,29 +440,9 @@ class MainActivity : AppCompatActivity(),
           .icon(icon)
 
       val marker = googleMap.addMarker(markerOptions)
-      marker.tag = it.addressHex
+      marker.tag = it
     }
   }
-
-  private fun getBitmapFromVectorDrawable(context: Context, @DrawableRes drawableId: Int): Bitmap {
-    var drawable = ContextCompat.getDrawable(context, drawableId);
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-      drawable = (DrawableCompat.wrap(drawable)).mutate()
-    }
-
-    val bitmap = Bitmap.createBitmap(
-        drawable.intrinsicWidth,
-        drawable.intrinsicHeight,
-        Bitmap.Config.ARGB_8888
-    )
-    val canvas = Canvas(bitmap)
-    drawable.run {
-      setBounds(0, 0, canvas.width, canvas.height)
-      draw(canvas)
-    }
-    return bitmap
-  }
-
 
   companion object {
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 34

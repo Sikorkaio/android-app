@@ -36,8 +36,11 @@ fun View.gone() {
   visibility = View.GONE
 }
 
+val View.isVisible
+  inline get() = visibility == View.VISIBLE
 
-fun View.progressSnack(@StringRes resId: Int, duration: Int) : Snackbar {
+
+fun View.progressSnack(@StringRes resId: Int, duration: Int): Snackbar {
   val bar = Snackbar.make(this, resId, duration)
   val contentLay = bar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text).parent as ViewGroup
   val item = ProgressBar(context)

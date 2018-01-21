@@ -6,8 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.github.paolorotolo.appintro.AppIntro2
-import io.sikorka.android.GethService
 import io.sikorka.android.R
+import io.sikorka.android.SikorkaService
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.slides.InformationFragment
@@ -46,21 +46,13 @@ class WizardActivity : AppIntro2(), WizardView {
     setNextPageSwipeLock(false)
     setSwipeLock(false)
     setIndicatorColor(R.color.colorAccent, R.color.colorAccentLight)
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
-
-  override fun onStart() {
-    super.onStart()
     presenter.attach(this)
   }
 
-  override fun onStop() {
-    super.onStop()
+  override fun onDestroy() {
     presenter.detach()
+    Toothpick.closeScope(this)
+    super.onDestroy()
   }
 
   override fun onDonePressed(currentFragment: Fragment?) {
@@ -76,8 +68,9 @@ class WizardActivity : AppIntro2(), WizardView {
   }
 
   private fun done() {
-    GethService.start(this)
+    SikorkaService.start(this)
     MainActivity.start(this)
+    finish()
   }
 
   companion object {

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    tools:context="io.sikorka.android.ui.contracts.pending.PendingContractsActivity">
+
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/pending_contracts__contract_list"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:listitem="@layout/item__pending_contract" />
+
+  <android.support.constraint.Group
+      android:id="@+id/pending_contract__no_data_group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:constraint_referenced_ids="pending_contract__no_data_icon,pending_contract__no_data_label"/>
+
+  <ImageView
+      android:id="@+id/pending_contract__no_data_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:alpha="0.4"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_info_outline_black_120dp" />
+
+  <TextView
+      android:id="@+id/pending_contract__no_data_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:alpha="0.7"
+      android:fontFamily="sans-serif-condensed"
+      android:text="@string/pending_contract__no_data_label"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/pending_contract__no_data_icon"
+      app:layout_constraintVertical_bias="0" />
+
+</android.support.constraint.ConstraintLayout>

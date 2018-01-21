@@ -1,6 +1,7 @@
 package io.sikorka.android.settings
 
-import io.sikorka.android.node.configuration.Network
+import android.support.annotation.IntRange
+import io.sikorka.android.core.configuration.Network
 
 interface AppPreferences {
 
@@ -12,4 +13,17 @@ interface AppPreferences {
   fun selectedAccount(): String
 
   fun selectAccount(account: String)
+
+  fun preferredGasPrice(): Long
+
+  fun setPreferredGasPrice(gasPrice: Long)
+
+  fun preferredGasLimit(): Long
+
+  fun setPreferredGasLimit(gasLimit: Long)
+
+  @IntRange(from = 0, to = 10)
+  fun preferredBalancePrecision(): Int
+
+  fun setPreferredBalancePrecision(@IntRange(from = 0, to = 10) digits: Int)
 }

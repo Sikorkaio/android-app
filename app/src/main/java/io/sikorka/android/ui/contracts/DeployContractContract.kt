@@ -1,9 +1,9 @@
 package io.sikorka.android.ui.contracts
 
+import io.sikorka.android.core.contracts.model.ContractData
+import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
-import io.sikorka.android.node.contracts.ContractData
-import io.sikorka.android.node.contracts.ContractGas
 import toothpick.config.Module
 
 interface DeployContractView : BaseView {
@@ -11,13 +11,16 @@ interface DeployContractView : BaseView {
   fun requestDeployAuthorization(gas: ContractGas)
   fun showError(message: String?)
   fun complete(hex: String?)
+  fun showGasDialog(gas: ContractGas)
 
+  fun showError(code: Int)
 }
 
 interface DeployContractPresenter : Presenter<DeployContractView> {
   fun load()
-  fun checkValues(gasPrice: Long, gasLimit: Long)
   fun deployContract(passphrase: String, contractInfo: ContractData)
+  fun prepareGasSelection()
+  fun prepareDeployWithDefaults()
 }
 
 

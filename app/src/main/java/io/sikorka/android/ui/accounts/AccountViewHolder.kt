@@ -3,18 +3,17 @@ package io.sikorka.android.ui.accounts
 import android.support.v7.widget.PopupMenu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import io.sikorka.android.R
+import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BaseViewHolder
+import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.show
-import org.ethereum.geth.Account
 
 class AccountViewHolder(
     itemView: View,
@@ -25,20 +24,11 @@ class AccountViewHolder(
   var onExport: AccountAction? = null
   var onSetDefault: AccountAction? = null
 
-  @BindView(R.id.account_address)
-  internal lateinit var accountAddress: TextView
+  private val accountAddress: TextView by itemView.bind(R.id.account_address)
 
-  @BindView(R.id.account_management__account_default)
-  lateinit var defaultIndicator: ImageView
+  private val defaultIndicator: ImageView by itemView.bind(R.id.account_management__account_default)
 
-  @OnClick(R.id.account_management__more_actions)
-  internal fun onActionsPressed(view: View) {
-    PopupMenu(view.context, view).run {
-      setOnMenuItemClickListener(this@AccountViewHolder)
-      inflate(R.menu.account_management__more_actions)
-      show()
-    }
-  }
+  private val actionsButton: ImageButton by itemView.bind(R.id.account_management__more_actions)
 
   private fun onDelete() {
     if (presenter.size() == 1) {
@@ -73,7 +63,13 @@ class AccountViewHolder(
   }
 
   init {
-    ButterKnife.bind(this, itemView)
+    actionsButton.setOnClickListener { view ->
+      PopupMenu(view.context, view).run {
+        setOnMenuItemClickListener(this@AccountViewHolder)
+        inflate(R.menu.account_management__more_actions)
+        show()
+      }
+    }
   }
 
   override fun update() {

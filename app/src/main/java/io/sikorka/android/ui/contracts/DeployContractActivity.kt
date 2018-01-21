@@ -14,12 +14,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
-import io.sikorka.android.node.contracts.ContractData
-import io.sikorka.android.node.contracts.ContractGas
+import io.sikorka.android.core.contracts.model.ContractData
+import io.sikorka.android.core.contracts.model.ContractGas
+import io.sikorka.android.ui.contracts.DeployContractCodes.NO_GAS_PREFERENCES
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.dialogs.showInfo
+import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
+import io.sikorka.android.ui.value
 import kotlinx.android.synthetic.main.activity__deploy_contract.*
 import toothpick.Scope
 import toothpick.Toothpick
@@ -41,32 +43,50 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     val mapFragment = supportFragmentManager.findFragmentById(R.id.deploy_contract__map) as SupportMapFragment
     mapFragment.getMapAsync(this)
     deploy_contract__deploy_fab.setOnClickListener {
-      deploy_contract__answer.error = null
-      deploy_contract__question.error = null
+      deploy_contract__name.error = null
 
-      if (question.isBlank()) {
-        deploy_contract__question.error = getString(R.string.deploy_contract__question_empty)
+      if (contractName.isBlank()) {
+        deploy_contract__name.error = getString(R.string.deploy_contract__specify_contract_name)
         return@setOnClickListener
       }
 
-      if (answer.isBlank()) {
-        deploy_contract__answer.error = getString(R.string.deploy_contract__answer_empty)
+      deploy_contract__token_supply.error = null
+      val supply = deploy_contract__token_supply.editText?.value()?.toLong() ?: 0
+
+      if (supply == 0L) {
+        deploy_contract__token_supply.error = getString(R.string.deploy_contract__token_supply_empty)
         return@setOnClickListener
       }
 
-      presenter.checkValues(gasPrice, gasLimit)
-    }
-
-    gasLimit = 4000000
-    if (BuildConfig.DEBUG) {
-      deploy_contract__question.editText?.setText("Experimental Question")
-      deploy_contract__answer.editText?.setText("Experimental Answer")
+      if (deploy_contract__advanced_options.isChecked) {
+        presenter.prepareGasSelection()
+      } else {
+        presenter.prepareDeployWithDefaults()
+      }
     }
 
     supportActionBar?.apply {
       setDisplayHomeAsUpEnabled(true)
       setHomeButtonEnabled(true)
     }
+    presenter.attach(this)
+    presenter.load()
+  }
+
+  override fun showError(code: Int) {
+    when (code) {
+      NO_GAS_PREFERENCES -> {
+        Snackbar.make(deploy_contract__deploy_fab, R.string.deploy_contract__no_gas_preferences, Snackbar.LENGTH_LONG).show()
+      }
+    }
+  }
+
+  override fun showGasDialog(gas: ContractGas) {
+    val dialog = GasSelectionDialog.create(supportFragmentManager, gas) {
+      requestDeployAuthorization(it)
+    }
+    dialog.show()
+
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -78,8 +98,10 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
+    val supply = deploy_contract__token_supply.editText?.value()?.toLong() ?: 0
+
     val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
-      val contractInfo = ContractData(gas, question, answer, latitude, longitude)
+      val contractInfo = ContractData(contractName, gas, latitude, longitude, supply)
       presenter.deployContract(passphrase, contractInfo)
     }
     dialog.show()
@@ -95,58 +117,20 @@ class DeployContractActivity : AppCompatActivity(), DeployContractView, OnMapRea
     }
   }
 
-  private var gasPrice: Long
+  private val contractName: String
     get() {
-      val gasField = deploy_contract__gas_price.editText
-      val value = gasField?.text.toString()
-      return value.toLongOrNull() ?: 0
-    }
-    set(value) {
-      val gasField = deploy_contract__gas_price.editText
-      gasField?.setText(value.toString())
-    }
-
-  private var gasLimit: Long
-    get() {
-      val gasLimitField = deploy_contract__gas_limit.editText
-      val value = gasLimitField?.text.toString()
-      return value.toLongOrNull() ?: 0
-    }
-    set(value) {
-      val gasLimitField = deploy_contract__gas_limit.editText
-      gasLimitField?.setText(value.toString())
-    }
-
-  private val question: String
-    get() {
-      val editText = deploy_contract__question.editText
-      return editText?.text.toString()
-    }
-
-  private val answer: String
-    get() {
-      val editText = deploy_contract__answer.editText
+      val editText = deploy_contract__name.editText
       return editText?.text.toString()
     }
 
   override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
-
-  override fun onStart() {
-    super.onStart()
-    presenter.attach(this)
-    presenter.load()
-  }
-
-  override fun onStop() {
-    super.onStop()
     presenter.detach()
+    Toothpick.closeScope(this)
+    super.onDestroy()
   }
 
   override fun setSuggestedGasPrice(gasPrice: Long) {
-    this.gasPrice = if (BuildConfig.DEBUG) 200L * 1000 * 1000 * 1000 else gasPrice
+
   }
 
   private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {

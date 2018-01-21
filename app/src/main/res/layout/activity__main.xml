@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -12,7 +11,7 @@
   <include
       layout="@layout/app_bar__main"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent" />
 
   <android.support.design.widget.NavigationView
       android:id="@+id/main__nav_view"
@@ -44,20 +43,55 @@
           android:paddingEnd="16dp"
           android:paddingStart="16dp"
           android:text="@string/main_nav__exit"
-          android:textColor="@color/black"/>
+          android:textColor="@color/black" />
 
-      <TextView
-          android:id="@+id/main__nav_network_statistics"
+      <CheckBox
+          android:id="@+id/main__nav_debug_randomize"
           android:layout_width="match_parent"
-          android:layout_height="36dp"
-          android:drawablePadding="8dp"
-          android:drawableStart="@drawable/ic_rss_feed_black_24dp"
-          android:fontFamily="@font/roboto_light"
-          android:gravity="start|center_vertical"
+          android:layout_height="wrap_content"
           android:paddingEnd="8dp"
           android:paddingStart="8dp"
-          android:textSize="13sp"
-          tools:text="0 Peers | 10205003 blocks"/>
+          android:text="@string/main__nav_randomized_debug_location"
+          android:translationX="8dp"
+          android:visibility="gone"
+          tools:visibility="visible" />
+
+      <TextView
+          android:id="@+id/main__nav_debug_button"
+          android:visibility="gone"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
+          android:clickable="true"
+          android:focusable="true"
+          android:padding="9dp"
+          android:text="Debug Button" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:paddingEnd="8dp"
+          android:paddingStart="8dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            app:srcCompat="@drawable/ic_rss_feed_black_24dp" />
+
+        <TextView
+            android:id="@+id/main__nav_network_statistics"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:fontFamily="@font/roboto_light"
+            android:gravity="start|center_vertical"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:textSize="13sp"
+            tools:text="0 Peers | 10205003 blocks" />
+      </LinearLayout>
+
 
     </LinearLayout>
 

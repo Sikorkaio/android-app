@@ -1,10 +1,17 @@
 package io.sikorka.android.ui.main
 
-import io.sikorka.android.helpers.Lce
+import android.arch.lifecycle.Observer
+import io.sikorka.android.core.accounts.AccountModel
+import io.sikorka.android.core.accounts.AccountRepository
+import io.sikorka.android.core.monitor.ContractStatusEvent
+import io.sikorka.android.core.monitor.TransactionStatusEvent
+import io.sikorka.android.data.contracts.ContractRepository
+import io.sikorka.android.data.location.UserLocation
+import io.sikorka.android.data.location.UserLocationProvider
+import io.sikorka.android.data.syncstatus.SyncStatusProvider
+import io.sikorka.android.events.RxBus
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.node.GethNode
-import io.sikorka.android.node.accounts.AccountRepository
-import io.sikorka.android.node.contracts.ContractRepository
+import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
 import javax.inject.Inject
@@ -14,58 +21,63 @@ class MainPresenterImpl
 constructor(
     private val accountRepository: AccountRepository,
     private val contractRepository: ContractRepository,
-    private val gethNode: GethNode,
-    private val schedulerProvider: SchedulerProvider
+    private val schedulerProvider: SchedulerProvider,
+    private val locationProvider: UserLocationProvider,
+    private val appPreferences: AppPreferences,
+    syncStatusProvider: SyncStatusProvider,
+    private val bus: RxBus
 ) : MainPresenter, BasePresenter<MainView>() {
+
+  init {
+    syncStatusProvider.observe(this, Observer {
+      if (it == null) {
+        return@Observer
+      }
+      attachedView().updateSyncStatus(it)
+    })
+    accountRepository.observeDefaultAccountBalance().observe(this, Observer {
+      if (it == null) {
+        return@Observer
+      }
+      val model = AccountModel(it.addressHex, it.balance)
+      attachedView().updateAccountInfo(model, appPreferences.preferredBalancePrecision())
+    })
+    contractRepository.getDeployedContracts().observe(this, Observer {
+      val data = it ?: return@Observer
+
+      attachedView().updateDeployed(data)
+    })
+  }
+
+  override fun userLocation(userLocation: UserLocation) {
+    locationProvider.value = userLocation
+  }
 
   override fun attach(view: MainView) {
     super.attach(view)
-    addDisposable(gethNode.status()
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
-        .subscribe({
-          attachedView().updateSyncStatus(it)
-        }) {
-          Timber.v(it, "Failed")
-        }
-    )
+    bus.register(this, TransactionStatusEvent::class.java, {
+      attachedView().notifyTransactionMined(it.txHash, it.success)
+    })
+    bus.register(this, ContractStatusEvent::class.java, {
+      attachedView().notifyContractMined(it.address, it.txHash, it.success)
+    })
   }
 
-  override fun load(latitude: Double, longitude: Double) {
+  override fun detach() {
+    bus.unregister(this)
+    super.detach()
+  }
+
+  override fun load() {
     addDisposable(accountRepository.selectedAccount()
         .subscribeOn(schedulerProvider.io())
         .observeOn(schedulerProvider.main())
         .subscribe({
-          attachedView().updateAccountInfo(it)
+          attachedView().updateAccountInfo(it, appPreferences.preferredBalancePrecision())
           Timber.v(it.toString())
         }) {
           Timber.v(it)
         }
     )
-    loadDeployed()
   }
-
-  private fun loadDeployed() {
-    addDisposable(contractRepository.getDeployedContracts()
-        .toObservable()
-        .startWith(Lce.loading())
-        .onErrorReturn { Lce.failure(it) }
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
-        .subscribe({
-          Timber.v("Completed retrieving deployed contracts")
-          when {
-            it.success() -> attachedView().update(it.data())
-            it.failure() -> {
-              attachedView().error(it.error())
-              Timber.v(it.error())
-            }
-            it.loading() -> attachedView().loading(true)
-          }
-        }) {
-          Timber.v(it)
-        }
-    )
-  }
-
 }
