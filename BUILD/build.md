@@ -90,4 +90,15 @@ You can import your account again during the setup part.
 *The chain data are stored in the internal storage of the device and thus the sync should 
 resume from where it stopped instead of starting from scratch.*
 
+## Deploying
 
+When trying to deploy from linux on a usb device, keep in mind that sometimes
+the device might appear like having no permissions, and it won't allow you 
+to directly deploy. I will also not show you the permission dialog.
+
+If this is the case, then go on your device's notifications and locate 
+the notification *USB charging the device*. Press the notification and
+select the *Transfer photos (PTP)* option. 
+
+After selected PTP you should be able to view the device in adb,
+and the permission dialog should appear properly.
