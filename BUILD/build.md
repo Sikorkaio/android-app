@@ -35,6 +35,7 @@ If you are opening the project for the first time you will probably get an error
 You have to create a Google Maps API key on Google Console, if you don't already have an API key.
 
 > Google Console: https://console.cloud.google.com/
+
 > Instructions for Map API key: https://developers.google.com/maps/documentation/android-api/signup
 
 After getting the API key go in the **android-app** folder and create the *api-keys.properties* file.
