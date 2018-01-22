@@ -25,7 +25,11 @@ google_maps_key=API_KEY_VALUE
 
 In order to build this project, the latest canary build of Android Studio (3.x) is required.
 
-For more information please check the [Build](BUILD/build.md) instructions.
+For more information please check the [Build](GUIDE/build.md) instructions.
+
+### Ropsten syncing
+
+If you have problems with ropsten please check [here](GUIDE/peers.md)
 
 License
 ---------
