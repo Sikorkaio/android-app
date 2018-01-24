@@ -83,7 +83,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
   override fun showError(@Code code: Long) {
     clearErrors()
     when (code) {
-      ValidationResult.CONFIRMATION_MISSMATCH -> {
+      ValidationResult.CONFIRMATION_MISMATCH -> {
         passphraseConfirmationInput.error = getString(R.string.account_creation__passphrase_missmatch)
       }
       ValidationResult.EMPTY_PASSPHRASE -> {

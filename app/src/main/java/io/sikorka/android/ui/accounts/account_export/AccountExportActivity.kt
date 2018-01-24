@@ -12,8 +12,11 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import io.sikorka.android.R
-import io.sikorka.android.core.accounts.ValidationResult
+import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
+import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY
+import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT
 import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.selectDirectory
 import io.sikorka.android.ui.value
@@ -76,17 +79,20 @@ class AccountExportActivity : AppCompatActivity(),
     clearErrors()
 
     when (code) {
-      ValidationResult.CONFIRMATION_MISSMATCH -> {
+      CONFIRMATION_MISMATCH -> {
         encryptionPassphraseConfirmation.error = getString(R.string.account_export__confirmation_missmatch)
       }
-      ValidationResult.EMPTY_PASSPHRASE -> {
+      EMPTY_PASSPHRASE -> {
         encryptionPassphrase.error = getString(R.string.account_export__encryption_passphrase_empty)
       }
-      AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT -> {
+      FAILED_TO_UNLOCK_ACCOUNT -> {
         accountPassphrase.error = getString(R.string.account_export__failed_to_unlock)
       }
-      AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY -> {
+      ACCOUNT_PASSPHRASE_EMPTY -> {
         accountPassphrase.error = getString(R.string.account_export__passphrase_empty)
+      }
+      AccountExportCodes.INVALID_PASSPHRASE -> {
+        accountPassphrase.error = getString(R.string.account_export__invalid_passphrase)
       }
       else -> {
         fail("Was not expecting $code")

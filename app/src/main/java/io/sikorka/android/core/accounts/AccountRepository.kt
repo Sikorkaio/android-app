@@ -22,9 +22,9 @@ import io.sikorka.android.core.model.Account as SikorkaAccount
 
 class AccountRepository
 @Inject constructor(
-    @KeystorePath private val keystorePath: String,
-    private val appPreferences: AppPreferences,
-    private val accountBalanceDao: AccountBalanceDao
+  @KeystorePath private val keystorePath: String,
+  private val appPreferences: AppPreferences,
+  private val accountBalanceDao: AccountBalanceDao
 ) {
 
   private val accountConverter: GethAccountConverter = GethAccountConverter()
@@ -49,33 +49,38 @@ class AccountRepository
     val balance = accountBalanceDao.getBalance(addressHex)
     return@fromCallable AccountModel(addressHex, balance?.balance ?: NO_BALANCE)
   }.onErrorReturn {
-    val addressHex = appPreferences.selectedAccount()
-    return@onErrorReturn AccountModel(addressHex)
-  }
+      val addressHex = appPreferences.selectedAccount()
+      return@onErrorReturn AccountModel(addressHex)
+    }
 
   private fun getAccountByHex(addressHex: String): Account {
     return keystore.accounts.all().first { it.address.hex.equals(addressHex, ignoreCase = true) }
   }
 
-  fun accountByHex(addressHex: String): Single<Account> = Single.fromCallable {
-    return@fromCallable getAccountByHex(addressHex)
+  fun export(addressHex: String, passphrase: String, keyPassphrase: String) : Single<ByteArray> {
+    return Single.fromCallable {
+      keystore.exportKey(getAccountByHex(addressHex), passphrase, keyPassphrase)
+    }.onErrorResumeNext { Single.error(checkIfInvalidPassphrase(it)) }
   }
 
-  fun exportAccount(account: Account, passphrase: String, keyPassphrase: String): Single<ByteArray> {
-    return Single.fromCallable { keystore.exportKey(account, passphrase, keyPassphrase) }
-  }
-
-  fun deleteAccount(account: SikorkaAccount, passphrase: String): Completable = Completable.fromCallable {
-    val matchingAccount = keystore.accounts.all().first { it.address.hex == account.address.hex }
-    keystore.deleteAccount(matchingAccount, passphrase)
-    accountBalanceDao.deleteByHex(account.address.hex)
-  }.onErrorResumeNext {
-    val message = it.message ?: ""
-    if (message.contains("could not decrypt key with given passphrase")) {
-      return@onErrorResumeNext Completable.error(InvalidPassphraseException(it))
+  private fun checkIfInvalidPassphrase(throwable: Throwable): Throwable {
+    val message = throwable.message.orEmpty()
+    return if (message.contains(INVALID_PASSPHRASE)) {
+      InvalidPassphraseException(throwable)
     } else {
-      return@onErrorResumeNext Completable.error(it)
+      throwable
     }
+  }
+
+  fun deleteAccount(account: SikorkaAccount, passphrase: String): Completable {
+    return Completable.fromCallable {
+      val matchingAccount = keystore.accounts
+        .all()
+        .first { it.address.hex == account.address.hex }
+
+      keystore.deleteAccount(matchingAccount, passphrase)
+      accountBalanceDao.deleteByHex(account.address.hex)
+    }.onErrorResumeNext { Completable.error(checkIfInvalidPassphrase(it)) }
   }
 
   fun importAccount(key: ByteArray, keyPassphrase: String, passphrase: String): Single<Account> {
@@ -96,9 +101,14 @@ class AccountRepository
     keystore.updateAccount(account, oldPassphrase, newPassphrase)
   }
 
-  fun sign(address: String, passphrase: String, transaction: Transaction, chainId: BigInt): Transaction? {
+  fun sign(
+    address: String,
+    passphrase: String,
+    transaction: Transaction,
+    chainId: BigInt
+  ): Transaction? {
     val account = keystore.accounts.all()
-        .first { it.address.hex.equals(address, ignoreCase = true) }
+      .first { it.address.hex.equals(address, ignoreCase = true) }
     Timber.v("Signing ${account.address.hex} - ${transaction.hash.hex} - chain: ${chainId.int64}")
     return keystore.signTxPassphrase(account, passphrase, transaction, chainId)
   }
@@ -112,10 +122,14 @@ class AccountRepository
   }
 
   fun getAccountAddresses(): Observable<Address> = keystore.accounts.all()
-      .map { addressConverter.convert(it.address) }
-      .toObservable()
+    .map { addressConverter.convert(it.address) }
+    .toObservable()
 
   fun observeDefaultAccountBalance(): LiveData<AccountBalance> {
     return accountBalanceDao.observeBalance(appPreferences.selectedAccount())
+  }
+
+  companion object {
+    private const val INVALID_PASSPHRASE = "could not decrypt key with given passphrase"
   }
 }

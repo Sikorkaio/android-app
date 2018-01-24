@@ -180,6 +180,7 @@
   <string name="balance_precision__invalid_input">Invalid input value</string>
   <string name="balance_precision__invalid_range">You have to select a number between %d–%d</string>
   <string name="balance_precision__title">Select the number of decimal digits</string>
+  <string name="account_export__invalid_passphrase">Could not decrypt the key with this passphrase.</string>
 
 
 </resources>

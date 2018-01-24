@@ -14,7 +14,7 @@ open class BasePresenter<T : BaseView> : Presenter<T>, LifecycleOwner {
   override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
   private var view: T? = null
-  private val compositeDisposable = CompositeDisposable()
+  protected val disposables = CompositeDisposable()
 
   private val isAttached: Boolean
     get() = view != null
@@ -27,11 +27,11 @@ open class BasePresenter<T : BaseView> : Presenter<T>, LifecycleOwner {
   override fun detach() {
     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
     this.view = null
-    compositeDisposable.clear()
+    disposables.clear()
   }
 
   protected fun addDisposable(disposable: Disposable) {
-    this.compositeDisposable.add(disposable)
+    this.disposables.add(disposable)
   }
 
   fun attachedView(): T {
