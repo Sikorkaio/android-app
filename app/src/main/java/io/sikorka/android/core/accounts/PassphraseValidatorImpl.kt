@@ -9,7 +9,7 @@ class PassphraseValidatorImpl
   override fun validate(passphrase: String, passphraseConfirmation: String): Long = when {
     passphrase.isBlank() -> ValidationResult.EMPTY_PASSPHRASE
     passphrase.length < PASSWORD_MIN_LENGTH && !BuildConfig.DEBUG -> ValidationResult.PASSWORD_SHORT
-    passphrase != passphraseConfirmation -> ValidationResult.CONFIRMATION_MISSMATCH
+    passphrase != passphraseConfirmation -> ValidationResult.CONFIRMATION_MISMATCH
     passphrase == passphraseConfirmation -> ValidationResult.OK
     else -> fail("not supported branch")
   }
