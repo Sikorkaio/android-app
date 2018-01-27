@@ -162,7 +162,7 @@
   <string name="deploy_contract__token_supply_empty">Token supply should not be empty</string>
   <string name="deploy_detector__token_supply_empty">Token supply cannot be empty</string>
   <string name="interact_contract__select_gas_before_transaction">Select gas before transaction</string>
-  <string name="contract_deployment__status_failed_notification" >Contract %s deployment failed %s</string>
+  <string name="contract_deployment__status_failed_notification">Contract %s deployment failed %s</string>
   <string name="contract_interact__proceed_with_claiming">Claim Your Tokens</string>
   <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
   <string name="contract_interact__select_method">Select contract method to interact with</string>
@@ -181,6 +181,11 @@
   <string name="balance_precision__invalid_range">You have to select a number between %d–%d</string>
   <string name="balance_precision__title">Select the number of decimal digits</string>
   <string name="account_export__invalid_passphrase">Could not decrypt the key with this passphrase.</string>
+  <string name="account_import__invalid_passphrase">Could not decrypt the key with this passphrase.</string>
+  <string name="account_import__unknown_error">Encountered an error while trying to unlock the file.</string>
+  <string name="account_import__confirmation_missmatch">The account passphrase confirmation doesn\'t match.</string>
+  <string name="account_import__account_passphrase_empty">The account passphrase cannot be empty.</string>
+  <string name="account_import__folder_button_content_description">Opens the file selection dialog</string>
 
 
 </resources>

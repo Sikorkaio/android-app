@@ -1,6 +1,8 @@
 package io.sikorka.android.ui
 
 import android.annotation.SuppressLint
+import android.support.annotation.StringRes
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 
@@ -20,5 +22,9 @@ open class BaseActivity : AppCompatActivity() {
       }
     }
     return super.onOptionsItemSelected(item)
+  }
+
+  protected fun snackBar(@StringRes resId: Int) {
+    Snackbar.make(findViewById(android.R.id.content), resId, Snackbar.LENGTH_SHORT).show()
   }
 }
