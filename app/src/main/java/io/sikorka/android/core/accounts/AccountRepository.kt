@@ -57,7 +57,7 @@ class AccountRepository
     return keystore.accounts.all().first { it.address.hex.equals(addressHex, ignoreCase = true) }
   }
 
-  fun export(addressHex: String, passphrase: String, keyPassphrase: String) : Single<ByteArray> {
+  fun export(addressHex: String, passphrase: String, keyPassphrase: String): Single<ByteArray> {
     return Single.fromCallable {
       keystore.exportKey(getAccountByHex(addressHex), passphrase, keyPassphrase)
     }.onErrorResumeNext { Single.error(checkIfInvalidPassphrase(it)) }
@@ -83,12 +83,21 @@ class AccountRepository
     }.onErrorResumeNext { Completable.error(checkIfInvalidPassphrase(it)) }
   }
 
-  fun importAccount(key: ByteArray, keyPassphrase: String, passphrase: String): Single<Account> {
+  fun importAccount(
+    key: ByteArray,
+    keyPassphrase: String,
+    passphrase: String
+  ): Single<Lce<SikorkaAccount>> {
     return Single.fromCallable {
       val account = keystore.importKey(key, keyPassphrase, passphrase)
       setDefault(account.address.hex)
-      account
-    }
+
+      return@fromCallable if (account == null) {
+        Lce.failure(InvalidPassphraseException())
+      } else {
+        Lce.success(accountConverter.convert(account))
+      }
+    }.onErrorReturn { Lce.failure(checkIfInvalidPassphrase(it)) }
   }
 
   private fun setDefault(accountHex: String) {

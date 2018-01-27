@@ -1,24 +1,33 @@
 package io.sikorka.android.ui.accounts.account_import
 
+import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.accounts.AccountRepository
+import io.sikorka.android.core.accounts.InvalidPassphraseException
 import io.sikorka.android.core.accounts.PassphraseValidator
 import io.sikorka.android.core.accounts.ValidationResult
 import io.sikorka.android.io.toByteArray
 import io.sikorka.android.mvp.BasePresenter
-import org.ethereum.geth.Account
+import io.sikorka.android.ui.accounts.account_import.AccountImportCodes.FAILED_TO_UNLOCK
+import io.sikorka.android.ui.accounts.account_import.AccountImportCodes.UNKNOWN_ERROR
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
-
+@AccountImportActivity.Presenter
 class AccountImportPresenterImpl
 @Inject constructor(
-    private val accountRepository: AccountRepository,
-    private val passphraseValidator: PassphraseValidator
+  private val accountRepository: AccountRepository,
+  private val passphraseValidator: PassphraseValidator
 ) :
-    BasePresenter<AccountImportView>(),
-    AccountImportPresenter {
+  BasePresenter<AccountImportView>(),
+  AccountImportPresenter {
 
-  override fun import(filePath: String, filePassphrase: String, accountPassphrase: String, accountPassphraseConfirmation: String) {
+  override fun import(
+    filePath: String,
+    filePassphrase: String,
+    accountPassphrase: String,
+    accountPassphraseConfirmation: String
+  ) {
 
     val file = File(filePath)
 
@@ -36,15 +45,25 @@ class AccountImportPresenterImpl
 
     val key = file.toByteArray()
 
-    accountRepository.importAccount(key, filePassphrase, accountPassphrase).subscribe({ t: Account? ->
-     if (t == null) {
-       attachedView().showError(AccountImportCodes.FAILED_TO_UNLOCK)
-     } else {
-       attachedView().importSuccess()
-     }
-    }) {
+    disposables += accountRepository.importAccount(key, filePassphrase, accountPassphrase)
+      .subscribe({ lce ->
+        if (lce.success()) {
+          attachedView().importSuccess()
+        } else if (lce.failure()) {
+          Timber.v(lce.error(), "Import error")
 
-    }
+          when (lce.error()) {
+            is InvalidPassphraseException -> {
+              attachedView().showError(FAILED_TO_UNLOCK)
+            }
+            else -> {
+              attachedView().showError(UNKNOWN_ERROR)
+            }
+          }
+        }
+      }) {
+        Timber.e(it)
+      }
   }
 
 }
