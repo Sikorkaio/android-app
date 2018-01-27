@@ -94,7 +94,7 @@ dependencies {
   implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
-  implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
+  implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
   implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
 
   implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
@@ -118,7 +118,7 @@ dependencies {
 
   implementation "android.arch.paging:runtime:1.0.0-alpha4-1"
 
-  implementation "android.arch.lifecycle:extensions:1.0.0"
+  implementation "android.arch.lifecycle:extensions:1.1.0"
 
   implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
   implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
@@ -144,8 +144,8 @@ dependencies {
   //Unit testing
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.1.1'
-  testImplementation "com.google.truth:truth:0.37"
-  testImplementation "android.arch.core:core-testing:1.0.0"
+  testImplementation "com.google.truth:truth:0.39"
+  testImplementation "android.arch.core:core-testing:1.1.0"
 }
 
 
