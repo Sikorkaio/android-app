@@ -84,8 +84,8 @@ In case you get errors that look related to the database schema then proceed to 
 remove the application and do a fresh install. This will clear the application data and the
 internal database.
 
-Before reinstalling make sure if you have an account with test ether to export the account.
-You can import your account again during the setup part.
+Before reinstalling make sure if you have an account with test ether to [export](importexport.md) the account.
+You can [import](importexport.md) your account again during the setup part.
 
 The chain data are stored in the internal storage of the device and thus the sync should
 resume from where it stopped instead of starting from scratch.
