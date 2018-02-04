@@ -4,11 +4,15 @@ import android.support.annotation.IntDef
 
 object Network {
 
-  const val MAIN_NET = 1L
-  const val ROPSTEN = 2L
-  const val RINKEBY = 3L
+  const val MAIN_NET = 1
+  const val ROPSTEN = 2
+  const val RINKEBY = 3
 
-  @IntDef()
+  @IntDef(
+    MAIN_NET.toLong(),
+    ROPSTEN.toLong(),
+    RINKEBY.toLong()
+  )
   @Retention(AnnotationRetention.SOURCE)
   annotation class Selection
 }

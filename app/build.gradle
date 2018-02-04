@@ -18,7 +18,7 @@ static def revision() {
 
 android {
   compileSdkVersion 27
-  buildToolsVersion '27.0.1'
+  buildToolsVersion '27.0.3'
   defaultConfig {
     applicationId "io.sikorka.android"
     minSdkVersion 17
@@ -60,7 +60,7 @@ android {
 ext.versions = [
     support_library_version: '27.0.2',
     play_services_version  : '11.8.0',
-    room_version: '1.0.0'
+    room_version           : '1.0.0'
 ]
 
 dependencies {
@@ -86,7 +86,7 @@ dependencies {
   // build of 049797d40 master (plus mobile single unmarshal fix)
   implementation 'geth-android:geth:1.7.3-unstable'
 
-
+  implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
   implementation 'com.squareup.okio:okio:1.13.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 

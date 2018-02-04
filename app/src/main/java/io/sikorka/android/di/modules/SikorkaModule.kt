@@ -1,5 +1,6 @@
 package io.sikorka.android.di.modules
 
+import com.squareup.moshi.Moshi
 import io.sikorka.android.core.accounts.PassphraseValidator
 import io.sikorka.android.core.accounts.PassphraseValidatorImpl
 import io.sikorka.android.core.configuration.ConfigurationProvider
@@ -28,23 +29,33 @@ import toothpick.config.Module
 
 class SikorkaModule : Module() {
   init {
-    bind(String::class.java).withName(KeystorePath::class.java).toProvider(KeystorePathProvider::class.java)
+    bind(String::class.java).withName(KeystorePath::class.java)
+      .toProvider(KeystorePathProvider::class.java)
     bind(SchedulerProvider::class.java).to(SchedulerProviderImpl::class.java).singletonInScope()
     bind(PassphraseValidator::class.java).to(PassphraseValidatorImpl::class.java)
     bind(AppPreferences::class.java).to(AppPreferencesImpl::class.java)
     bind(RxBus::class.java).to(RxBusImpl::class.java).singletonInScope()
 
-    bind(AppDatabase::class.java).toProvider(AppDatabaseProvider::class.java).providesSingletonInScope()
+    bind(AppDatabase::class.java).toProvider(AppDatabaseProvider::class.java)
+      .providesSingletonInScope()
 
-    bind(PendingContractDao::class.java).toProvider(PendingContractDaoProvider::class.java).providesSingletonInScope()
-    bind(PendingTransactionDao::class.java).toProvider(PendingTransactionDaoProvider::class.java).providesSingletonInScope()
-    bind(AccountBalanceDao::class.java).toProvider(AccountBalanceDaoProvider::class.java).providesSingletonInScope()
-    bind(DeployedSikorkaContractDao::class.java).toProvider(DeployedSikorkaContractDaoProvider::class.java).providesSingletonInScope()
+    bind(PendingContractDao::class.java).toProvider(PendingContractDaoProvider::class.java)
+      .providesSingletonInScope()
+    bind(PendingTransactionDao::class.java).toProvider(PendingTransactionDaoProvider::class.java)
+      .providesSingletonInScope()
+    bind(AccountBalanceDao::class.java).toProvider(AccountBalanceDaoProvider::class.java)
+      .providesSingletonInScope()
+    bind(DeployedSikorkaContractDao::class.java).toProvider(DeployedSikorkaContractDaoProvider::class.java)
+      .providesSingletonInScope()
 
     bind(StorageManager::class.java).to(StorageManagerImpl::class.java).singletonInScope()
-    bind(DebugPreferencesStore::class.java).to(DebugPreferencesStoreImpl::class.java).singletonInScope()
+    bind(DebugPreferencesStore::class.java).to(DebugPreferencesStoreImpl::class.java)
+      .singletonInScope()
 
-    bind(ConfigurationProvider::class.java).to(ConfigurationProviderImpl::class.java).singletonInScope()
+    bind(ConfigurationProvider::class.java).to(ConfigurationProviderImpl::class.java)
+      .singletonInScope()
+
+    bind(Moshi::class.java).toProvider(MoshiProvider::class.java).providesSingletonInScope()
 
     bind(SyncStatusProvider::class.java).singletonInScope()
     bind(LightClientProvider::class.java).singletonInScope()

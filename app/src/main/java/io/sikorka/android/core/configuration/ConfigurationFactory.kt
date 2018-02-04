@@ -6,15 +6,12 @@ import javax.inject.Inject
 
 class ConfigurationFactory
 @Inject constructor(application: Application) {
+  private val scope = Toothpick.openScope(application)
 
-  val scope = Toothpick.openScope(application)
-
-  fun configuration(@Network.Selection network: Long): IConfiguration {
+  fun configuration(@Network.Selection network: Int): IConfiguration {
     return when (network) {
       Network.ROPSTEN -> scope.getInstance(RopstenConfiguration::class.java)
-      else -> {
-        throw IllegalArgumentException("Invalid selection")
-      }
+      else -> error("Invalid selection")
     }
   }
 }
