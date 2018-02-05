@@ -7,11 +7,11 @@ class PeerAdapter {
 
   @ToJson
   fun toJson(peerEntry: PeerEntry): String {
-
+    TODO("not implemented")
   }
 
   @FromJson
   fun fromJson(peerEntry: String): PeerEntry {
-
+    TODO("not implemented")
   }
 }

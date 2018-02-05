@@ -5,7 +5,7 @@ import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
 
 interface NetworkSelectionView : BaseView {
-  fun updateNetworkSelection(@Network.Selection network: Long)
+  fun updateNetworkSelection(@Network.Selection network: Int)
 }
 
 
