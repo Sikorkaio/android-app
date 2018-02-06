@@ -7,4 +7,6 @@ data class PeerEntry(
   val nodeAddress: String,
   @IntRange(from = 1, to = 65535)
   val nodePort: Int
-)
+) {
+  override fun toString(): String = "enode://$nodeId@$nodeAddress:$nodePort"
+}
