@@ -8,7 +8,7 @@ import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
 
-class PeerManager : BaseActivity(), PeerManagerView {
+class PeerManagerActivity : BaseActivity(), PeerManagerView {
 
   private lateinit var scope: Scope
 

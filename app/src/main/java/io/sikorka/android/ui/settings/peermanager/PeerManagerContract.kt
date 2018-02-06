@@ -7,9 +7,12 @@ import toothpick.config.Module
 interface PeerManagerView : BaseView
 
 
-interface PeerManagerPresenter: Presenter<PeerManagerView>
+interface PeerManagerPresenter : Presenter<PeerManagerView>
 
 
 class PeerManagerModule : Module() {
-
+  init {
+    bind(PeerManagerPresenter::class.java).to(PeerManagerPresenterImpl::class.java)
+      .singletonInScope()
+  }
 }
