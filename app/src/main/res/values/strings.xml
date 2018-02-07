@@ -99,6 +99,8 @@
   <string name="preferences__network_title">Network</string>
   <string name="preferences__selected_network_key" translatable="false">pref_key_selected_network</string>
   <string name="preferences__selected_network_title">Selected Network</string>
+  <string name="preferences__manage_peers">Manage Peers</string>
+  <string name="preferences__manage_peers_summary">Open the list of the static Ropsten network peers</string>
 
   <string name="networks__ropsten">Ropsten</string>
   <string name="networks__rinkeby">Rinkeby</string>

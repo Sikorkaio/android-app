@@ -5,6 +5,8 @@ import io.sikorka.android.core.accounts.PassphraseValidator
 import io.sikorka.android.core.accounts.PassphraseValidatorImpl
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.ConfigurationProviderImpl
+import io.sikorka.android.core.configuration.peers.PeerDataSource
+import io.sikorka.android.core.configuration.peers.PeerDataSourceImpl
 import io.sikorka.android.core.ethereumclient.LightClientProvider
 import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.data.balance.AccountBalanceDao
@@ -60,5 +62,7 @@ class SikorkaModule : Module() {
     bind(SyncStatusProvider::class.java).singletonInScope()
     bind(LightClientProvider::class.java).singletonInScope()
     bind(UserLocationProvider::class.java).singletonInScope()
+
+    bind(PeerDataSource::class.java).to(PeerDataSourceImpl::class.java)
   }
 }

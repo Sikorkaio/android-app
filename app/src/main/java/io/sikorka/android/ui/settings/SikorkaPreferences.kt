@@ -8,11 +8,13 @@ import android.support.v7.preference.PreferenceFragmentCompat
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.Network
+import io.sikorka.android.core.configuration.Network.ROPSTEN
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.bytes
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.dialogs.balancePrecisionDialog
+import io.sikorka.android.ui.settings.peermanager.PeerManagerActivity
 import toothpick.Scope
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -20,8 +22,10 @@ import javax.inject.Inject
 
 class SikorkaPreferences : PreferenceFragmentCompat() {
 
-  @Inject lateinit var appPreferences: AppPreferences
-  @Inject lateinit var storageManager: StorageManager
+  @Inject
+  lateinit var appPreferences: AppPreferences
+  @Inject
+  lateinit var storageManager: StorageManager
 
   private lateinit var scope: Scope
 
@@ -64,10 +68,20 @@ class SikorkaPreferences : PreferenceFragmentCompat() {
       }
     }
 
+    findPreference("pref_key_peer_manager").run {
+      if (appPreferences.selectedNetwork() != ROPSTEN) {
+        this.isVisible = false
+      }
+      setOnPreferenceClickListener {
+        PeerManagerActivity.start(context)
+        return@setOnPreferenceClickListener true
+      }
+    }
+
   }
 
   private fun precisionSummary(digits: Int) =
-      resources.getQuantityString(R.plurals.preferences__balance_precision_summary, digits, digits)
+    resources.getQuantityString(R.plurals.preferences__balance_precision_summary, digits, digits)
 
   private fun networkSummary(): String {
     val selectedNetwork = appPreferences.selectedNetwork()

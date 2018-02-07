@@ -18,4 +18,32 @@
 
   </android.support.v7.widget.RecyclerView>
 
+  <ProgressBar
+      android:id="@+id/peer_manager__loading_bar"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <android.support.constraint.Group
+      android:id="@+id/peer_manager__empty_group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:constraint_referenced_ids="peer_manager__empty_text,peer_manager__empty_icon"
+      tools:visibility="visible" />
+
+  <TextView
+      android:id="@+id/peer_manager__empty_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+  <ImageView
+      android:id="@+id/peer_manager__empty_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+
 </android.support.constraint.ConstraintLayout>
