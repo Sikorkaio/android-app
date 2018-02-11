@@ -188,6 +188,10 @@
   <string name="account_import__confirmation_missmatch">The account passphrase confirmation doesn\'t match.</string>
   <string name="account_import__account_passphrase_empty">The account passphrase cannot be empty.</string>
   <string name="account_import__folder_button_content_description">Opens the file selection dialog</string>
+  <string name="action__enable_selection_mode">Enable Selection Mode</string>
+  <string name="peer_manager_action__select_all">Select all</string>
+  <string name="peer_manager_action__select_none">Select none</string>
+  <string name="peer_manager_action__delete">Delete</string>
 
 
 </resources>

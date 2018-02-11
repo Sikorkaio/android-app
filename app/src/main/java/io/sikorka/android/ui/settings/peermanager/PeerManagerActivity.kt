@@ -5,16 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import io.sikorka.android.ui.BaseActivity
+import io.sikorka.android.ui.settings.peermanager.PeerManagerActionModeCallback.Actions
 import kotterknife.bindView
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
 
-class PeerManagerActivity : BaseActivity(), PeerManagerView {
+class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
 
   private val peers: RecyclerView by bindView(R.id.peer_manager__peers)
 
@@ -51,12 +54,44 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView {
     super.onDestroy()
   }
 
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.menu__peer_manager, menu)
+    return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+      R.id.action__enable_selection_mode -> {
+        startActionMode(PeerManagerActionModeCallback(this))
+        peerAdapter.selectionMode(true)
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
+    }
+  }
+
   override fun update(data: List<PeerEntry>) {
     peerAdapter.setList(data)
   }
 
   override fun showError() {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun delete() {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun selectAll() {
+    peerAdapter.selectAll()
+  }
+
+  override fun selectNone() {
+    peerAdapter.selectNode()
+  }
+
+  override fun done() {
+    peerAdapter.selectionMode(false)
   }
 
   @javax.inject.Scope

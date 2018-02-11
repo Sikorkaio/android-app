@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item
+      android:id="@+id/peer_manager_action__delete"
+      android:icon="@drawable/ic_delete_black_24dp"
+      android:title="@string/peer_manager_action__delete"
+      app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/peer_manager_action__select_all"
+      android:icon="@drawable/ic_select_all_black_24dp"
+      android:title="@string/peer_manager_action__select_all"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/peer_manager_action__select_none"
+      android:icon="@drawable/ic_clear_black_24dp"
+      android:title="@string/peer_manager_action__select_none"
+      app:showAsAction="ifRoom" />
+
+</menu>
