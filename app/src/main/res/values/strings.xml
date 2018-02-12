@@ -196,6 +196,7 @@
   <string name="account_import__import_account_title">Import Account</string>
   <string name="account_export__export_account_title">Export account</string>
   <string name="deploy_contract__deploy_contract_title">Deploy contract</string>
+  <string name="peer_manager__title">Static Peers</string>
 
 
 </resources>

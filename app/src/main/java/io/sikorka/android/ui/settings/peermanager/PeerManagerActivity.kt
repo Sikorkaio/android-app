@@ -7,9 +7,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ProgressBar
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import io.sikorka.android.ui.BaseActivity
+import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.settings.peermanager.PeerManagerActionModeCallback.Actions
 import kotterknife.bindView
 import toothpick.Scope
@@ -20,6 +22,7 @@ import javax.inject.Inject
 class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
 
   private val peers: RecyclerView by bindView(R.id.peer_manager__peers)
+  private val loading: ProgressBar by bindView(R.id.peer_manager__loading_bar)
 
   @Inject
   lateinit var presenter: PeerManagerPresenter
@@ -36,7 +39,7 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
     setContentView(R.layout.activity_peer_manager)
     Toothpick.inject(this, scope)
 
-    setupToolbar()
+    setupToolbar(R.string.peer_manager__title)
 
     peers.adapter = peerAdapter
     peers.layoutManager = LinearLayoutManager(this)
@@ -62,7 +65,7 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       R.id.action__enable_selection_mode -> {
-        startActionMode(PeerManagerActionModeCallback(this))
+        startSupportActionMode(PeerManagerActionModeCallback(this))
         peerAdapter.selectionMode(true)
         true
       }
@@ -71,10 +74,12 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
   }
 
   override fun update(data: List<PeerEntry>) {
+    loading.gone()
     peerAdapter.setList(data)
   }
 
   override fun showError() {
+    loading.gone()
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
