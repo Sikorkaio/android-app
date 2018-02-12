@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.MenuItem
 import io.sikorka.android.R
 import io.sikorka.android.data.contracts.pending.PendingContract
+import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.show
 import kotlinx.android.synthetic.main.activity_pending_contracts.*
@@ -17,7 +16,7 @@ import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
 
-class PendingContractsActivity : AppCompatActivity(), PendingContractsView {
+class PendingContractsActivity : BaseActivity(), PendingContractsView {
 
   private lateinit var scope: Scope
   private lateinit var pendingContractAdapter: PendingContractsAdapter
@@ -39,11 +38,7 @@ class PendingContractsActivity : AppCompatActivity(), PendingContractsView {
       layoutManager = LinearLayoutManager(this@PendingContractsActivity)
     }
 
-    supportActionBar?.apply {
-      setDisplayHomeAsUpEnabled(true)
-      setHomeButtonEnabled(true)
-      title = getString(R.string.pending_contracts__title)
-    }
+    setupToolbar(R.string.pending_contracts__title)
     presenter.attach(this)
     presenter.load()
   }
@@ -55,16 +50,6 @@ class PendingContractsActivity : AppCompatActivity(), PendingContractsView {
       Toothpick.closeScope(PRESENTER_SCOPE)
     }
     super.onDestroy()
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      android.R.id.home -> {
-        onBackPressed()
-        true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
   }
 
   override fun update(data: List<PendingContract>) {

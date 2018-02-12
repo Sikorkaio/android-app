@@ -4,8 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
     tools:context="io.sikorka.android.ui.contracts.pending.PendingContractsActivity">
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/colorPrimary"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_scrollFlags="scroll|enterAlways|snap"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/pending_contracts__contract_list"
@@ -14,14 +25,14 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/toolbar"
       tools:listitem="@layout/item__pending_contract" />
 
   <android.support.constraint.Group
       android:id="@+id/pending_contract__no_data_group"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      app:constraint_referenced_ids="pending_contract__no_data_icon,pending_contract__no_data_label"/>
+      app:constraint_referenced_ids="pending_contract__no_data_icon,pending_contract__no_data_label" />
 
   <ImageView
       android:id="@+id/pending_contract__no_data_icon"

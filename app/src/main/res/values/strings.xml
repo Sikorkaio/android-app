@@ -192,6 +192,10 @@
   <string name="peer_manager_action__select_all">Select all</string>
   <string name="peer_manager_action__select_none">Select none</string>
   <string name="peer_manager_action__delete">Delete</string>
+  <string name="account_management__title">Accounts</string>
+  <string name="account_import__import_account_title">Import Account</string>
+  <string name="account_export__export_account_title">Export account</string>
+  <string name="deploy_contract__deploy_contract_title">Deploy contract</string>
 
 
 </resources>

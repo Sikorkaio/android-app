@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -14,6 +12,7 @@ import io.sikorka.android.R
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.core.contracts.model.DetectorContractData
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.DeployContractCodes
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
@@ -26,7 +25,7 @@ import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
 
-class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
+class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
 
   @Inject
   lateinit var presenter: DeployDetectorPresenter
@@ -44,11 +43,12 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
     Toothpick.inject(this, scope)
     setContentView(R.layout.activity_deploy_detector)
 
-    setupActionBar()
+    setupToolbar(R.string.deploy_detector__title)
 
     deploy_detector__detector_address.text = address
 
-    val mapFragment = supportFragmentManager.findFragmentById(R.id.deploy_detector__map) as SupportMapFragment
+    val mapFragment =
+      supportFragmentManager.findFragmentById(R.id.deploy_detector__map) as SupportMapFragment
     mapFragment.getMapAsync {
 
       val me = LatLng(latitude, longitude)
@@ -57,11 +57,11 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
       val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
       val position = CameraPosition.builder()
-          .target(me)
-          .zoom(10f)
-          .bearing(0.0f)
-          .tilt(0.0f)
-          .build()
+        .target(me)
+        .zoom(10f)
+        .bearing(0.0f)
+        .tilt(0.0f)
+        .build()
 
       myMarker = it.addMarker(MarkerOptions().position(me).title("Me").icon(icon))
       it.animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
@@ -72,14 +72,16 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
     deploy_detector__deploy_fab.setOnClickListener {
       deploy_detector__authorization_duration.error = null
       if (authorizationDuration == 0) {
-        deploy_detector__authorization_duration.error = getString(R.string.deploy_detector__authorization_duration_not_set)
+        deploy_detector__authorization_duration.error =
+            getString(R.string.deploy_detector__authorization_duration_not_set)
       }
 
       deploy_detector__contract_tokens.error = null
       val supply = deploy_detector__contract_tokens.editText?.value()?.toLong() ?: 0
 
       if (supply == 0L) {
-        deploy_detector__contract_tokens.error = getString(R.string.deploy_detector__token_supply_empty)
+        deploy_detector__contract_tokens.error =
+            getString(R.string.deploy_detector__token_supply_empty)
         return@setOnClickListener
       }
 
@@ -101,23 +103,6 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
     super.onDestroy()
   }
 
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      android.R.id.home -> {
-        onBackPressed()
-        return true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
-  }
-
-  private fun setupActionBar() {
-    supportActionBar?.apply {
-      setDisplayHomeAsUpEnabled(true)
-      setHomeButtonEnabled(true)
-    }
-  }
-
   override fun showGasDialog(gas: ContractGas) {
     val dialog = GasSelectionDialog.create(supportFragmentManager, gas) {
       requestDeployAuthorization(it)
@@ -133,7 +118,11 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
   override fun showError(code: Int) {
     when (code) {
       DeployContractCodes.NO_GAS_PREFERENCES -> {
-        Snackbar.make(deploy_detector__detector_address, R.string.deploy_contract__no_gas_preferences, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+          deploy_detector__detector_address,
+          R.string.deploy_contract__no_gas_preferences,
+          Snackbar.LENGTH_SHORT
+        ).show()
       }
       else -> {
         Snackbar.make(deploy_detector__detector_address, "code $code", Snackbar.LENGTH_SHORT).show()
@@ -144,19 +133,20 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
 
   override fun complete(hex: String) {
     MaterialDialog.Builder(this)
-        .titleColorRes(R.color.colorAccent)
-        .title(R.string.contract_deployment__transaction_sent_title)
-        .content(R.string.contract_deployment__transaction_sent_content, hex)
-        .positiveText(android.R.string.ok)
-        .dismissListener {
-          MainActivity.start(this)
-        }.show()
+      .titleColorRes(R.color.colorAccent)
+      .title(R.string.contract_deployment__transaction_sent_title)
+      .content(R.string.contract_deployment__transaction_sent_content, hex)
+      .positiveText(android.R.string.ok)
+      .dismissListener {
+        MainActivity.start(this)
+      }.show()
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
     val supply = deploy_detector__contract_tokens.editText?.value()?.toLong() ?: 0
     val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
-      val data = DetectorContractData(name, gas, address, authorizationDuration, latitude, longitude, supply)
+      val data =
+        DetectorContractData(name, gas, address, authorizationDuration, latitude, longitude, supply)
       presenter.deployContract(passphrase, data)
     }
     dialog.show()
@@ -174,7 +164,8 @@ class DeployDetectorActivity : AppCompatActivity(), DeployDetectorView {
 
   private val authorizationDuration: Int
     get() {
-      val editText = deploy_detector__authorization_duration.editText ?: fail("there was no edittext")
+      val editText =
+        deploy_detector__authorization_duration.editText ?: fail("there was no edittext")
       val value = editText.value()
       return if (value.isBlank()) {
         0

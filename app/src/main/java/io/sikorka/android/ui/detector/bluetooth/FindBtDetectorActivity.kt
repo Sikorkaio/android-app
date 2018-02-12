@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.MenuItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -15,6 +13,7 @@ import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.detectors.BtConnector
 import io.sikorka.android.io.detectors.BtScanner
+import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity
 import io.sikorka.android.ui.dialogs.progress
 import io.sikorka.android.ui.gone
@@ -29,7 +28,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class FindBtDetectorActivity : AppCompatActivity(), FindBtDetectorView {
+class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
 
   private lateinit var scope: Scope
 
@@ -67,11 +66,7 @@ class FindBtDetectorActivity : AppCompatActivity(), FindBtDetectorView {
       layoutManager = LinearLayoutManager(this@FindBtDetectorActivity)
     }
 
-    supportActionBar?.apply {
-      setDisplayHomeAsUpEnabled(true)
-      setHomeButtonEnabled(true)
-      title = getString(R.string.find_detector__title)
-    }
+    setupToolbar(R.string.find_detector__title)
 
     discover()
     find_detector__swipe_layout.setOnRefreshListener { discover() }
@@ -79,22 +74,26 @@ class FindBtDetectorActivity : AppCompatActivity(), FindBtDetectorView {
 
     detectorAdapter.setOnClickListener {
       val dialog = progress(
-          R.string.find_detector__connecting_title,
-          R.string.find_detector__connecting_content
+        R.string.find_detector__connecting_title,
+        R.string.find_detector__connecting_content
       )
       dialog.show()
 
       btConnector.connect(it)
-          .flatMap { it.getDetectorEthAddress() }
-          .subscribeOn(Schedulers.io())
-          .doAfterTerminate {
-            dialog.dismiss()
-          }.subscribe({
-        DeployDetectorActivity.start(this, it.hex, latitude, longitude)
-      }) {
-        Snackbar.make(find_detector__swipe_layout, R.string.find_detector__connection_failed, Snackbar.LENGTH_SHORT).show()
-        Timber.e(it, "connection failed")
-      }
+        .flatMap { it.getDetectorEthAddress() }
+        .subscribeOn(Schedulers.io())
+        .doAfterTerminate {
+          dialog.dismiss()
+        }.subscribe({
+          DeployDetectorActivity.start(this, it.hex, latitude, longitude)
+        }) {
+          Snackbar.make(
+            find_detector__swipe_layout,
+            R.string.find_detector__connection_failed,
+            Snackbar.LENGTH_SHORT
+          ).show()
+          Timber.e(it, "connection failed")
+        }
     }
   }
 
@@ -109,41 +108,35 @@ class FindBtDetectorActivity : AppCompatActivity(), FindBtDetectorView {
     super.onDestroy()
   }
 
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      android.R.id.home -> {
-        onBackPressed()
-        return true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
-  }
-
   private fun discover() {
     if (!discoveryDisposable.isDisposed()) {
       return
     }
 
     discoveryDisposable = btScanner.discover(this)
-        .buffer(15, TimeUnit.SECONDS)
-        .distinct()
-        .first(emptyList())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doAfterTerminate {
-          find_detector__swipe_layout.isRefreshing = false
-          find_detector__loading_group.gone()
+      .buffer(15, TimeUnit.SECONDS)
+      .distinct()
+      .first(emptyList())
+      .observeOn(AndroidSchedulers.mainThread())
+      .doAfterTerminate {
+        find_detector__swipe_layout.isRefreshing = false
+        find_detector__loading_group.gone()
+      }
+      .subscribe({ devices ->
+        detectorAdapter.update(devices)
+        if (devices.isEmpty()) {
+          find_detector__no_result_group.show()
+        } else {
+          find_detector__no_result_group.gone()
         }
-        .subscribe({ devices ->
-          detectorAdapter.update(devices)
-          if (devices.isEmpty()) {
-            find_detector__no_result_group.show()
-          } else {
-            find_detector__no_result_group.gone()
-          }
-        }) {
-          Snackbar.make(find_detector__swipe_layout, R.string.find_detector__discovery_failed, Snackbar.LENGTH_SHORT).show()
-          Timber.e(it, "error")
-        }
+      }) {
+        Snackbar.make(
+          find_detector__swipe_layout,
+          R.string.find_detector__discovery_failed,
+          Snackbar.LENGTH_SHORT
+        ).show()
+        Timber.e(it, "error")
+      }
   }
 
 
