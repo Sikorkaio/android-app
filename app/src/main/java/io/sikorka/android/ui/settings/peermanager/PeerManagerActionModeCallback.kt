@@ -1,6 +1,7 @@
 package io.sikorka.android.ui.settings.peermanager
 
 import android.app.Activity
+import android.support.v4.content.ContextCompat
 import android.support.v7.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -40,11 +41,9 @@ constructor(
   override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
 
     activity.menuInflater.inflate(R.menu.menu_action__peer_manager, menu)
-    menu?.apply {
+    menu?.run {
       MenuTint.on(this)
-        .setSubMenuIconColor(R.color.white)
-        .setMenuItemIconColor(R.color.white)
-        .create()
+        .setMenuItemIconColor(ContextCompat.getColor(activity, R.color.white))
         .apply(activity)
     }
 
@@ -52,7 +51,7 @@ constructor(
   }
 
   override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-    return false
+    return true
   }
 
   override fun onDestroyActionMode(mode: ActionMode?) {

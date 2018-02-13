@@ -9,11 +9,15 @@ interface PeerManagerView : BaseView {
   fun update(data: List<PeerEntry>)
 
   fun showError()
+
+  fun loading(loading: Boolean)
 }
 
 
 interface PeerManagerPresenter : Presenter<PeerManagerView> {
   fun load()
+
+  fun save(peers: List<PeerEntry>)
 }
 
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.TextView
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
@@ -19,16 +20,15 @@ class PeerManagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
   private val nodeSelected: CheckBox by bindView(R.id.peers__node_selected)
 
   private lateinit var onEntrySelected: (position: Int, selected: Boolean) -> Unit
-
-  init {
-    nodeSelected.setOnCheckedChangeListener { _, selected ->
-      onEntrySelected(adapterPosition, selected)
-    }
+  private val onCheckedListener: (CompoundButton, Boolean) -> Unit = { _, selected ->
+    onEntrySelected(adapterPosition, selected)
   }
 
   fun bindTo(peer: PeerEntry) {
+    nodeSelected.setOnCheckedChangeListener(null)
     nodeId.text = peer.nodeId
     nodeAddress.text = peer.nodeAddress
+    nodeSelected.setOnCheckedChangeListener(onCheckedListener)
   }
 
   companion object {
@@ -51,7 +51,7 @@ class PeerManagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     }
   }
 
-  fun setSelected(selected: Boolean) {
-    nodeSelected.isSelected = selected
+  fun setChecked(checked: Boolean) {
+    nodeSelected.isChecked = checked
   }
 }

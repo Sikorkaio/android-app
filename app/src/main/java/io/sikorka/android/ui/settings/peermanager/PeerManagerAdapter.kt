@@ -19,9 +19,9 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     return PeerManagerViewHolder.create(checkNotNull(parent)).apply {
       setOnEntrySelected { position, selected ->
         if (selected) {
-          selection.remove(position)
-        } else {
           selection.add(position)
+        } else {
+          selection.remove(position)
         }
       }
     }
@@ -31,7 +31,7 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     holder?.run {
       bindTo(getItem(position))
       selectionMode(selectionMode)
-      setSelected(selection.contains(position))
+      setChecked(selection.contains(position))
     }
   }
 
@@ -42,8 +42,21 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     notifyDataSetChanged()
   }
 
+
+
   fun selectNode() {
     selection.clear()
+    notifyDataSetChanged()
+  }
+
+  fun deleteSelection() {
+    val list = getList()
+      .filterIndexed { index, _ -> !selection.contains(index) }
+      .toList()
+
+    selection.clear()
+
+    setList(list)
     notifyDataSetChanged()
   }
 

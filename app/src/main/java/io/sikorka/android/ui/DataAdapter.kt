@@ -13,4 +13,6 @@ abstract class DataAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.Adapt
     this.data = data
     notifyDataSetChanged()
   }
+
+  fun getList(): List<T> = this.data
 }

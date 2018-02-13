@@ -13,6 +13,7 @@ import io.sikorka.android.core.configuration.peers.PeerEntry
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.settings.peermanager.PeerManagerActionModeCallback.Actions
+import io.sikorka.android.ui.show
 import kotterknife.bindView
 import toothpick.Scope
 import toothpick.Toothpick
@@ -74,17 +75,26 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
   }
 
   override fun update(data: List<PeerEntry>) {
-    loading.gone()
+    loading(false)
     peerAdapter.setList(data)
   }
 
   override fun showError() {
-    loading.gone()
+    loading(false)
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
   override fun delete() {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    peerAdapter.deleteSelection()
+    presenter.save(peerAdapter.getList())
+  }
+
+  override fun loading(loading: Boolean) {
+    if (loading) {
+      this.loading.show()
+    } else {
+      this.loading.gone()
+    }
   }
 
   override fun selectAll() {
