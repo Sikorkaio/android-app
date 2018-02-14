@@ -6,6 +6,8 @@ import io.sikorka.android.core.configuration.IConfiguration
 import io.sikorka.android.core.configuration.Network.RINKEBY
 import io.sikorka.android.core.configuration.Network.ROPSTEN
 import io.sikorka.android.di.providers.MoshiProvider
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
 import org.junit.After
 import org.junit.Before
@@ -39,7 +41,7 @@ class PeerDataSourceImplTest {
     file = temporaryFolder.newFile("static-nodes.json")
 
     given(configurationProvider.getActive()).willReturn(configuration)
-    peerDataSource = PeerDataSourceImpl(configurationProvider, moshi)
+    peerDataSource = PeerDataSourceImpl(configurationProvider, moshi, temporaryFolder.newFolder())
   }
 
   @After
@@ -129,7 +131,8 @@ class PeerDataSourceImplTest {
     }
   }
 
-  @Test fun attemptToRetrievePeerListInvalidJson() {
+  @Test
+  fun attemptToRetrievePeerListInvalidJson() {
     given(configuration.network).willReturn(ROPSTEN)
     val sink = Okio.buffer(Okio.sink(file))
     sink.writeUtf8(
@@ -153,6 +156,83 @@ class PeerDataSourceImplTest {
         isInstanceOf(com.squareup.moshi.JsonDataException::class.java)
         hasMessageThat().isEqualTo("Expected BEGIN_ARRAY but was BEGIN_OBJECT at path \$")
       }
+    }
+  }
+
+  @Test
+  fun attemptToPersistPeers() {
+    given(configuration.network).willReturn(ROPSTEN)
+
+    val list = listOf(
+      PeerEntry(
+        "a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe",
+        "139.162.250.93",
+        30303
+      ),
+      PeerEntry(
+        "c144053a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d",
+        "192.168.90.17",
+        30303
+      )
+    )
+
+    given(configuration.peerFilePath).willReturn(file.absolutePath)
+
+    val test = peerDataSource.savePeers(list).test()
+
+    test.run {
+      awaitTerminalEvent()
+      assertComplete()
+    }
+
+    assertThat(file.exists()).isTrue()
+    assertThat(file.length()).isGreaterThan(0)
+
+    peerDataSource.peers().test().run {
+      awaitTerminalEvent()
+      assertComplete()
+      assertValueCount(1)
+      val response = values().first()
+
+      assertThat(response.success()).isTrue()
+      val data = response.data()
+
+      assertThat(data).hasSize(2)
+      assertThat(data[0].nodeAddress).isEqualTo("139.162.250.93")
+      assertThat(data[1].nodeAddress).isEqualTo("192.168.90.17")
+    }
+  }
+
+
+  @Test
+  fun downloadPeerList() {
+    val mockWebServer = MockWebServer().apply { start() }
+
+    val addPeersList = """
+        admin.addPeer("enode://a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe@192.168.90.19:30303");
+        admin.addPeer("enode://c144053a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d@192.168.90.17:30303");
+    """.trimIndent()
+
+    mockWebServer.enqueue(MockResponse().setBody(addPeersList).setResponseCode(200))
+
+    peerDataSource.downloadPeers("http://${mockWebServer.hostName}:${mockWebServer.port}").test()
+      .run {
+        awaitTerminalEvent()
+        assertComplete()
+      }
+
+    peerDataSource.peers().test().run {
+      awaitTerminalEvent()
+      assertComplete()
+      assertValueCount(1)
+      val response = values().first()
+
+      assertThat(response.success()).isTrue()
+      val data = response.data()
+
+      assertThat(data).hasSize(2)
+      assertThat(data[0].nodeAddress).isEqualTo("139.162.250.93")
+      assertThat(data[1].nodeAddress).isEqualTo("192.168.90.17")
     }
   }
 }

@@ -16,6 +16,7 @@ import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.di.providers.*
+import io.sikorka.android.di.qualifiers.ApplicationCache
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.events.RxBusImpl
@@ -28,6 +29,7 @@ import io.sikorka.android.ui.settings.DebugPreferencesStoreImpl
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import io.sikorka.android.utils.schedulers.SchedulerProviderImpl
 import toothpick.config.Module
+import java.io.File
 
 class SikorkaModule : Module() {
   init {
@@ -64,5 +66,7 @@ class SikorkaModule : Module() {
     bind(UserLocationProvider::class.java).singletonInScope()
 
     bind(PeerDataSource::class.java).to(PeerDataSourceImpl::class.java)
+    bind(File::class.java).withName(ApplicationCache::class.java)
+      .toProvider(ApplicationCacheProvider::class.java)
   }
 }

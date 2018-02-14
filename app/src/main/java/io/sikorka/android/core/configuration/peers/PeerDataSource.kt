@@ -9,4 +9,6 @@ interface PeerDataSource {
   fun peers(): Single<Lce<List<PeerEntry>>>
 
   fun savePeers(peers: List<PeerEntry>): Completable
+
+  fun downloadPeers(url: String, replace: Boolean = false): Completable
 }
