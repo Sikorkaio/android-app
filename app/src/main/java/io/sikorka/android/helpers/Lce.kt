@@ -1,9 +1,11 @@
 package io.sikorka.android.helpers
 
+import android.support.annotation.VisibleForTesting
+
 class Lce<out T>(
-    private val loading: Boolean,
-    private val error: Throwable? = null,
-    private val data: T? = null
+  private val loading: Boolean,
+  private val error: Throwable? = null,
+  private val data: T? = null
 ) {
 
   fun loading(): Boolean = loading
@@ -15,6 +17,12 @@ class Lce<out T>(
   fun data(): T = this.data ?: fail("data was null")
 
   fun error(): Throwable = this.error ?: fail("throwable was null")
+
+
+  @VisibleForTesting
+  fun errorMessage(): String {
+    return error?.message ?: "No message found"
+  }
 
   companion object {
     fun <T> success(data: T): Lce<T> = Lce(false, null, data)

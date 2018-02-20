@@ -10,5 +10,5 @@ interface PeerDataSource {
 
   fun savePeers(peers: List<PeerEntry>): Completable
 
-  fun downloadPeers(url: String, replace: Boolean = false): Completable
+  fun loadPeersFromUrl(url: String, replace: Boolean = false): Completable
 }

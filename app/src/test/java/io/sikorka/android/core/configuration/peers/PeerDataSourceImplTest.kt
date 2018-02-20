@@ -1,6 +1,7 @@
 package io.sikorka.android.core.configuration.peers
 
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.IConfiguration
 import io.sikorka.android.core.configuration.Network.RINKEBY
@@ -60,7 +61,7 @@ class PeerDataSourceImplTest {
       val lce = values().first()
       assertThat(lce.failure()).isTrue()
       assertThat(lce.error()).run {
-        isInstanceOf(IllegalArgumentException::class.java)
+        isInstanceOf(IllegalStateException::class.java)
         hasMessageThat().isEqualTo("couldn't find peer file")
       }
     }
@@ -76,7 +77,7 @@ class PeerDataSourceImplTest {
       val lce = values().first()
       assertThat(lce.failure()).isTrue()
       assertThat(lce.error()).run {
-        isInstanceOf(IllegalArgumentException::class.java)
+        isInstanceOf(IllegalStateException::class.java)
         hasMessageThat().isEqualTo("this is currently only supported for ROPSTEN")
       }
     }
@@ -206,6 +207,9 @@ class PeerDataSourceImplTest {
 
   @Test
   fun downloadPeerList() {
+    given(configuration.network).willReturn(ROPSTEN)
+    given(configuration.peerFilePath).willReturn(file.absolutePath)
+
     val mockWebServer = MockWebServer().apply { start() }
 
     val addPeersList = """
@@ -215,11 +219,13 @@ class PeerDataSourceImplTest {
 
     mockWebServer.enqueue(MockResponse().setBody(addPeersList).setResponseCode(200))
 
-    peerDataSource.downloadPeers("http://${mockWebServer.hostName}:${mockWebServer.port}").test()
+    peerDataSource.loadPeersFromUrl("http://${mockWebServer.hostName}:${mockWebServer.port}").test()
       .run {
         awaitTerminalEvent()
         assertComplete()
       }
+
+    assertWithMessage("Peer file should now be populated").that(file.length()).isGreaterThan(0)
 
     peerDataSource.peers().test().run {
       awaitTerminalEvent()
@@ -227,11 +233,12 @@ class PeerDataSourceImplTest {
       assertValueCount(1)
       val response = values().first()
 
-      assertThat(response.success()).isTrue()
+      assertWithMessage(response.errorMessage()).that(response.success()).isTrue()
       val data = response.data()
 
       assertThat(data).hasSize(2)
-      assertThat(data[0].nodeAddress).isEqualTo("139.162.250.93")
+
+      assertThat(data[0].nodeAddress).isEqualTo("192.168.90.19")
       assertThat(data[1].nodeAddress).isEqualTo("192.168.90.17")
     }
   }

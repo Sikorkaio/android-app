@@ -27,24 +27,27 @@ class PeerDataSourceImpl
 
   override fun peers(): Single<Lce<List<PeerEntry>>> = Single.fromCallable {
     val configuration = configurationProvider.getActive()
-    require(configuration.network == Network.ROPSTEN) {
+    check(configuration.network == Network.ROPSTEN) {
       "this is currently only supported for ROPSTEN"
     }
 
     val filePath = checkNotNull(configuration.peerFilePath) { "peer file path was null" }
     val peerFile = File(filePath)
 
-    require(peerFile.exists()) { "couldn't find peer file" }
+    return@fromCallable Lce.success(loadFromFile(peerFile))
+  }.onErrorReturn { Lce.failure(it) }
+
+  private fun loadFromFile(peerFile: File): List<PeerEntry> {
+    check(peerFile.exists()) { "couldn't find peer file" }
 
     val type = Types.newParameterizedType(List::class.java, PeerEntry::class.java)
     val adapter: JsonAdapter<List<PeerEntry>> = moshi.adapter(type)
-    val peers = checkNotNull(adapter.fromJson(Okio.buffer(Okio.source(peerFile))))
-    return@fromCallable Lce.success(peers)
-  }.onErrorReturn { Lce.failure(it) }
+    return checkNotNull(adapter.fromJson(Okio.buffer(Okio.source(peerFile))))
+  }
 
   override fun savePeers(peers: List<PeerEntry>): Completable = Completable.fromCallable {
     val configuration = configurationProvider.getActive()
-    require(configuration.network == Network.ROPSTEN) {
+    check(configuration.network == Network.ROPSTEN) {
       "this is currently only supported for ROPSTEN"
     }
 
@@ -56,7 +59,6 @@ class PeerDataSourceImpl
       Timber.v("deleted the previous file ($delete)")
       val create = peerFile.createNewFile()
       Timber.v("new file created $create")
-
     }
 
     val type = Types.newParameterizedType(List::class.java, PeerEntry::class.java)
@@ -68,42 +70,25 @@ class PeerDataSourceImpl
     }
   }
 
-  override fun downloadPeers(
+  override fun loadPeersFromUrl(
     url: String,
     replace: Boolean
-  ): Completable = Completable.fromAction {
-    val httpUrl = checkNotNull(HttpUrl.parse(url)) { "could not parse the url" }
+  ): Completable = Single.fromCallable {
+    val temporaryPeerFile = downloadPeers(url)
 
-    val client = OkHttpClient()
-    val request = Request.Builder()
-      .url(httpUrl)
-      .build()
-
-    val response = client.newCall(request).execute()
-    if (!response.isSuccessful) {
-
+    return@fromCallable try {
+      loadFromFile(temporaryPeerFile)
+    } catch (ex: Exception) {
+      Timber.v(ex, "Couldn't load peer list properly")
+      parsePeerList(temporaryPeerFile)
     }
+  }.flatMapCompletable { peers -> savePeers(peers) }
 
-    val responseBody = response.body()
-    val body = checkNotNull(responseBody) { "body was null" }
-    require(body.contentLength() <= 512 * 1024) { "won't download files larger thant 512kB" }
-
-    val temporary = File(cache, "peers.txt")
-    if (temporary.exists()) {
-      val delete = temporary.delete()
-      Timber.v("deleted peer file ${temporary.absolutePath} - $delete")
-    }
-
-    Okio.buffer(body.source()).use {
-      val bufferedSink = Okio.buffer(Okio.sink(temporary))
-      bufferedSink.writeAll(it)
-      bufferedSink.close()
-    }
-
-    val peers = Okio.buffer(Okio.source(temporary)).use {
+  private fun parsePeerList(temporaryPeerFile: File): List<PeerEntry> {
+    return Okio.buffer(Okio.source(temporaryPeerFile)).use {
       val peers: MutableList<PeerEntry> = ArrayList()
 
-      while (it.exhausted()) {
+      while (!it.exhausted()) {
         val line = checkNotNull(it.readUtf8Line()) { "null line" }
         val peer = try {
           Peer.getPeerInfo(line)
@@ -116,7 +101,37 @@ class PeerDataSourceImpl
       }
       return@use peers
     }
+  }
 
-    TODO("not implemented saving yet")
+  private fun downloadPeers(url: String): File {
+    val httpUrl = checkNotNull(HttpUrl.parse(url)) { "could not parse the url" }
+
+    val client = OkHttpClient()
+    val request = Request.Builder()
+      .url(httpUrl)
+      .build()
+
+    val response = client.newCall(request).execute()
+    if (!response.isSuccessful) {
+      throw DownloadFailedException(response.code())
+    }
+
+    val responseBody = response.body()
+    val body = checkNotNull(responseBody) { "body was null" }
+
+    check(body.contentLength() <= 512 * 1024) { "won't download files larger thant 512kB" }
+
+    val temporary = File(cache, "peers.txt")
+    if (temporary.exists()) {
+      val delete = temporary.delete()
+      Timber.v("deleted peer file ${temporary.absolutePath} - $delete")
+    }
+
+    Okio.buffer(body.source()).use {
+      val bufferedSink = Okio.buffer(Okio.sink(temporary))
+      bufferedSink.writeAll(it)
+      bufferedSink.close()
+    }
+    return temporary
   }
 }

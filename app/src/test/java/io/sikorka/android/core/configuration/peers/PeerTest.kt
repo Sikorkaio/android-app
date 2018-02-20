@@ -9,10 +9,10 @@ class PeerTest {
 
   @Test
   fun matchPeer() {
-    val url = "enode://6f8a80d14311c39f35f516fa664deaaaa13e85b2f7493f37f6144d86991ec012937307647bd3b9a82abe2974e1407241d54947bbb39763a4cac9f77166ad92a0@10.3.58.6:30303"
+    val url = "enode://a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe@192.168.90.19:30303"
     val peerEntry = Peer.peerFromNode(url)
-    assertThat(peerEntry.nodeId).isEqualTo("6f8a80d14311c39f35f516fa664deaaaa13e85b2f7493f37f6144d86991ec012937307647bd3b9a82abe2974e1407241d54947bbb39763a4cac9f77166ad92a0")
-    assertThat(peerEntry.nodeAddress).isEqualTo("10.3.58.6")
+    assertThat(peerEntry.nodeId).isEqualTo("a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe")
+    assertThat(peerEntry.nodeAddress).isEqualTo("192.168.90.19")
     assertThat(peerEntry.nodePort).isEqualTo(30303)
 
     assertThat(peerEntry.toString()).isEqualTo(url)
@@ -30,7 +30,7 @@ fun passWeirdNodishThingy() {
     }
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException::class.java)
-    assertThat(throwable).hasMessageThat().isEqualTo("String doesn't match node url format")
+    assertThat(throwable).hasMessageThat().isEqualTo("String doesn't match node url format enode://1234@0129:0000")
 
   }
 
