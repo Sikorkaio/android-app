@@ -25,82 +25,12 @@ class PeerDataSourceImpl
   private val cache: File
 ) : PeerDataSource {
 
-  override fun peers(): Single<Lce<List<PeerEntry>>> = Single.fromCallable {
-    val configuration = configurationProvider.getActive()
-    check(configuration.network == Network.ROPSTEN) {
-      "this is currently only supported for ROPSTEN"
-    }
-
-    val filePath = checkNotNull(configuration.peerFilePath) { "peer file path was null" }
-    val peerFile = File(filePath)
-
-    return@fromCallable Lce.success(loadFromFile(peerFile))
-  }.onErrorReturn { Lce.failure(it) }
-
   private fun loadFromFile(peerFile: File): List<PeerEntry> {
     check(peerFile.exists()) { "couldn't find peer file" }
 
     val type = Types.newParameterizedType(List::class.java, PeerEntry::class.java)
     val adapter: JsonAdapter<List<PeerEntry>> = moshi.adapter(type)
     return checkNotNull(adapter.fromJson(Okio.buffer(Okio.source(peerFile))))
-  }
-
-  override fun savePeers(peers: List<PeerEntry>): Completable = Completable.fromCallable {
-    val configuration = configurationProvider.getActive()
-    check(configuration.network == Network.ROPSTEN) {
-      "this is currently only supported for ROPSTEN"
-    }
-
-    val filePath = checkNotNull(configuration.peerFilePath) { "peer file path was null" }
-    val peerFile = File(filePath)
-
-    if (peerFile.exists()) {
-      val delete = peerFile.delete()
-      Timber.v("deleted the previous file ($delete)")
-      val create = peerFile.createNewFile()
-      Timber.v("new file created $create")
-    }
-
-    val type = Types.newParameterizedType(List::class.java, PeerEntry::class.java)
-    val adapter: JsonAdapter<List<PeerEntry>> = moshi.adapter(type)
-
-    Timber.v("saving ${peers.size} to ${peerFile.absolutePath}")
-    Okio.buffer(Okio.sink(peerFile)).use {
-      adapter.toJson(it, peers)
-    }
-  }
-
-  override fun loadPeersFromUrl(
-    url: String,
-    replace: Boolean
-  ): Completable = Single.fromCallable {
-    val temporaryPeerFile = downloadPeers(url)
-
-    return@fromCallable try {
-      loadFromFile(temporaryPeerFile)
-    } catch (ex: Exception) {
-      Timber.v(ex, "Couldn't load peer list properly")
-      parsePeerList(temporaryPeerFile)
-    }
-  }.flatMapCompletable { peers -> savePeers(peers) }
-
-  private fun parsePeerList(temporaryPeerFile: File): List<PeerEntry> {
-    return Okio.buffer(Okio.source(temporaryPeerFile)).use {
-      val peers: MutableList<PeerEntry> = ArrayList()
-
-      while (!it.exhausted()) {
-        val line = checkNotNull(it.readUtf8Line()) { "null line" }
-        val peer = try {
-          Peer.getPeerInfo(line)
-        } catch (ex: Exception) {
-          line
-        }
-
-        val node = Peer.peerFromNode(peer)
-        peers.add(node)
-      }
-      return@use peers
-    }
   }
 
   private fun downloadPeers(url: String): File {
@@ -134,4 +64,91 @@ class PeerDataSourceImpl
     }
     return temporary
   }
+
+  private fun parsePeerList(temporaryPeerFile: File): List<PeerEntry> {
+    return Okio.buffer(Okio.source(temporaryPeerFile)).use {
+      val peers: MutableList<PeerEntry> = ArrayList()
+
+      while (!it.exhausted()) {
+        val line = checkNotNull(it.readUtf8Line()) { "null line" }
+        val peer = try {
+          Peer.getPeerInfo(line)
+        } catch (ex: Exception) {
+          line
+        }
+
+        val node = Peer.peerFromNode(peer)
+        peers.add(node)
+      }
+      return@use peers
+    }
+  }
+
+  override fun peers(): Single<Lce<List<PeerEntry>>> = Single.fromCallable {
+    val configuration = configurationProvider.getActive()
+    check(configuration.network == Network.ROPSTEN) {
+      "this is currently only supported for ROPSTEN"
+    }
+
+    val filePath = checkNotNull(configuration.peerFilePath) { "peer file path was null" }
+    val peerFile = File(filePath)
+
+    return@fromCallable Lce.success(loadFromFile(peerFile))
+  }.onErrorReturn { Lce.failure(it) }
+
+  override fun savePeers(
+    peers: List<PeerEntry>,
+    replace: Boolean
+  ): Completable = Completable.fromCallable {
+    val configuration = configurationProvider.getActive()
+    check(configuration.network == Network.ROPSTEN) {
+      "this is currently only supported for ROPSTEN"
+    }
+
+    val filePath = checkNotNull(configuration.peerFilePath) { "peer file path was null" }
+    val peerFile = File(filePath)
+
+    val type = Types.newParameterizedType(List::class.java, PeerEntry::class.java)
+    val adapter: JsonAdapter<List<PeerEntry>> = moshi.adapter(type)
+
+    val peersToSave = if (peerFile.exists() && replace) {
+      val delete = peerFile.delete()
+      Timber.v("deleted the previous file ($delete)")
+      val create = peerFile.createNewFile()
+      Timber.v("new file created $create")
+      peers
+    } else {
+      val existingPeers = try {
+        loadFromFile(peerFile).toMutableList()
+      } catch (ex: Exception) {
+        Timber.v(ex)
+        emptyList<PeerEntry>()
+      }
+      existingPeers.union(peers).toList()
+    }
+
+    Timber.v("saving ${peersToSave.size} to ${peerFile.absolutePath}")
+    Okio.buffer(Okio.sink(peerFile)).use {
+      adapter.toJson(it, peersToSave)
+    }
+  }
+
+  override fun loadPeersFromFile(
+    file: File,
+    replace: Boolean
+  ): Completable = Single.fromCallable {
+    return@fromCallable try {
+      loadFromFile(file)
+    } catch (ex: Exception) {
+      Timber.v(ex, "Couldn't load peer list properly")
+      parsePeerList(file)
+    }
+  }.flatMapCompletable { peers -> savePeers(peers, replace) }
+
+  override fun loadPeersFromUrl(
+    url: String,
+    replace: Boolean
+  ): Completable = Single.fromCallable {
+    downloadPeers(url)
+  }.flatMapCompletable { loadPeersFromFile(it, replace) }
 }
