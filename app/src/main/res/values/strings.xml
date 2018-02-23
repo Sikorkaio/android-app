@@ -197,6 +197,15 @@
   <string name="account_export__export_account_title">Export account</string>
   <string name="deploy_contract__deploy_contract_title">Deploy contract</string>
   <string name="peer_manager__title">Static Peers</string>
+  <string name="action__download_peers">Download Peers</string>
+
+  <string name="peer_manager__url_dialog_title">Download the peer list</string>
+  <string name="peer_manager__url_dialog_hint">Peer list URL</string>
+  <string name="peer_manager__url_dialog_positive_button">Download</string>
+  <string name="peer_manager__url_dialog_merge">Merge with existing peers</string>
+  <string name="peer_manager__url_dialog_empty_url">Empty url</string>
+  <string name="peer_manager__url_dialog_invalid_url">This doen\'t seem like a valid URL</string>
+  <string name="peer_manager__peer_list_download_complete">Peer list download was successful.</string>
 
 
 </resources>

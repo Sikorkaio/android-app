@@ -11,6 +11,8 @@ interface PeerManagerView : BaseView {
   fun showError()
 
   fun loading(loading: Boolean)
+
+  fun downloadComplete()
 }
 
 
@@ -18,6 +20,8 @@ interface PeerManagerPresenter : Presenter<PeerManagerView> {
   fun load()
 
   fun save(peers: List<PeerEntry>)
+
+  fun download(url: String, merge: Boolean)
 }
 
 

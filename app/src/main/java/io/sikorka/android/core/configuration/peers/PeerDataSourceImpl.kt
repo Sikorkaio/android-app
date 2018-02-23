@@ -98,7 +98,7 @@ class PeerDataSourceImpl
 
   override fun savePeers(
     peers: List<PeerEntry>,
-    replace: Boolean
+    merge: Boolean
   ): Completable = Completable.fromCallable {
     val configuration = configurationProvider.getActive()
     check(configuration.network == Network.ROPSTEN) {
@@ -111,7 +111,7 @@ class PeerDataSourceImpl
     val type = Types.newParameterizedType(List::class.java, PeerEntry::class.java)
     val adapter: JsonAdapter<List<PeerEntry>> = moshi.adapter(type)
 
-    val peersToSave = if (peerFile.exists() && replace) {
+    val peersToSave = if (peerFile.exists() && !merge) {
       val delete = peerFile.delete()
       Timber.v("deleted the previous file ($delete)")
       val create = peerFile.createNewFile()
@@ -135,7 +135,7 @@ class PeerDataSourceImpl
 
   override fun loadPeersFromFile(
     file: File,
-    replace: Boolean
+    merge: Boolean
   ): Completable = Single.fromCallable {
     return@fromCallable try {
       loadFromFile(file)
@@ -143,12 +143,12 @@ class PeerDataSourceImpl
       Timber.v(ex, "Couldn't load peer list properly")
       parsePeerList(file)
     }
-  }.flatMapCompletable { peers -> savePeers(peers, replace) }
+  }.flatMapCompletable { peers -> savePeers(peers, merge) }
 
   override fun loadPeersFromUrl(
     url: String,
-    replace: Boolean
+    merge: Boolean
   ): Completable = Single.fromCallable {
     downloadPeers(url)
-  }.flatMapCompletable { loadPeersFromFile(it, replace) }
+  }.flatMapCompletable { loadPeersFromFile(it, merge) }
 }

@@ -11,10 +11,10 @@ interface PeerDataSource {
 
   fun savePeers(
     peers: List<PeerEntry>,
-    replace: Boolean = true
+    merge: Boolean = false
   ): Completable
 
-  fun loadPeersFromUrl(url: String, replace: Boolean = false): Completable
+  fun loadPeersFromUrl(url: String, merge: Boolean = true): Completable
 
-  fun loadPeersFromFile(file: File, replace: Boolean = false): Completable
+  fun loadPeersFromFile(file: File, merge: Boolean = true): Completable
 }

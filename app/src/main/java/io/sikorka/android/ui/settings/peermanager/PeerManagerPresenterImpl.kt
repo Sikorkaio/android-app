@@ -50,7 +50,18 @@ constructor(
       }) {
         Timber.e(it, "Failure")
       }
+  }
 
-
+  override fun download(url: String, merge: Boolean) {
+    disposables += peerDataSource.loadPeersFromUrl(url, merge)
+      .subscribeOn(schedulerProvider.io())
+      .observeOn(schedulerProvider.main())
+      .subscribe({
+        load()
+        attachedView().downloadComplete()
+        // todo restart the node
+      }) {
+        attachedView().showError()
+      }
   }
 }

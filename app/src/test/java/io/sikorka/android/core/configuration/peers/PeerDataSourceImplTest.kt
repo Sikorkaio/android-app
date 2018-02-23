@@ -26,7 +26,7 @@ class PeerDataSourceImplTest {
   private lateinit var peerDataSource: PeerDataSource
 
   @get:Rule
-  private var temporaryFolder = TemporaryFolder()
+  var temporaryFolder = TemporaryFolder()
 
   @Mock
   private lateinit var configurationProvider: ConfigurationProvider
@@ -286,7 +286,7 @@ class PeerDataSourceImplTest {
       body(PEER_LIST)
     })
 
-    peerDataSource.loadPeersFromUrl(mockWebServer.url(), false).test()
+    peerDataSource.loadPeersFromUrl(mockWebServer.url(), true).test()
       .run {
         awaitTerminalEvent()
         assertComplete()
@@ -323,7 +323,7 @@ class PeerDataSourceImplTest {
       body(NODE_JSON_LIST)
     })
 
-    peerDataSource.loadPeersFromUrl(mockWebServer.url(), false).test()
+    peerDataSource.loadPeersFromUrl(mockWebServer.url(), true).test()
       .run {
         awaitTerminalEvent()
         assertComplete()

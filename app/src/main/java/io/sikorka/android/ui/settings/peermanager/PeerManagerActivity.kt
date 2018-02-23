@@ -3,6 +3,7 @@ package io.sikorka.android.ui.settings.peermanager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
@@ -11,6 +12,7 @@ import android.widget.ProgressBar
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import io.sikorka.android.ui.BaseActivity
+import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.settings.peermanager.PeerManagerActionModeCallback.Actions
 import io.sikorka.android.ui.show
@@ -60,6 +62,11 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     menuInflater.inflate(R.menu.menu__peer_manager, menu)
+    menu?.let {
+      MenuTint.on(it)
+        .setMenuItemIconColor(ContextCompat.getColor(this, R.color.white))
+        .apply(this)
+    }
     return super.onCreateOptionsMenu(menu)
   }
 
@@ -70,8 +77,18 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
         peerAdapter.selectionMode(true)
         true
       }
+      R.id.action__download_dialog -> {
+        urlInputDialog { url, merge ->
+          presenter.download(url, merge)
+        }.show()
+        return true
+      }
       else -> super.onOptionsItemSelected(item)
     }
+  }
+
+  override fun downloadComplete() {
+    snackBar(R.string.peer_manager__peer_list_download_complete)
   }
 
   override fun update(data: List<PeerEntry>) {
