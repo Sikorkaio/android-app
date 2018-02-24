@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item
+      android:id="@+id/action__enable_selection_mode"
+      android:icon="@drawable/ic_select_all_black_24dp"
+      android:title="@string/action__enable_selection_mode"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/action__open_file"
+      android:icon="@drawable/ic_folder_open_black_24dp"
+      android:title="@string/action__open_peer_file"
+      app:showAsAction="ifRoom" />
+
+  <item
+      android:id="@+id/action__download_dialog"
+      android:icon="@drawable/ic_file_download_black_24dp"
+      android:title="@string/action__download_peers"
+      app:showAsAction="ifRoom" />
+</menu>

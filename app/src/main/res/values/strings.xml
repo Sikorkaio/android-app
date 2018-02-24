@@ -99,6 +99,8 @@
   <string name="preferences__network_title">Network</string>
   <string name="preferences__selected_network_key" translatable="false">pref_key_selected_network</string>
   <string name="preferences__selected_network_title">Selected Network</string>
+  <string name="preferences__manage_peers">Manage Peers</string>
+  <string name="preferences__manage_peers_summary">Open the list of the static Ropsten network peers</string>
 
   <string name="networks__ropsten">Ropsten</string>
   <string name="networks__rinkeby">Rinkeby</string>
@@ -186,6 +188,28 @@
   <string name="account_import__confirmation_missmatch">The account passphrase confirmation doesn\'t match.</string>
   <string name="account_import__account_passphrase_empty">The account passphrase cannot be empty.</string>
   <string name="account_import__folder_button_content_description">Opens the file selection dialog</string>
+  <string name="action__enable_selection_mode">Enable Selection Mode</string>
+  <string name="peer_manager_action__select_all">Select all</string>
+  <string name="peer_manager_action__select_none">Select none</string>
+  <string name="peer_manager_action__delete">Delete</string>
+  <string name="account_management__title">Accounts</string>
+  <string name="account_import__import_account_title">Import Account</string>
+  <string name="account_export__export_account_title">Export account</string>
+  <string name="deploy_contract__deploy_contract_title">Deploy contract</string>
+  <string name="peer_manager__title">Static Peers</string>
+  <string name="action__download_peers">Download Peers</string>
+
+  <string name="peer_manager__url_dialog_title">Download the peer list</string>
+  <string name="peer_manager__url_dialog_hint">Peer list URL</string>
+  <string name="peer_manager__url_dialog_positive_button">Download</string>
+  <string name="peer_manager__url_dialog_merge">Merge with existing peers</string>
+  <string name="peer_manager__url_dialog_empty_url">Empty url</string>
+  <string name="peer_manager__url_dialog_invalid_url">This doen\'t seem like a valid URL</string>
+  <string name="peer_manager__peer_list_download_complete">Peer list download was successful.</string>
+  <string name="action__open_peer_file">Open peer list</string>
+  <string name="peer_manager__peer_list_loaded">Peer list was successfully loaded</string>
+  <string name="peer_manager__error_opening_file">There was an error opening the peer file.</string>
+  <string name="peer_manager__error_downloading_file">There was an error downloading the peer file.</string>
 
 
 </resources>

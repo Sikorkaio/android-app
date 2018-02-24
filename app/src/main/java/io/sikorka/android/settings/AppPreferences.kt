@@ -5,10 +5,10 @@ import io.sikorka.android.core.configuration.Network
 
 interface AppPreferences {
 
-  fun selectNetwork(@Network.Selection network: Long)
+  fun selectNetwork(@Network.Selection network: Int)
 
   @Network.Selection
-  fun selectedNetwork(): Long
+  fun selectedNetwork(): Int
 
   fun selectedAccount(): String
 

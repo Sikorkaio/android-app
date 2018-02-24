@@ -4,8 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
     tools:context="io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity">
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/colorPrimary"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_scrollFlags="scroll|enterAlways|snap"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
   <TextView
       android:id="@+id/deploy_detector__title"
@@ -17,7 +28,7 @@
       android:text="@string/deploy_detector__title"
       android:textSize="28sp"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
   <fragment
       android:id="@+id/deploy_detector__map"
@@ -60,7 +71,6 @@
   </android.support.design.widget.TextInputLayout>
 
   <TextView
-      app:layout_constraintHorizontal_bias="0.0"
       android:id="@+id/deploy_detector__bound_detector"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -71,6 +81,7 @@
       android:text="@string/deploy_detector__contract_detector"
       android:textSize="18sp"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@+id/deploy_detector__guideline" />
 

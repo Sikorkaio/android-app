@@ -79,7 +79,7 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
     ropstenSelection.setOnClickListener { presenter.selectNetwork(Network.ROPSTEN) }
   }
 
-  override fun updateNetworkSelection(@Network.Selection network: Long) {
+  override fun updateNetworkSelection(@Network.Selection network: Int) {
     ropstenSelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
     rinkebySelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
     mainnetSelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)

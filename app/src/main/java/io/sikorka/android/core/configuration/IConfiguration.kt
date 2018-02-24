@@ -9,7 +9,15 @@ import java.io.File
  */
 interface IConfiguration {
   val dataDir: File
+
   val nodeConfig: NodeConfig
+
   val bootstrapNodes: Enodes?
+
+  val peerFilePath: String?
+
   fun prepare()
+
+  @Network.Selection
+  val network: Int
 }

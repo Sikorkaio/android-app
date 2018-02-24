@@ -445,7 +445,7 @@ class MainActivity : AppCompatActivity(),
   }
 
   companion object {
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+    private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     fun start(context: Context) {
       val intent = Intent(context, MainActivity::class.java)
       intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK

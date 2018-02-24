@@ -14,6 +14,10 @@ fun EditText.asString(): String = this.text.toString()
 
 fun TextInputLayout.value(): String = this.editText?.asString() ?: ""
 
+fun TextInputLayout.clearError() {
+  this.error = null
+}
+
 fun TextView.value(): String = this.text.toString()
 
 fun TextInputLayout.setValue(text: String) {
@@ -42,7 +46,8 @@ val View.isVisible
 
 fun View.progressSnack(@StringRes resId: Int, duration: Int): Snackbar {
   val bar = Snackbar.make(this, resId, duration)
-  val contentLay = bar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text).parent as ViewGroup
+  val contentLay =
+    bar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text).parent as ViewGroup
   val item = ProgressBar(context)
   contentLay.addView(item)
   return bar

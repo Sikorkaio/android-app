@@ -93,7 +93,7 @@ class AccountImportActivity : BaseActivity(),
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_import)
     Toothpick.inject(this, scope)
-    setupToolbar()
+    setupToolbar(R.string.account_import__import_account_title)
 
     importAction.setOnClickListener {
       presenter.import(filePath, filePassphrase, accountPassphrase, accountPassphraseConfirmation)
@@ -109,16 +109,6 @@ class AccountImportActivity : BaseActivity(),
       Toothpick.closeScope(PRESENTER_SCOPE)
     }
     super.onDestroy()
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      android.R.id.home -> {
-        onBackPressed()
-        true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
   }
 
   @javax.inject.Scope

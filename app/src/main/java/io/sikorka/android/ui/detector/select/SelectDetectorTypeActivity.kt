@@ -3,30 +3,26 @@ package io.sikorka.android.ui.detector.select
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.InputType
-import android.view.MenuItem
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity
 import io.sikorka.android.ui.detector.bluetooth.FindBtDetectorActivity
 import kotlinx.android.synthetic.main.activity_select_detector_type.*
 import org.ethereum.geth.Address
 import org.ethereum.geth.Geth
 
-class SelectDetectorTypeActivity : AppCompatActivity() {
+class SelectDetectorTypeActivity : BaseActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_select_detector_type)
-    supportActionBar?.apply {
-      setHomeButtonEnabled(true)
-      setDisplayHomeAsUpEnabled(true)
-      title = getString(R.string.select_detector_type__title)
-    }
+    setupToolbar(R.string.select_detector_type__title)
+
     val detectorTypeAdapter = SelectDetectorTypeAdapter(this@SelectDetectorTypeActivity, detectors())
     detectorTypeAdapter.setOnSelection { typeId ->
       when (typeId) {
@@ -43,17 +39,6 @@ class SelectDetectorTypeActivity : AppCompatActivity() {
       layoutManager = LinearLayoutManager(this@SelectDetectorTypeActivity)
     }
   }
-
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      android.R.id.home -> {
-        onBackPressed()
-        true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
-  }
-
 
   private fun detectors(): List<SupportedDetector> {
     val detectors = ArrayList<SupportedDetector>()

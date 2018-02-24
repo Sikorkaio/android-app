@@ -18,7 +18,7 @@ static def revision() {
 
 android {
   compileSdkVersion 27
-  buildToolsVersion '27.0.1'
+  buildToolsVersion '27.0.3'
   defaultConfig {
     applicationId "io.sikorka.android"
     minSdkVersion 17
@@ -54,13 +54,18 @@ android {
       outputFileName = "${defaultConfig.applicationId}-${variant.versionCode}-v${variant.versionName}.apk"
     }
   }
+}
 
+kotlin {
+  experimental {
+    coroutines 'enable'
+  }
 }
 
 ext.versions = [
     support_library_version: '27.0.2',
     play_services_version  : '11.8.0',
-    room_version: '1.0.0'
+    room_version           : '1.0.0'
 ]
 
 dependencies {
@@ -86,8 +91,9 @@ dependencies {
   // build of 049797d40 master (plus mobile single unmarshal fix)
   implementation 'geth-android:geth:1.7.3-unstable'
 
-
+  implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
   implementation 'com.squareup.okio:okio:1.13.0'
+  implementation 'com.squareup.okhttp3:okhttp:3.9.1'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
   //reactive extensions
@@ -135,6 +141,11 @@ dependencies {
   implementation "com.google.android.gms:play-services-location:${versions.play_services_version}"
   implementation "com.google.android.gms:play-services-maps:${versions.play_services_version}"
 
+  //coroutine
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.2"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.2"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.22.2"
+
   //QR support
   implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 
@@ -143,9 +154,12 @@ dependencies {
 
   //Unit testing
   testImplementation 'junit:junit:4.12'
+  testImplementation 'org.mockito:mockito-core:2.13.0'
   testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.1.1'
   testImplementation "com.google.truth:truth:0.39"
+  testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
   testImplementation "android.arch.core:core-testing:1.1.0"
+  testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.1'
 }
 
 

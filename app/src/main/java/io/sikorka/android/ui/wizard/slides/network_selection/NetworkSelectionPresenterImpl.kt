@@ -14,7 +14,7 @@ constructor(private val appPreferences: AppPreferences) : NetworkSelectionPresen
     attachedView().updateNetworkSelection(selectedNetwork)
   }
 
-  override fun selectNetwork(network: Long) {
+  override fun selectNetwork(network: Int) {
     appPreferences.selectNetwork(network)
     attachedView().updateNetworkSelection(network)
   }

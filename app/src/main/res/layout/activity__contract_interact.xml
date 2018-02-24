@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/colorPrimary"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_scrollFlags="scroll|enterAlways|snap"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 
   <TextView
       android:id="@+id/contact_interact__contract_address_label"
@@ -18,7 +30,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
   <TextView
       android:id="@+id/contract_interact__contract_address"

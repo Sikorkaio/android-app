@@ -1,4 +1,4 @@
-package me.dm7.barcodescanner.zxing.sample
+package io.sikorka.android.ui.detector.qr
 
 import android.Manifest
 import android.app.Activity
@@ -36,7 +36,8 @@ class QrScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
   private fun startCameraPermissionRequest() {
     ActivityCompat.requestPermissions(this,
         arrayOf(Manifest.permission.CAMERA),
-        REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE)
+        REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE
+    )
   }
 
   private fun checkCameraPermissions(): Boolean {

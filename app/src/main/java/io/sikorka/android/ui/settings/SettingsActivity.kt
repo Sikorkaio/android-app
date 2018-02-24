@@ -3,24 +3,16 @@ package io.sikorka.android.ui.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import io.sikorka.android.R
+import io.sikorka.android.ui.BaseActivity
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_settings)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean = when (item?.itemId) {
-    android.R.id.home -> {
-      onBackPressed()
-      true
-    }
-    else -> super.onOptionsItemSelected(item)
+    setupToolbar()
   }
 
   companion object {

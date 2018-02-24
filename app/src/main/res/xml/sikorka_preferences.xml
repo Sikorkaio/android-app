@@ -15,6 +15,12 @@
         android:summary="Enables the client sync of mobile data"
         android:title="Allow mobile sync" />
 
+    <android.support.v7.preference.Preference
+        android:key="pref_key_peer_manager"
+        android:title="@string/preferences__manage_peers"
+        android:summary="@string/preferences__manage_peers_summary"
+        />
+
   </android.support.v7.preference.PreferenceCategory>
 
   <android.support.v7.preference.PreferenceCategory

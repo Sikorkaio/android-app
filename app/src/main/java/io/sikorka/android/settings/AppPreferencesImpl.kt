@@ -10,13 +10,13 @@ class AppPreferencesImpl
 constructor(private val sharedPreferences: SharedPreferences) : AppPreferences {
 
   @Network.Selection
-  override fun selectedNetwork(): Long {
-    return sharedPreferences.getLong(SELECTED_NETWORK, Network.ROPSTEN)
+  override fun selectedNetwork(): Int {
+    return sharedPreferences.getInt(SELECTED_NETWORK, Network.ROPSTEN)
   }
 
-  override fun selectNetwork(@Network.Selection network: Long) {
+  override fun selectNetwork(@Network.Selection network: Int) {
     sharedPreferences.edit()
-        .putLong(SELECTED_NETWORK, network)
+        .putInt(SELECTED_NETWORK, network)
         .apply()
   }
 

@@ -57,8 +57,9 @@
     <activity android:name=".ui.contracts.deploydetectorcontract.DeployDetectorActivity" />
     <activity android:name=".ui.detector.select.SelectDetectorTypeActivity" />
     <activity android:name=".ui.contracts.pending.PendingContractsActivity" />
-    <activity android:name="me.dm7.barcodescanner.zxing.sample.QrScannerActivity" />
+    <activity android:name=".ui.detector.qr.QrScannerActivity" />
     <activity android:name=".ui.detector.userselect.UserSelectDetectorTypeActivity" />
+    <activity android:name=".ui.settings.peermanager.PeerManagerActivity"></activity>
   </application>
 
 </manifest>

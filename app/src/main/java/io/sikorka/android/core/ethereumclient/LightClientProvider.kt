@@ -8,7 +8,7 @@ class LightClientProvider
 constructor() : Provider<LightClient> {
 
   private var _initialized: Boolean = false
-  private lateinit var lightClient: LightClient
+  private var lightClient: LightClient? = null
 
   val initialized: Boolean
     get() = _initialized
@@ -18,5 +18,10 @@ constructor() : Provider<LightClient> {
     _initialized = true
   }
 
-  override fun get(): LightClient = lightClient
+  override fun get(): LightClient = checkNotNull(lightClient) { "light client was null" }
+
+  fun reset() {
+    _initialized = false
+    lightClient = null
+  }
 }

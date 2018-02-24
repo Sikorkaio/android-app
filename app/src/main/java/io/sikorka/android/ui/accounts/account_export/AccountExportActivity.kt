@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
-import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
@@ -15,6 +13,7 @@ import io.sikorka.android.R
 import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
 import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY
 import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT
 import io.sikorka.android.ui.bind
@@ -25,9 +24,9 @@ import toothpick.smoothie.module.SmoothieSupportActivityModule
 import java.io.File
 import javax.inject.Inject
 
-class AccountExportActivity : AppCompatActivity(),
-    AccountExportView,
-    FolderChooserDialog.FolderCallback {
+class AccountExportActivity : BaseActivity(),
+  AccountExportView,
+  FolderChooserDialog.FolderCallback {
 
   private val accountHex: TextView by bind(R.id.account_export__account_hex)
 
@@ -61,7 +60,8 @@ class AccountExportActivity : AppCompatActivity(),
   private val hex: String
     get() = intent?.getStringExtra(ACCOUNT_HEX) ?: ""
 
-  @Inject lateinit var presenter: AccountExportPresenter
+  @Inject
+  lateinit var presenter: AccountExportPresenter
 
   private fun clearErrors() {
     exportPathInput.error = null
@@ -80,7 +80,8 @@ class AccountExportActivity : AppCompatActivity(),
 
     when (code) {
       CONFIRMATION_MISMATCH -> {
-        encryptionPassphraseConfirmation.error = getString(R.string.account_export__confirmation_missmatch)
+        encryptionPassphraseConfirmation.error =
+            getString(R.string.account_export__confirmation_missmatch)
       }
       EMPTY_PASSPHRASE -> {
         encryptionPassphrase.error = getString(R.string.account_export__encryption_passphrase_empty)
@@ -116,10 +117,7 @@ class AccountExportActivity : AppCompatActivity(),
     setContentView(R.layout.activity__account_export)
     Toothpick.inject(this, scope)
 
-    supportActionBar?.let {
-      it.setDisplayShowHomeEnabled(true)
-      it.setDisplayHomeAsUpEnabled(true)
-    }
+    setupToolbar(R.string.account_export__export_account_title)
 
     accountExportFab.setOnClickListener {
       presenter.export(account, passphrase, encryptionPass, encryptionPassConfirmation, exportPath)
@@ -134,16 +132,6 @@ class AccountExportActivity : AppCompatActivity(),
     presenter.detach()
     Toothpick.closeScope(this)
     super.onDestroy()
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      android.R.id.home -> {
-        onBackPressed()
-        true
-      }
-      else -> super.onOptionsItemSelected(item)
-    }
   }
 
   companion object {

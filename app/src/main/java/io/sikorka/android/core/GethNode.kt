@@ -4,18 +4,18 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.accounts.AccountModel
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.IConfiguration
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.core.ethereumclient.LightClient
 import io.sikorka.android.core.ethereumclient.LightClientProvider
-import io.sikorka.android.core.model.converters.SikorkaAddressConverter
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.lastThrottle
 import org.ethereum.geth.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -27,10 +27,10 @@ import javax.inject.Singleton
 class GethNode
 @Inject
 constructor(
-    private val configurationProvider: ConfigurationProvider,
-    private val schedulerProvider: SchedulerProvider,
-    private val lightClientProvider: LightClientProvider,
-    private val syncStatusProvider: SyncStatusProvider
+  private val configurationProvider: ConfigurationProvider,
+  private val schedulerProvider: SchedulerProvider,
+  private val lightClientProvider: LightClientProvider,
+  private val syncStatusProvider: SyncStatusProvider
 ) {
   private val ethContext = Geth.newContext()
   private var node: Node? = null
@@ -39,11 +39,6 @@ constructor(
   private val disposables: CompositeDisposable = CompositeDisposable()
   private val loggingThrottler: PublishRelay<PeerInfos> = PublishRelay.create()
   private val headerRelay: PublishRelay<Header> = PublishRelay.create()
-  private val addressConverter = SikorkaAddressConverter()
-
-  private fun addDisposable(disposable: Disposable) {
-    disposables.add(disposable)
-  }
 
   fun start() {
     if (node != null) {
@@ -62,38 +57,36 @@ constructor(
     lightClientProvider.initialize(LightClient(node.ethereumClient, ethContext))
 
     periodicallyCheckIfRunning()
-    addDisposable(
-        loggingThrottler.throttleLast(1, TimeUnit.MINUTES)
-            .subscribe { logPeers(it) }
-    )
-
-    addDisposable(headers()
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.io())
-        .subscribe({
-          headerRelay.accept(it)
-        }) {
-          Timber.v(it, "Error")
-        }
-    )
+    disposables += loggingThrottler.lastThrottle(1, TimeUnit.MINUTES) { logPeers(it) }
+    disposables += headers()
+      .subscribeOn(schedulerProvider.io())
+      .observeOn(schedulerProvider.io())
+      .subscribe({
+        headerRelay.accept(it)
+      }) {
+        Timber.v(it, "Error")
+      }
   }
 
   fun stop() {
     Timber.v("Stoping geth node.")
+    disposables.clear()
     try {
       val node = node ?: return
+      lightClientProvider.reset()
       node.stop()
+      this.node = null
     } catch (e: Exception) {
       Timber.v(e)
     }
-    disposables.clear()
   }
 
 
   fun createTransactOpts(
-      account: AccountModel,
-      gas: ContractGas,
-      signer: TransactionSigner): Single<TransactOpts> {
+    account: AccountModel,
+    gas: ContractGas,
+    signer: TransactionSigner
+  ): Single<TransactOpts> {
     return Single.fromCallable {
       val signerAddress = Geth.newAddressFromHex(account.addressHex)
       val opts = TransactOpts()
@@ -137,12 +130,12 @@ constructor(
   }
 
   private fun periodicallyCheckIfRunning() {
-    addDisposable(Observable.interval(10, TimeUnit.MINUTES)
-        .subscribe({
-          checkNodeStatus()
-        }) {
-          Timber.v(it, "")
-        })
+    disposables += Observable.interval(10, TimeUnit.MINUTES).subscribe({
+      checkNodeStatus()
+    }) {
+      Timber.v(it, "")
+    }
+
   }
 
   private fun syncProgress(ec: EthereumClient): Pair<Long, Long> = try {
@@ -169,8 +162,8 @@ constructor(
   }
 
   fun status(): Observable<SyncStatus> = Observable.interval(2, TimeUnit.SECONDS)
-      .flatMap { checkStatus() }
-      .startWith(checkStatus())
+    .flatMap { checkStatus() }
+    .startWith(checkStatus())
 
 
   private fun checkStatus(): Observable<SyncStatus> = Observable.fromCallable {
