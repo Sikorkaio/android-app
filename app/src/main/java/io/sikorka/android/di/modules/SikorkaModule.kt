@@ -1,6 +1,9 @@
 package io.sikorka.android.di.modules
 
+import android.app.Service
 import com.squareup.moshi.Moshi
+import io.sikorka.android.core.ServiceManager
+import io.sikorka.android.core.ServiceManagerImpl
 import io.sikorka.android.core.accounts.PassphraseValidator
 import io.sikorka.android.core.accounts.PassphraseValidatorImpl
 import io.sikorka.android.core.configuration.ConfigurationProvider
@@ -68,5 +71,7 @@ class SikorkaModule : Module() {
     bind(PeerDataSource::class.java).to(PeerDataSourceImpl::class.java)
     bind(File::class.java).withName(ApplicationCache::class.java)
       .toProvider(ApplicationCacheProvider::class.java)
+
+    bind(ServiceManager::class.java).to(ServiceManagerImpl::class.java)
   }
 }

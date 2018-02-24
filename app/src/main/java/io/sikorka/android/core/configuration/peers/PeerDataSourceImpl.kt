@@ -137,10 +137,15 @@ class PeerDataSourceImpl
     file: File,
     merge: Boolean
   ): Completable = Single.fromCallable {
+
+    if (file.length() == 0L) {
+      throw EmptyFileException()
+    }
+
     return@fromCallable try {
       loadFromFile(file)
     } catch (ex: Exception) {
-      Timber.v(ex, "Couldn't load peer list properly")
+      Timber.v("Couldn't load peer list properly ${ex.message}")
       parsePeerList(file)
     }
   }.flatMapCompletable { peers -> savePeers(peers, merge) }

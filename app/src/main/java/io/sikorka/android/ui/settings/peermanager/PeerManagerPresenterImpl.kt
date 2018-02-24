@@ -1,12 +1,15 @@
 package io.sikorka.android.ui.settings.peermanager
 
 import io.reactivex.rxkotlin.plusAssign
+import io.sikorka.android.core.ServiceManager
 import io.sikorka.android.core.configuration.peers.PeerDataSource
 import io.sikorka.android.core.configuration.peers.PeerEntry
+import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.utils.schedulers.SchedulerProvider
 import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 @PeerManagerActivity.Presenter
@@ -14,7 +17,9 @@ class PeerManagerPresenterImpl
 @Inject
 constructor(
   private val peerDataSource: PeerDataSource,
-  private val schedulerProvider: SchedulerProvider
+  private val schedulerProvider: SchedulerProvider,
+  private val serviceManager: ServiceManager,
+  private val bus: RxBus
 ) : PeerManagerPresenter, BasePresenter<PeerManagerView>() {
 
   override fun load() {
@@ -31,13 +36,13 @@ constructor(
           it.success() -> {
             attachedView().update(it.data())
           }
-          it.success() -> {
-            attachedView().showError()
+          it.failure() -> {
+            attachedView().loadingError()
           }
         }
 
       }) {
-        attachedView().showError()
+        attachedView().loadingError()
       }
   }
 
@@ -59,9 +64,22 @@ constructor(
       .subscribe({
         load()
         attachedView().downloadComplete()
-        // todo restart the node
+        serviceManager.restart()
       }) {
-        attachedView().showError()
+        attachedView().downloadFailed()
+      }
+  }
+
+  override fun saveFromFile(file: File) {
+    disposables += peerDataSource.loadPeersFromFile(file, true)
+      .subscribeOn(schedulerProvider.io())
+      .observeOn(schedulerProvider.main())
+      .subscribe({
+        load()
+        attachedView().openComplete()
+        serviceManager.restart()
+      }) {
+        attachedView().openFailed()
       }
   }
 }

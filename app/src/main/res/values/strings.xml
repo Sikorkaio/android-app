@@ -206,6 +206,10 @@
   <string name="peer_manager__url_dialog_empty_url">Empty url</string>
   <string name="peer_manager__url_dialog_invalid_url">This doen\'t seem like a valid URL</string>
   <string name="peer_manager__peer_list_download_complete">Peer list download was successful.</string>
+  <string name="action__open_peer_file">Open peer list</string>
+  <string name="peer_manager__peer_list_loaded">Peer list was successfully loaded</string>
+  <string name="peer_manager__error_opening_file">There was an error opening the peer file.</string>
+  <string name="peer_manager__error_downloading_file">There was an error downloading the peer file.</string>
 
 
 </resources>

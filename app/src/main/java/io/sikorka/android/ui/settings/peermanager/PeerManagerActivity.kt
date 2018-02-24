@@ -1,5 +1,6 @@
 package io.sikorka.android.ui.settings.peermanager
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.MenuItem
 import android.widget.ProgressBar
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
+import io.sikorka.android.io.copyToFile
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.gone
@@ -20,6 +22,7 @@ import kotterknife.bindView
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
+import java.io.File
 import javax.inject.Inject
 
 class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
@@ -33,6 +36,13 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
   private val peerAdapter: PeerManagerAdapter by lazy { PeerManagerAdapter() }
 
   private lateinit var scope: Scope
+
+  private fun performFileSearch() {
+    val intent = Intent(Intent.ACTION_GET_CONTENT)
+    intent.addCategory(Intent.CATEGORY_OPENABLE)
+    intent.type = "*/*"
+    startActivityForResult(intent, READ_REQUEST_CODE)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Toothpick.openScope(PRESENTER_SCOPE).installModules(PeerManagerModule())
@@ -83,6 +93,10 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
         }.show()
         return true
       }
+      R.id.action__open_file -> {
+        performFileSearch()
+        true
+      }
       else -> super.onOptionsItemSelected(item)
     }
   }
@@ -96,9 +110,16 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
     peerAdapter.setList(data)
   }
 
-  override fun showError() {
+  override fun loadingError() {
     loading(false)
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun downloadFailed() {
+    snackBar(R.string.peer_manager__error_downloading_file)
+  }
+
+  override fun openFailed() {
+    snackBar(R.string.peer_manager__error_opening_file)
   }
 
   override fun delete() {
@@ -126,12 +147,34 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
     peerAdapter.selectionMode(false)
   }
 
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    if (requestCode != READ_REQUEST_CODE || resultCode != Activity.RESULT_OK) {
+      return
+    }
+
+    data?.let {
+      val file = contentResolver.openInputStream(it.data).use {
+        val temp = File.createTempFile("peers", "list")
+        it.copyToFile(temp)
+        temp
+      }
+
+      presenter.saveFromFile(file)
+    }
+  }
+
+  override fun openComplete() {
+    snackBar(R.string.peer_manager__peer_list_loaded)
+  }
+
   @javax.inject.Scope
   @Target(AnnotationTarget.CLASS)
   @Retention(AnnotationRetention.RUNTIME)
   annotation class Presenter
 
   companion object {
+    private const val READ_REQUEST_CODE = 12
+
     var PRESENTER_SCOPE: Class<*> = Presenter::class.java
 
     fun start(context: Context) {
