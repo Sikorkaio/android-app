@@ -13,9 +13,9 @@ import io.sikorka.android.R
 import io.sikorka.android.core.accounts.AccountsModel
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.MenuTint
-import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
-import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
-import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
+import io.sikorka.android.ui.accounts.accountcreation.AccountCreationDialog
+import io.sikorka.android.ui.accounts.accountexport.AccountExportActivity
+import io.sikorka.android.ui.accounts.accountimport.AccountImportActivity
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import kotterknife.bindView
 import timber.log.Timber

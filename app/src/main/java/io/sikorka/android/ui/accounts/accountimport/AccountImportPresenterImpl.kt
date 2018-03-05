@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.account_import
+package io.sikorka.android.ui.accounts.accountimport
 
 import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.accounts.AccountRepository
@@ -7,8 +7,8 @@ import io.sikorka.android.core.accounts.PassphraseValidator
 import io.sikorka.android.core.accounts.ValidationResult
 import io.sikorka.android.io.toByteArray
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.ui.accounts.account_import.AccountImportCodes.FAILED_TO_UNLOCK
-import io.sikorka.android.ui.accounts.account_import.AccountImportCodes.UNKNOWN_ERROR
+import io.sikorka.android.ui.accounts.accountimport.AccountImportCodes.FAILED_TO_UNLOCK
+import io.sikorka.android.ui.accounts.accountimport.AccountImportCodes.UNKNOWN_ERROR
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject

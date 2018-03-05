@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.account_export
+package io.sikorka.android.ui.accounts.accountexport
 
 object AccountExportCodes {
   const val ACCOUNT_PASSPHRASE_EMPTY = -110

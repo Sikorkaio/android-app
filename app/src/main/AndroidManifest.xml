@@ -28,7 +28,7 @@
         android:exported="false" />
 
     <activity android:name=".ui.accounts.AccountActivity" />
-    <activity android:name=".ui.accounts.account_export.AccountExportActivity" />
+    <activity android:name=".ui.accounts.accountexport.AccountExportActivity" />
     <activity
         android:name=".ui.splash.SplashActivity"
         android:noHistory="true"
@@ -39,7 +39,7 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".ui.accounts.account_import.AccountImportActivity" />
+    <activity android:name=".ui.accounts.accountimport.AccountImportActivity" />
     <activity
         android:name=".ui.wizard.WizardActivity"
         android:theme="@style/AppTheme.NoActionBar" />

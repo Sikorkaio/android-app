@@ -11,8 +11,8 @@ import io.sikorka.android.SikorkaService
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.slides.InformationFragment
-import io.sikorka.android.ui.wizard.slides.account_setup.AccountSetupFragment
-import io.sikorka.android.ui.wizard.slides.network_selection.NetworkSelectionFragment
+import io.sikorka.android.ui.wizard.slides.accountsetup.AccountSetupFragment
+import io.sikorka.android.ui.wizard.slides.networkselection.NetworkSelectionFragment
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
