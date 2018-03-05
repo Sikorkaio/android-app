@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.account_export
+package io.sikorka.android.ui.accounts.accountexport
 
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter

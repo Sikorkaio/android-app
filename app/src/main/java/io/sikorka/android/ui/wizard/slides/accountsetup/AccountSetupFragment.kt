@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.wizard.slides.account_setup
+package io.sikorka.android.ui.wizard.slides.accountsetup
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
-import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
+import io.sikorka.android.ui.accounts.accountcreation.AccountCreationDialog
+import io.sikorka.android.ui.accounts.accountimport.AccountImportActivity
 import io.sikorka.android.ui.isVisible
 import io.sikorka.android.ui.show
 import kotterknife.bindView

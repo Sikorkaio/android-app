@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.account_creation
+package io.sikorka.android.ui.accounts.accountcreation
 
 import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.core.accounts.PassphraseValidator

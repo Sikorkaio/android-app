@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.wizard.slides.network_selection
+package io.sikorka.android.ui.wizard.slides.networkselection
 
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences

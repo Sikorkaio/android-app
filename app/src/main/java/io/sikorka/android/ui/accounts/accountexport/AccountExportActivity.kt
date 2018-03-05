@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.account_export
+package io.sikorka.android.ui.accounts.accountexport
 
 import android.content.Context
 import android.content.Intent
@@ -14,8 +14,8 @@ import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
 import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.BaseActivity
-import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY
-import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT
+import io.sikorka.android.ui.accounts.accountexport.AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY
+import io.sikorka.android.ui.accounts.accountexport.AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT
 import io.sikorka.android.ui.dialogs.selectDirectory
 import io.sikorka.android.ui.value
 import kotterknife.bindView

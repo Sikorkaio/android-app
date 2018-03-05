@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.account_import
+package io.sikorka.android.ui.accounts.accountimport
 
 import android.content.Context
 import android.content.Intent
@@ -11,7 +11,7 @@ import io.sikorka.android.R
 import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
 import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
 import io.sikorka.android.ui.BaseActivity
-import io.sikorka.android.ui.accounts.account_import.AccountImportCodes.FAILED_TO_UNLOCK
+import io.sikorka.android.ui.accounts.accountimport.AccountImportCodes.FAILED_TO_UNLOCK
 import io.sikorka.android.ui.dialogs.selectFile
 import io.sikorka.android.ui.setValue
 import io.sikorka.android.ui.value

@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.wizard.slides.account_setup
+package io.sikorka.android.ui.wizard.slides.accountsetup
 
 import toothpick.config.Module
 

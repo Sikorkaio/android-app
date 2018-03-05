@@ -1,4 +1,4 @@
-package io.sikorka.android.ui.accounts.account_export
+package io.sikorka.android.ui.accounts.accountexport
 
 import toothpick.config.Module
 
