@@ -86,10 +86,7 @@ dependencies {
 
   implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
 
-  // Custom build of master with an addition to an unmarshal issue
-  // https://github.com/ethereum/go-ethereum/issues/14832#issuecomment-322965627
-  // build of 049797d40 master (plus mobile single unmarshal fix)
-  implementation 'geth-android:geth:1.7.3-unstable'
+  implementation 'org.ethereum:geth:1.8.2'
 
   implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
   implementation 'com.squareup.okio:okio:1.13.0'
