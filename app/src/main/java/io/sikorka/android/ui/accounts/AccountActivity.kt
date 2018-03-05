@@ -16,8 +16,8 @@ import io.sikorka.android.ui.MenuTint
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_export.AccountExportActivity
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
-import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
+import kotterknife.bindView
 import timber.log.Timber
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -25,8 +25,8 @@ import javax.inject.Inject
 
 
 class AccountActivity : BaseActivity(), AccountView {
-  private val accountsRecycler: RecyclerView by bind(R.id.accounts__recycler_view)
-  private val createAccount: FloatingActionButton by bind(R.id.accounts__create_account)
+  private val accountsRecycler: RecyclerView by bindView(R.id.accounts__recycler_view)
+  private val createAccount: FloatingActionButton by bindView(R.id.accounts__create_account)
 
   @Inject
   lateinit var presenter: AccountPresenter

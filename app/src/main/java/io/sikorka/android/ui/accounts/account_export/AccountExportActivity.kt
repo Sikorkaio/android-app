@@ -16,9 +16,9 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY
 import io.sikorka.android.ui.accounts.account_export.AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT
-import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.selectDirectory
 import io.sikorka.android.ui.value
+import kotterknife.bindView
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import java.io.File
@@ -28,19 +28,13 @@ class AccountExportActivity : BaseActivity(),
   AccountExportView,
   FolderChooserDialog.FolderCallback {
 
-  private val accountHex: TextView by bind(R.id.account_export__account_hex)
-
-  private val exportPathInput: TextInputLayout by bind(R.id.account_export__path_input)
-
-  private val accountPassphrase: TextInputLayout by bind(R.id.account_export__passphrase)
-
-  private val encryptionPassphrase: TextInputLayout by bind(R.id.account_export__encryption_passphrase)
-
-  private val encryptionPassphraseConfirmation: TextInputLayout by bind(R.id.account_export__encryption_passphrase_confirmation)
-
-  private val accountExportFab: FloatingActionButton by bind(R.id.account_export__export_fab)
-
-  private val selectDirectoryButton: ImageButton by bind(R.id.account_export__select_directory)
+  private val accountHex: TextView by bindView(R.id.account_export__account_hex)
+  private val exportPathInput: TextInputLayout by bindView(R.id.account_export__path_input)
+  private val accountPassphrase: TextInputLayout by bindView(R.id.account_export__passphrase)
+  private val encryptionPassphrase: TextInputLayout by bindView(R.id.account_export__encryption_passphrase)
+  private val encryptionPassphraseConfirmation: TextInputLayout by bindView(R.id.account_export__encryption_passphrase_confirmation)
+  private val accountExportFab: FloatingActionButton by bindView(R.id.account_export__export_fab)
+  private val selectDirectoryButton: ImageButton by bindView(R.id.account_export__select_directory)
 
   private val account: String
     get() = accountHex.value()
@@ -75,7 +69,7 @@ class AccountExportActivity : BaseActivity(),
     finish()
   }
 
-  override fun showError(code: Long) {
+  override fun showError(code: Int) {
     clearErrors()
 
     when (code) {
@@ -99,7 +93,6 @@ class AccountExportActivity : BaseActivity(),
         fail("Was not expecting $code")
       }
     }
-
   }
 
   override fun onFolderSelection(dialog: FolderChooserDialog, folder: File) {

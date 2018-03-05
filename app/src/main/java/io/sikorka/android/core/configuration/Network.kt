@@ -9,9 +9,9 @@ object Network {
   const val RINKEBY = 3
 
   @IntDef(
-    MAIN_NET.toLong(),
-    ROPSTEN.toLong(),
-    RINKEBY.toLong()
+    MAIN_NET,
+    ROPSTEN,
+    RINKEBY
   )
   @Retention(AnnotationRetention.SOURCE)
   annotation class Selection

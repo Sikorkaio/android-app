@@ -5,7 +5,7 @@ import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
 
 interface AccountCreationDialogView : BaseView {
-  fun showError(@ValidationResult.Code code: Long)
+  fun showError(@ValidationResult.Code code: Int)
   fun complete()
 }
 

@@ -5,21 +5,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.sikorka.android.R
 import io.sikorka.android.core.accounts.AccountsModel
-import io.sikorka.android.helpers.fail
 import javax.inject.Inject
 
 class AccountAdapter
 @Inject
 constructor(
-    private val accountAdapterPresenter: AccountAdapterPresenter
+  private val accountAdapterPresenter: AccountAdapterPresenter
 ) : RecyclerView.Adapter<AccountViewHolder>() {
 
   private var onDelete: AccountAction? = null
   private var onExport: AccountAction? = null
   private var onSetDefault: AccountAction? = null
 
-  override fun onBindViewHolder(holder: AccountViewHolder?, position: Int) {
-    holder?.let {
+  override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
+    holder.let {
       it.onExport = onExport
       it.onDelete = onDelete
       it.onSetDefault = onSetDefault
@@ -27,8 +26,8 @@ constructor(
     }
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AccountViewHolder {
-    val inflater = LayoutInflater.from(parent?.context ?: fail("null context"))
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
+    val inflater = LayoutInflater.from(parent.context)
     val view = inflater.inflate(R.layout.item__account, parent, false)
     return AccountViewHolder(view, accountAdapterPresenter)
   }
@@ -41,9 +40,9 @@ constructor(
   }
 
   fun setAccountActionListeners(
-      onDelete: AccountAction? = null,
-      onExport: AccountAction? = null,
-      onSetDefault: AccountAction? = null
+    onDelete: AccountAction? = null,
+    onExport: AccountAction? = null,
+    onSetDefault: AccountAction? = null
   ) {
     this.onDelete = onDelete
     this.onExport = onExport

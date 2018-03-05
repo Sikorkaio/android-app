@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class PassphraseValidatorImpl
 @Inject constructor() : PassphraseValidator {
-  override fun validate(passphrase: String, passphraseConfirmation: String): Long = when {
+  override fun validate(passphrase: String, passphraseConfirmation: String): Int = when {
     passphrase.isBlank() -> ValidationResult.EMPTY_PASSPHRASE
     passphrase.length < PASSWORD_MIN_LENGTH && !BuildConfig.DEBUG -> ValidationResult.PASSWORD_SHORT
     passphrase != passphraseConfirmation -> ValidationResult.CONFIRMATION_MISMATCH

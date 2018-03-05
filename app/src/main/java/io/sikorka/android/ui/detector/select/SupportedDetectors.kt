@@ -7,7 +7,7 @@ object SupportedDetectors {
   const val MANUAL = 3
   const val QR_CODE = 2
 
-  @IntDef(BLUETOOTH.toLong(), MANUAL.toLong(), QR_CODE.toLong())
+  @IntDef(BLUETOOTH, MANUAL, QR_CODE)
   @Retention(AnnotationRetention.SOURCE)
   annotation class Detector
 }

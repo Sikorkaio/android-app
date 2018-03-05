@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TextInputLayout
-import android.view.MenuItem
 import android.widget.ImageButton
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog
 import io.sikorka.android.R
@@ -13,10 +12,10 @@ import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
 import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.accounts.account_import.AccountImportCodes.FAILED_TO_UNLOCK
-import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.selectFile
 import io.sikorka.android.ui.setValue
 import io.sikorka.android.ui.value
+import kotterknife.bindView
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieActivityModule
@@ -27,12 +26,12 @@ class AccountImportActivity : BaseActivity(),
   AccountImportView,
   FileChooserDialog.FileCallback {
 
-  private val filePassphraseInput: TextInputLayout by bind(R.id.account_import__file_passphrase)
-  private val accountPassphraseInput: TextInputLayout by bind(R.id.account_import__account_passphrase)
-  private val accountPassphraseConfirmationInput: TextInputLayout by bind(R.id.account_import__account_passphrase_confirmation)
-  private val filePathInput: TextInputLayout by bind(R.id.account_import__file_path)
-  private val importAction: FloatingActionButton by bind(R.id.account_import__import_action)
-  private val selectFileButton: ImageButton by bind(R.id.account_import__select_file_button)
+  private val filePassphraseInput: TextInputLayout by bindView(R.id.account_import__file_passphrase)
+  private val accountPassphraseInput: TextInputLayout by bindView(R.id.account_import__account_passphrase)
+  private val accountPassphraseConfirmationInput: TextInputLayout by bindView(R.id.account_import__account_passphrase_confirmation)
+  private val filePathInput: TextInputLayout by bindView(R.id.account_import__file_path)
+  private val importAction: FloatingActionButton by bindView(R.id.account_import__import_action)
+  private val selectFileButton: ImageButton by bindView(R.id.account_import__select_file_button)
 
   private val filePassphrase: String
     get() = filePassphraseInput.value()
@@ -59,7 +58,7 @@ class AccountImportActivity : BaseActivity(),
     filePathInput.setValue(file.absolutePath)
   }
 
-  override fun showError(code: Long) {
+  override fun showError(code: Int) {
     accountPassphraseConfirmationInput.error = null
     accountPassphraseInput.error = null
     filePassphraseInput.error = null
