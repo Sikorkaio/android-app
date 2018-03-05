@@ -4,7 +4,7 @@ import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
 
 interface AccountImportView : BaseView {
-  fun showError(code: Long)
+  fun showError(code: Int)
   fun importSuccess()
 
 }

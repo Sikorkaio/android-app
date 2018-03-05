@@ -56,7 +56,7 @@ class AccountExportPresenterImpl
         if (it is InvalidPassphraseException) {
           attachedView().showError(AccountExportCodes.INVALID_PASSPHRASE)
         } else {
-          attachedView().showError(92L)
+          attachedView().showError(92)
         }
       }
   }

@@ -63,7 +63,7 @@ kotlin {
 }
 
 ext.versions = [
-    support_library_version: '27.0.2',
+    support_library_version: '27.1.0',
     play_services_version  : '11.8.0',
     room_version           : '1.0.0'
 ]
@@ -84,7 +84,7 @@ dependencies {
   implementation "com.android.support:preference-v7:${versions.support_library_version}"
   implementation "com.android.support:preference-v14:${versions.support_library_version}"
 
-  implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
+  implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta5'
 
   implementation 'org.ethereum:geth:1.8.2'
 
@@ -119,7 +119,7 @@ dependencies {
   kapt "android.arch.persistence.room:compiler:${versions.room_version}"
   implementation "android.arch.persistence.room:rxjava2:${versions.room_version}"
 
-  implementation "android.arch.paging:runtime:1.0.0-alpha4-1"
+  implementation "android.arch.paging:runtime:1.0.0-alpha6"
 
   implementation "android.arch.lifecycle:extensions:1.1.0"
 

@@ -80,7 +80,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
     presenter.attach(this)
   }
 
-  override fun showError(@Code code: Long) {
+  override fun showError(@Code code: Int) {
     clearErrors()
     when (code) {
       ValidationResult.CONFIRMATION_MISMATCH -> {

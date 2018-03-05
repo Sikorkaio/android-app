@@ -7,15 +7,15 @@ import android.support.annotation.IntDef
 
 @Entity(tableName = "pending_transactions")
 data class PendingTransaction(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
-    @ColumnInfo(name = "transaction_hash")
-    var txHash: String,
-    @ColumnInfo(name = "date_added")
-    var dateAdded: Long,
-    @TransactionStatus.Status
-    @ColumnInfo(name = "transaction_status")
-    var status: Int = TransactionStatus.PENDING
+  @PrimaryKey(autoGenerate = true)
+  var id: Int = 0,
+  @ColumnInfo(name = "transaction_hash")
+  var txHash: String,
+  @ColumnInfo(name = "date_added")
+  var dateAdded: Long,
+  @TransactionStatus.Status
+  @ColumnInfo(name = "transaction_status")
+  var status: Int = TransactionStatus.PENDING
 )
 
 object TransactionStatus {
@@ -24,9 +24,9 @@ object TransactionStatus {
   const val SUCCESS = 1
 
   @IntDef(
-      PENDING.toLong(),
-      FAILED.toLong(),
-      SUCCESS.toLong()
+    PENDING,
+    FAILED,
+    SUCCESS
   )
   annotation class Status
 }

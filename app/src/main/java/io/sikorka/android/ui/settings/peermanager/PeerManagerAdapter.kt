@@ -15,7 +15,7 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     notifyDataSetChanged()
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PeerManagerViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeerManagerViewHolder {
     return PeerManagerViewHolder.create(checkNotNull(parent)).apply {
       setOnEntrySelected { position, selected ->
         if (selected) {
@@ -27,8 +27,8 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     }
   }
 
-  override fun onBindViewHolder(holder: PeerManagerViewHolder?, position: Int) {
-    holder?.run {
+  override fun onBindViewHolder(holder: PeerManagerViewHolder, position: Int) {
+    holder.run {
       bindTo(getItem(position))
       selectionMode(selectionMode)
       setChecked(selection.contains(position))
@@ -41,7 +41,6 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     }
     notifyDataSetChanged()
   }
-
 
 
   fun selectNode() {

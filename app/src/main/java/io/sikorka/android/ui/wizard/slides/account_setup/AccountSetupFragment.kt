@@ -1,6 +1,5 @@
 package io.sikorka.android.ui.wizard.slides.account_setup
 
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -11,9 +10,9 @@ import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.accounts.account_creation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.account_import.AccountImportActivity
-import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.isVisible
 import io.sikorka.android.ui.show
+import kotterknife.bindView
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -25,11 +24,9 @@ import javax.inject.Inject
  */
 class AccountSetupFragment : Fragment(), AccountSetupView {
 
-  private val accountAddress: TextView by bind(R.id.account_setup__account_address)
-
-  private val createNew: TextView by bind(R.id.account_setup__create_new)
-
-  private val importAccount: TextView by bind(R.id.account_setup__import_account)
+  private val accountAddress: TextView by bindView(R.id.account_setup__account_address)
+  private val createNew: TextView by bindView(R.id.account_setup__create_new)
+  private val importAccount: TextView by bindView(R.id.account_setup__import_account)
 
   @Inject
   lateinit var presenter: AccountSetupPresenter
@@ -60,8 +57,10 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
     Toothpick.closeScope(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     // Inflate the layout for this fragment
     return inflater.inflate(R.layout.fragment__account_setup, container, false)
   }

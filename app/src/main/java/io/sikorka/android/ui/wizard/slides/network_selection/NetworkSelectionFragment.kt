@@ -14,8 +14,8 @@ import android.widget.TextView
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.Network
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.showShortSnack
+import kotterknife.bindView
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -27,18 +27,15 @@ import javax.inject.Inject
  */
 class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
 
-  private val ropstenSelection: TextView by bind(R.id.network_selection__ropsten)
-
-  private val mainnetSelection: TextView by bind(R.id.network_selection__mainnet)
-
-  private val rinkebySelection: TextView by bind(R.id.network_selection__rinkeby)
+  private val ropstenSelection: TextView by bindView(R.id.network_selection__ropsten)
+  private val mainnetSelection: TextView by bindView(R.id.network_selection__mainnet)
+  private val rinkebySelection: TextView by bindView(R.id.network_selection__rinkeby)
 
   @Inject
   lateinit var presenter: NetworkSelectionPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    val context = context ?: fail("context was null")
-    val scope = Toothpick.openScopes(context.applicationContext, this)
+    val scope = Toothpick.openScopes(requireContext().applicationContext, this)
     scope.installModules(NetworkSelectionModule())
     Toothpick.inject(this, scope)
     super.onCreate(savedInstanceState)

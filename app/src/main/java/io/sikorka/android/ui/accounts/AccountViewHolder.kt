@@ -9,36 +9,36 @@ import android.widget.TextView
 import io.sikorka.android.R
 import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BaseViewHolder
-import io.sikorka.android.ui.bind
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.show
+import kotterknife.bindView
 
 class AccountViewHolder(
-    itemView: View,
-    private val presenter: AccountAdapterPresenter
+  itemView: View,
+  private val presenter: AccountAdapterPresenter
 ) : BaseViewHolder<Account>(itemView), PopupMenu.OnMenuItemClickListener {
 
   var onDelete: AccountAction? = null
   var onExport: AccountAction? = null
   var onSetDefault: AccountAction? = null
 
-  private val accountAddress: TextView by itemView.bind(R.id.account_address)
-
-  private val defaultIndicator: ImageView by itemView.bind(R.id.account_management__account_default)
-
-  private val actionsButton: ImageButton by itemView.bind(R.id.account_management__more_actions)
+  private val accountAddress: TextView by bindView(R.id.account_address)
+  private val defaultIndicator: ImageView by bindView(R.id.account_management__account_default)
+  private val actionsButton: ImageButton by bindView(R.id.account_management__more_actions)
 
   private fun onDelete() {
     if (presenter.size() == 1) {
-      itemView.context.showInfo(R.string.account__delete_account_dialog_title,
-          R.string.account_management__delete_last_account_content)
+      itemView.context.showInfo(
+        R.string.account__delete_account_dialog_title,
+        R.string.account_management__delete_last_account_content
+      )
       return
     }
     itemView.context.showConfirmation(
-        R.string.account__delete_account_dialog_title,
-        R.string.account__delete_account_dialog_content
+      R.string.account__delete_account_dialog_title,
+      R.string.account__delete_account_dialog_content
     ) {
       onDelete?.invoke(presenter.item(adapterPosition))
     }

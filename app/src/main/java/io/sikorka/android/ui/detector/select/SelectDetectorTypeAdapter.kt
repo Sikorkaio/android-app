@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import io.sikorka.android.R
-import io.sikorka.android.ui.bind
+import io.sikorka.android.ui.BindingViewHolder
+import kotterknife.bindView
 
 class SelectDetectorTypeAdapter(
-    context: Context,
-    private val detectors: List<SupportedDetector>
+  context: Context,
+  private val detectors: List<SupportedDetector>
 ) : RecyclerView.Adapter<SelectDetectorTypeAdapter.SelectDetectorViewHolder>() {
 
   private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -20,13 +21,11 @@ class SelectDetectorTypeAdapter(
 
   override fun getItemCount(): Int = detectors.size
 
-  override fun onBindViewHolder(holder: SelectDetectorViewHolder?, position: Int) {
-    holder?.let {
-      it.update(detectors[it.adapterPosition])
-    }
+  override fun onBindViewHolder(holder: SelectDetectorViewHolder, position: Int) {
+    holder.bindTo(detectors[position])
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): SelectDetectorViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectDetectorViewHolder {
     val view = inflater.inflate(R.layout.item__detector_type, parent, false)
     val holder = SelectDetectorViewHolder(view)
     holder.onSelection { onSelection?.invoke(detectors[it].id) }
@@ -37,15 +36,14 @@ class SelectDetectorTypeAdapter(
     this.onSelection = onSelection
   }
 
-  class SelectDetectorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+  class SelectDetectorViewHolder(itemView: View) : BindingViewHolder<SupportedDetector>(itemView) {
 
-    private val icon: ImageView by itemView.bind(R.id.detector_type__type_icon)
+    private val icon: ImageView by bindView(R.id.detector_type__type_icon)
+    private val name: TextView by bindView(R.id.detector_type__type_name)
 
-    private val name: TextView by itemView.bind(R.id.detector_type__type_name)
-
-    fun update(supportedDetector: SupportedDetector) {
-      icon.setImageResource(supportedDetector.icon)
-      name.setText(supportedDetector.title)
+    override fun bindTo(item: SupportedDetector) {
+      icon.setImageResource(item.icon)
+      name.setText(item.title)
     }
 
     fun onSelection(onSelection: (adapterPosition: Int) -> Unit) {
