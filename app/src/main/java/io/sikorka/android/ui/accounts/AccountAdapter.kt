@@ -48,5 +48,4 @@ constructor(
     this.onExport = onExport
     this.onSetDefault = onSetDefault
   }
-
 }

@@ -13,7 +13,6 @@ interface AccountPresenter : Presenter<AccountView> {
 
   fun deleteAccount(account: Account, passphrase: String)
   fun setDefault(account: Account)
-
 }
 
 interface AccountView : BaseView {

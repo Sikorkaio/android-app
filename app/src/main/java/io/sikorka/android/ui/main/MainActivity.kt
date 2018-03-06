@@ -20,12 +20,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.view.isVisible
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
@@ -42,35 +47,40 @@ import io.sikorka.android.ui.contracts.pending.PendingContractsActivity
 import io.sikorka.android.ui.detector.select.SelectDetectorTypeActivity
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.useDetector
-import io.sikorka.android.ui.hide
 import io.sikorka.android.ui.progressSnack
 import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.SettingsActivity
-import io.sikorka.android.ui.show
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
-import kotlinx.android.synthetic.main.activity__main.*
-import kotlinx.android.synthetic.main.app_bar__main.*
-import kotlinx.android.synthetic.main.content__main.*
-import kotlinx.android.synthetic.main.nav_header__main.*
+import kotlinx.android.synthetic.main.activity__main.drawer_layout
+import kotlinx.android.synthetic.main.activity__main.main__nav_debug_randomize
+import kotlinx.android.synthetic.main.activity__main.main__nav_exit
+import kotlinx.android.synthetic.main.activity__main.main__nav_network_statistics
+import kotlinx.android.synthetic.main.activity__main.main__nav_view
+import kotlinx.android.synthetic.main.app_bar__main.main__deploy_fab
+import kotlinx.android.synthetic.main.app_bar__main.toolbar
+import kotlinx.android.synthetic.main.content__main.main__empty_text
+import kotlinx.android.synthetic.main.content__main.main__map
+import kotlinx.android.synthetic.main.nav_header__main.main__header_account
 import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import java.text.NumberFormat
-import java.util.*
+import java.util.ArrayList
+import java.util.Random
 import javax.inject.Inject
 
-
 class MainActivity : AppCompatActivity(),
-    MainView,
-    OnMapReadyCallback,
-    NavigationView.OnNavigationItemSelectedListener {
+  MainView,
+  OnMapReadyCallback,
+  NavigationView.OnNavigationItemSelectedListener {
 
   @Inject
   lateinit var presenter: MainPresenter
 
   override fun notifyTransactionMined(txHash: String, success: Boolean) {
-    val message = "Your transaction has been mined. 100 Sikorka example discount tokens have been transferred to your account"
+    val message = "Your transaction has been mined. " +
+      "100 Sikorka example discount tokens have been transferred to your account"
     Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
   }
 
@@ -119,11 +129,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     val toggle = ActionBarDrawerToggle(
-        this,
-        drawer_layout,
-        toolbar,
-        R.string.navigation_drawer_open,
-        R.string.navigation_drawer_close
+      this,
+      drawer_layout,
+      toolbar,
+      R.string.navigation_drawer_open,
+      R.string.navigation_drawer_close
     )
     drawer_layout.addDrawerListener(toggle)
     toggle.syncState()
@@ -148,7 +158,7 @@ class MainActivity : AppCompatActivity(),
     main__nav_network_statistics.setText(R.string.main__no_peers_available)
 
     if (BuildConfig.DEBUG) {
-      main__nav_debug_randomize.show()
+      main__nav_debug_randomize.isVisible = true
       main__nav_debug_randomize.isChecked = debugPreferences.isLocationRandomizationEnabled()
       main__nav_debug_randomize.setOnCheckedChangeListener { _, enabled ->
         debugPreferences.setLocationRandomiztion(enabled)
@@ -163,37 +173,37 @@ class MainActivity : AppCompatActivity(),
   @SuppressLint("MissingPermission")
   private fun getLocation() {
     LocationServices.getFusedLocationProviderClient(this)
-        .lastLocation
-        .addOnCompleteListener(this, {
-          if (!it.isSuccessful) {
-            return@addOnCompleteListener
-          }
-          val map = map ?: return@addOnCompleteListener
-          val location = it.result ?: return@addOnCompleteListener
+      .lastLocation
+      .addOnCompleteListener(this, {
+        if (!it.isSuccessful) {
+          return@addOnCompleteListener
+        }
+        val map = map ?: return@addOnCompleteListener
+        val location = it.result ?: return@addOnCompleteListener
 
-          if (BuildConfig.DEBUG && debugPreferences.isLocationRandomizationEnabled()) {
-            val random = Random()
-            val longAdd = random.nextBoolean()
-            val latAdd = random.nextBoolean()
-            val latAdj = random.nextInt(10)
-            val longAdj = random.nextInt(10)
+        if (BuildConfig.DEBUG && debugPreferences.isLocationRandomizationEnabled()) {
+          val random = Random()
+          val longAdd = random.nextBoolean()
+          val latAdd = random.nextBoolean()
+          val latAdj = random.nextInt(10)
+          val longAdj = random.nextInt(10)
 
-            fun Double.randomize(boolean: Boolean, adjust: Int): Double {
-              val extra = adjust / 100.0
-              return if (boolean) this + extra else this - extra
-            }
-
-            longitude = location.longitude.randomize(longAdd, longAdj)
-            latitude = location.latitude.randomize(latAdd, latAdj)
-          } else {
-            longitude = location.longitude
-            latitude = location.latitude
+          fun Double.randomize(boolean: Boolean, adjust: Int): Double {
+            val extra = adjust / 100.0
+            return if (boolean) this + extra else this - extra
           }
 
-          presenter.userLocation(UserLocation.set(latitude, longitude))
+          longitude = location.longitude.randomize(longAdd, longAdj)
+          latitude = location.latitude.randomize(latAdd, latAdj)
+        } else {
+          longitude = location.longitude
+          latitude = location.latitude
+        }
 
-          updateMyMarker(latitude, longitude, map)
-        })
+        presenter.userLocation(UserLocation.set(latitude, longitude))
+
+        updateMyMarker(latitude, longitude, map)
+      })
   }
 
   override fun onStart() {
@@ -214,9 +224,9 @@ class MainActivity : AppCompatActivity(),
 
     data.forEach {
       val markerOptions = MarkerOptions()
-          .position(LatLng(it.latitude, it.longitude))
-          .title(it.name)
-          .icon(icon)
+        .position(LatLng(it.latitude, it.longitude))
+        .title(it.name)
+        .icon(icon)
 
       val marker = googleMap.addMarker(markerOptions)
       marker.tag = it
@@ -228,10 +238,10 @@ class MainActivity : AppCompatActivity(),
     onSyncStatus(status.syncing)
     val statusMessage = if (status.syncing) {
       getString(
-          R.string.main_nav__network_statistics,
-          status.peers,
-          status.currentBlock,
-          status.highestBlock
+        R.string.main_nav__network_statistics,
+        status.peers,
+        status.currentBlock,
+        status.highestBlock
       )
     } else {
       getString(R.string.main_nav__no_syncing)
@@ -240,15 +250,9 @@ class MainActivity : AppCompatActivity(),
   }
 
   private fun onSyncStatus(syncing: Boolean) {
-    if (syncing) {
-      main__map.view?.show()
-      main__empty_text.hide()
-      main__deploy_fab.show()
-    } else {
-      main__map.view?.hide()
-      main__empty_text.show()
-      main__deploy_fab.hide()
-    }
+    main__map.view?.isVisible = syncing
+    main__empty_text.isVisible = !syncing
+    main__deploy_fab.isVisible = syncing
   }
 
   override fun updateAccountInfo(model: AccountModel, preferredBalancePrecision: Int) {
@@ -282,11 +286,11 @@ class MainActivity : AppCompatActivity(),
     val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
     val position = CameraPosition.builder()
-        .target(me)
-        .zoom(16f)
-        .bearing(0.0f)
-        .tilt(0.0f)
-        .build()
+      .target(me)
+      .zoom(16f)
+      .bearing(0.0f)
+      .tilt(0.0f)
+      .build()
 
     map.run {
       animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
@@ -295,43 +299,40 @@ class MainActivity : AppCompatActivity(),
     }
   }
 
-
   private fun startLocationPermissionRequest() {
     ActivityCompat.requestPermissions(this@MainActivity,
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        REQUEST_PERMISSIONS_REQUEST_CODE)
+      arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+      REQUEST_PERMISSIONS_REQUEST_CODE)
   }
 
   private fun startWritePermissionRequest() {
     ActivityCompat.requestPermissions(this@MainActivity,
-        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-        REQUEST_PERMISSIONS_REQUEST_CODE)
+      arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+      REQUEST_PERMISSIONS_REQUEST_CODE)
   }
 
   private fun checkPermissions(): Boolean {
     val permissionState = ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_FINE_LOCATION
+      this,
+      Manifest.permission.ACCESS_FINE_LOCATION
     )
     return permissionState == PackageManager.PERMISSION_GRANTED
   }
 
   private fun checkWritePermissions(): Boolean {
     val permissionState = ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
+      this,
+      Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     return permissionState == PackageManager.PERMISSION_GRANTED
   }
-
 
   override fun onDestroy() {
     presenter.detach()
     Toothpick.closeScope(this)
     super.onDestroy()
   }
-
 
   override fun onBackPressed() {
     if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -344,14 +345,16 @@ class MainActivity : AppCompatActivity(),
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     // Inflate the menu; this adds items to the action bar if it is present.
     menuInflater.inflate(R.menu.main, menu)
-    MenuTint.on(menu).setMenuItemIconColor(ContextCompat.getColor(this, R.color.white)).apply(this)
+    MenuTint.on(menu)
+      .setMenuItemIconColor(ContextCompat.getColor(this, R.color.white))
+      .apply(this)
     return true
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     // Handle action bar item clicks here. The action bar will
     // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
+    // as you addressSpecificationDialog a parent activity in AndroidManifest.xml.
     return when (item.itemId) {
       R.id.action_settings -> {
         SettingsActivity.start(this)
@@ -387,21 +390,19 @@ class MainActivity : AppCompatActivity(),
       val contract = marker.tag as DeployedSikorkaContract? ?: return@setOnInfoWindowClickListener
 
       showConfirmation(
-          R.string.main__contract_intration_dialog_title,
-          R.string.main__contract_intration_dialog_content,
-          contract.name
+        R.string.main__contract_intration_dialog_title,
+        R.string.main__contract_intration_dialog_content,
+        contract.name
       ) {
 
-
         ContractInteractActivity.start(
-            this,
-            contract.name,
-            contract.addressHex,
-            LatLng(latitude, longitude),
-            LatLng(contract.latitude, contract.longitude)
+          this,
+          contract.name,
+          contract.addressHex,
+          LatLng(latitude, longitude),
+          LatLng(contract.latitude, contract.longitude)
         )
       }
-
     }
 
     if (checkPermissions()) {
@@ -417,12 +418,15 @@ class MainActivity : AppCompatActivity(),
   private var progress: Snackbar? = null
 
   override fun loading(loading: Boolean) {
+    main__deploy_fab.isVisible = !loading
+
     if (loading) {
-      main__deploy_fab.hide()
-      progress = main__deploy_fab.progressSnack(R.string.main__loading_message, Snackbar.LENGTH_INDEFINITE)
+      progress = main__deploy_fab.progressSnack(
+        R.string.main__loading_message,
+        Snackbar.LENGTH_INDEFINITE
+      )
       progress?.show()
     } else {
-      main__deploy_fab.show()
       progress?.dismiss()
     }
   }
@@ -435,9 +439,9 @@ class MainActivity : AppCompatActivity(),
 
     model.data.forEach {
       val markerOptions = MarkerOptions()
-          .position(LatLng(it.latitude, it.longitude))
-          .title(it.addressHex)
-          .icon(icon)
+        .position(LatLng(it.latitude, it.longitude))
+        .title(it.addressHex)
+        .icon(icon)
 
       val marker = googleMap.addMarker(markerOptions)
       marker.tag = it

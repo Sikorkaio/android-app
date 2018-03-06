@@ -19,11 +19,11 @@ import javax.inject.Inject
 class DeployedContractMonitor
 @Inject
 constructor(
-    syncStatusProvider: SyncStatusProvider,
-    userLocation: UserLocationProvider,
-    private val lightClientProvider: LightClientProvider,
-    private val deployedSikorkaContractDao: DeployedSikorkaContractDao,
-    private val schedulerProvider: SchedulerProvider
+  syncStatusProvider: SyncStatusProvider,
+  userLocation: UserLocationProvider,
+  private val lightClientProvider: LightClientProvider,
+  private val deployedSikorkaContractDao: DeployedSikorkaContractDao,
+  private val schedulerProvider: SchedulerProvider
 ) : LifecycleMonitor() {
 
   init {
@@ -47,11 +47,11 @@ constructor(
 
   private fun cacheContracts() {
     cache().subscribeOn(schedulerProvider.monitor())
-        .subscribe({
-          Timber.v("done")
-        }) {
-          Timber.e(it, "failed")
-        }
+      .subscribe({
+        Timber.v("done")
+      }) {
+        Timber.e(it, "failed")
+      }
   }
 
   private fun cache(): Completable = Completable.fromAction {
@@ -62,11 +62,11 @@ constructor(
     val lightClient = lightClientProvider.get()
 
     val registry = lightClient.bindContract(
-        SikorkaRegistry.REGISTRY_ADDRESS,
-        SikorkaRegistry.ABI,
-        {
-          SikorkaRegistry(it)
-        })
+      SikorkaRegistry.REGISTRY_ADDRESS,
+      SikorkaRegistry.ABI,
+      {
+        SikorkaRegistry(it)
+      })
 
     val contractAddresses = registry.getContractAddresses()
     val contractCoordinates = registry.getContractCoordinates()
@@ -83,12 +83,16 @@ constructor(
 
       val latitude = BigDecimal(cordLat).divide(modifier)
       val longitude = BigDecimal(cordLong).divide(modifier)
-      val contract = lightClient.bindContract(address.hex, BasicInterface.ABI, { BasicInterface(it) })
+      val contract = lightClient.bindContract(
+        address.hex,
+        BasicInterface.ABI,
+        { BasicInterface(it) }
+      )
       val deployed = DeployedSikorkaContract(
-          name = contract.name(),
-          addressHex = address.hex,
-          latitude = latitude.toDouble(),
-          longitude = longitude.toDouble()
+        name = contract.name(),
+        addressHex = address.hex,
+        latitude = latitude.toDouble(),
+        longitude = longitude.toDouble()
       )
 
       contracts.add(deployed)

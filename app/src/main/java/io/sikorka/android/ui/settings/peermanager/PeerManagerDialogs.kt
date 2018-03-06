@@ -11,7 +11,9 @@ import io.sikorka.android.ui.clearError
 import io.sikorka.android.ui.value
 
 @SuppressLint("InflateParams")
-fun PeerManagerActivity.urlInputDialog(onInput: (url: String, merge: Boolean) -> Unit): AlertDialog {
+fun PeerManagerActivity.urlInputDialog(
+  onInput: (url: String, merge: Boolean) -> Unit
+): AlertDialog {
 
   val inflater = LayoutInflater.from(this)
   val view = inflater.inflate(R.layout.dialog__peer_url, null, false)
@@ -46,7 +48,6 @@ fun PeerManagerActivity.urlInputDialog(onInput: (url: String, merge: Boolean) ->
       onInput(text, mergeCheckBox.isChecked)
       dialogInterface.dismiss()
     }
-
   }
   return dialog
 }

@@ -3,7 +3,6 @@ package io.sikorka.android.ui.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import io.sikorka.android.R
 import io.sikorka.android.ui.BaseActivity
 

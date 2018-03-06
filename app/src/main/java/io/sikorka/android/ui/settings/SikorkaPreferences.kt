@@ -1,6 +1,5 @@
 package io.sikorka.android.ui.settings
 
-
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.preference.Preference
@@ -18,7 +17,6 @@ import io.sikorka.android.ui.settings.peermanager.PeerManagerActivity
 import toothpick.Scope
 import toothpick.Toothpick
 import javax.inject.Inject
-
 
 class SikorkaPreferences : PreferenceFragmentCompat() {
 
@@ -77,7 +75,6 @@ class SikorkaPreferences : PreferenceFragmentCompat() {
         return@setOnPreferenceClickListener true
       }
     }
-
   }
 
   private fun precisionSummary(digits: Int) =

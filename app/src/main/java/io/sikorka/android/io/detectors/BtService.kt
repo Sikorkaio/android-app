@@ -1,6 +1,5 @@
 package io.sikorka.android.io.detectors
 
-
 import android.bluetooth.BluetoothSocket
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
@@ -15,7 +14,6 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 
-
 class BtService(private val socket: BluetoothSocket) {
   private val observable: Observable<String>
 
@@ -28,7 +26,6 @@ class BtService(private val socket: BluetoothSocket) {
       it.cleanup()
     })
   }
-
 
   private fun responses(socket: BluetoothSocket): Observable<out String> {
     return try {
@@ -56,21 +53,21 @@ class BtService(private val socket: BluetoothSocket) {
       Timber.v("Requesting ETH ADDRESS")
       write(ADDRESS_REQUEST)
     }.flatMap { addressHex ->
-      if (addressHex.contains(ADDRESS_REQUEST)) {
-        Observable.create<Address> {
-          val value = addressHex.substringAfter("::")
-          try {
-            val address = Geth.newAddressFromHex(value)
-            it.onNext(address)
-            it.onComplete()
-          } catch (e: Exception) {
-            it.onError(IllegalArgumentException("address {$value}", e))
+        if (addressHex.contains(ADDRESS_REQUEST)) {
+          Observable.create<Address> {
+            val value = addressHex.substringAfter("::")
+            try {
+              val address = Geth.newAddressFromHex(value)
+              it.onNext(address)
+              it.onComplete()
+            } catch (e: Exception) {
+              it.onError(IllegalArgumentException("address {$value}", e))
+            }
           }
+        } else {
+          Observable.error<Address>(IllegalArgumentException("Expected $ADDRESS_REQUEST"))
         }
-      } else {
-        Observable.error<Address>(IllegalArgumentException("Expected $ADDRESS_REQUEST"))
-      }
-    }.firstOrError()
+      }.firstOrError()
   }
 
   private fun write(text: String) {
@@ -79,7 +76,9 @@ class BtService(private val socket: BluetoothSocket) {
     outputStream.write(message)
   }
 
-  private class ProtocolResponseReader(private val bufferedReader: BufferedReader) : ObservableOnSubscribe<String> {
+  private class ProtocolResponseReader(
+    private val bufferedReader: BufferedReader
+  ) : ObservableOnSubscribe<String> {
     override fun subscribe(emitter: ObservableEmitter<String>) {
       try {
         while (true) {
@@ -105,9 +104,7 @@ class BtService(private val socket: BluetoothSocket) {
     }
   }
 
-
   companion object {
     private const val ADDRESS_REQUEST = "ETH_ADDRESS"
   }
-
 }

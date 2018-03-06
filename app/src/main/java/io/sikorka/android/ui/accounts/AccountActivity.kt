@@ -23,7 +23,6 @@ import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
 
-
 class AccountActivity : BaseActivity(), AccountView {
   private val accountsRecycler: RecyclerView by bindView(R.id.accounts__recycler_view)
   private val createAccount: FloatingActionButton by bindView(R.id.accounts__create_account)
@@ -73,11 +72,9 @@ class AccountActivity : BaseActivity(), AccountView {
   }
 
   override fun loading() {
-
   }
 
   override fun showError(message: String) {
-
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -108,4 +105,3 @@ class AccountActivity : BaseActivity(), AccountView {
     }
   }
 }
-

@@ -5,7 +5,7 @@ import io.reactivex.ObservableOnSubscribe
 import timber.log.Timber
 import java.io.BufferedReader
 
-class ProtocolReader(private val reader: BufferedReader): ObservableOnSubscribe<String>{
+class ProtocolReader(private val reader: BufferedReader) : ObservableOnSubscribe<String> {
   override fun subscribe(e: ObservableEmitter<String>) {
     try {
       while (true) {
@@ -16,12 +16,11 @@ class ProtocolReader(private val reader: BufferedReader): ObservableOnSubscribe<
           e.onNext(line)
         }
       }
-    } catch (ex : Exception) {
+    } catch (ex: Exception) {
       if (!e.isDisposed) {
         e.onError(ex)
       }
       Timber.e(ex, "Couldn't read socket")
     }
   }
-
 }

@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
 import io.sikorka.android.core.EtherUnits
 import io.sikorka.android.core.contracts.model.ContractGas
@@ -17,11 +17,12 @@ import io.sikorka.android.core.findUnit
 import io.sikorka.android.core.valueToUnit
 import io.sikorka.android.core.valueToWei
 import io.sikorka.android.helpers.fail
+import io.sikorka.android.ui.coloredSpan
 import toothpick.Toothpick
 
 class GasSelectionDialog : DialogFragment() {
 
-  private var dialog: MaterialDialog? = null
+  private var dialog: AlertDialog? = null
 
   private lateinit var fm: FragmentManager
   private lateinit var gas: ContractGas
@@ -34,7 +35,7 @@ class GasSelectionDialog : DialogFragment() {
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val context = context ?: fail("context was null")
+    val context = requireContext()
     val scope = Toothpick.openScopes(context.applicationContext, this)
     Toothpick.inject(this, scope)
 
@@ -45,27 +46,26 @@ class GasSelectionDialog : DialogFragment() {
     gasLimitInput = view.findViewById(R.id.gas_selection__gas_limit)
     gasLimitUnit = view.findViewById(R.id.gas_selection__gas_limit_currency)
 
+    val builder = AlertDialog.Builder(context)
+      .setTitle(coloredSpan(R.string.gas_selection__dialog_title))
+      .setView(view)
+      .setPositiveButton(coloredSpan(R.string.gas_selection__positive_text), { dialog, _ ->
+        onGasSelected(gas())
+        dialog.dismiss()
+      })
+      .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ ->
+        dialog.dismiss()
+      })
 
-    val builder = MaterialDialog.Builder(context)
-        .title(R.string.gas_selection__dialog_title)
-        .titleColorRes(R.color.colorAccent)
-        .customView(view, false)
-        .positiveText(R.string.gas_selection__positive_text)
-        .negativeText(android.R.string.cancel)
-        .onPositive { dialog, _ ->
-          onGasSelected(gas())
-          dialog.dismiss()
-        }
-        .onNegative { dialog, _ -> dialog.dismiss() }
-
-    val arrayAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, EtherUnits.units)
+    val arrayAdapter =
+      ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, EtherUnits.units)
     gasLimitUnit.adapter = arrayAdapter
     gasPriceUnit.adapter = arrayAdapter
 
     gasLimit = gas.limit
     gasPrice = gas.price
 
-    val dialog = builder.build()
+    val dialog = builder.create()
     this.dialog = dialog
     return dialog
   }
@@ -115,7 +115,11 @@ class GasSelectionDialog : DialogFragment() {
   companion object {
     const val TAG = "io.sikorka.android.ui.gasselectiondialog"
 
-    fun create(fm: FragmentManager, gas: ContractGas, onGasSelected: (gas: ContractGas) -> Unit): GasSelectionDialog {
+    fun create(
+      fm: FragmentManager,
+      gas: ContractGas,
+      onGasSelected: (gas: ContractGas) -> Unit
+    ): GasSelectionDialog {
       val dialog = GasSelectionDialog()
       dialog.fm = fm
       dialog.gas = gas

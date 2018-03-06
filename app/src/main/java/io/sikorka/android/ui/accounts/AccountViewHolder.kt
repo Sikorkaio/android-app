@@ -46,7 +46,6 @@ class AccountViewHolder(
 
   private fun onSetDefault() {
     if (presenter.isDefault(adapterPosition)) {
-
     } else {
       onSetDefault?.invoke(presenter.item(adapterPosition))
     }

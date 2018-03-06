@@ -9,7 +9,6 @@ import android.view.MenuItem
 import io.sikorka.android.R
 import kotterknife.bindView
 
-
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity() {
   protected val toolbar: Toolbar by bindView(R.id.toolbar)

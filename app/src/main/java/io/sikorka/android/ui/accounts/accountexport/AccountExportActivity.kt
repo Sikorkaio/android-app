@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
 import android.widget.ImageButton
 import android.widget.TextView
-import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import io.sikorka.android.R
 import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
 import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
@@ -16,7 +15,6 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.accounts.accountexport.AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY
 import io.sikorka.android.ui.accounts.accountexport.AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT
-import io.sikorka.android.ui.dialogs.selectDirectory
 import io.sikorka.android.ui.value
 import kotterknife.bindView
 import toothpick.Toothpick
@@ -25,31 +23,19 @@ import java.io.File
 import javax.inject.Inject
 
 class AccountExportActivity : BaseActivity(),
-  AccountExportView,
-  FolderChooserDialog.FolderCallback {
+  AccountExportView {
 
-  private val accountHex: TextView by bindView(R.id.account_export__account_hex)
-  private val exportPathInput: TextInputLayout by bindView(R.id.account_export__path_input)
+  private val account: TextView by bindView(R.id.account_export__account_hex)
+  private val path: TextInputLayout by bindView(R.id.account_export__path_input)
   private val accountPassphrase: TextInputLayout by bindView(R.id.account_export__passphrase)
-  private val encryptionPassphrase: TextInputLayout by bindView(R.id.account_export__encryption_passphrase)
-  private val encryptionPassphraseConfirmation: TextInputLayout by bindView(R.id.account_export__encryption_passphrase_confirmation)
   private val accountExportFab: FloatingActionButton by bindView(R.id.account_export__export_fab)
   private val selectDirectoryButton: ImageButton by bindView(R.id.account_export__select_directory)
-
-  private val account: String
-    get() = accountHex.value()
-
-  private val passphrase: String
-    get() = accountPassphrase.value()
-
-  private val encryptionPass: String
-    get() = encryptionPassphrase.value()
-
-  private val encryptionPassConfirmation: String
-    get() = encryptionPassphraseConfirmation.value()
-
-  private val exportPath: String
-    get() = exportPathInput.value()
+  private val filePassphrase: TextInputLayout by bindView(
+    R.id.account_export__encryption_passphrase
+  )
+  private val filePassphraseConfirm: TextInputLayout by bindView(
+    R.id.account_export__encryption_passphrase_confirmation
+  )
 
   private val hex: String
     get() = intent?.getStringExtra(ACCOUNT_HEX) ?: ""
@@ -58,14 +44,14 @@ class AccountExportActivity : BaseActivity(),
   lateinit var presenter: AccountExportPresenter
 
   private fun clearErrors() {
-    exportPathInput.error = null
+    path.error = null
     accountPassphrase.error = null
-    encryptionPassphrase.error = null
-    encryptionPassphraseConfirmation.error = null
+    filePassphrase.error = null
+    filePassphraseConfirm.error = null
   }
 
   override fun exportComplete() {
-    Snackbar.make(accountHex, R.string.account_export__export_complete, Snackbar.LENGTH_SHORT)
+    Snackbar.make(account, R.string.account_export__export_complete, Snackbar.LENGTH_SHORT)
     finish()
   }
 
@@ -74,20 +60,24 @@ class AccountExportActivity : BaseActivity(),
 
     when (code) {
       CONFIRMATION_MISMATCH -> {
-        encryptionPassphraseConfirmation.error =
-            getString(R.string.account_export__confirmation_missmatch)
+        val errorMessage = getString(R.string.account_export__confirmation_missmatch)
+        filePassphraseConfirm.error = errorMessage
       }
       EMPTY_PASSPHRASE -> {
-        encryptionPassphrase.error = getString(R.string.account_export__encryption_passphrase_empty)
+        val errorMessage = getString(R.string.account_export__encryption_passphrase_empty)
+        filePassphrase.error = errorMessage
       }
       FAILED_TO_UNLOCK_ACCOUNT -> {
-        accountPassphrase.error = getString(R.string.account_export__failed_to_unlock)
+        val errorMessage = getString(R.string.account_export__failed_to_unlock)
+        accountPassphrase.error = errorMessage
       }
       ACCOUNT_PASSPHRASE_EMPTY -> {
-        accountPassphrase.error = getString(R.string.account_export__passphrase_empty)
+        val errorMessage = getString(R.string.account_export__passphrase_empty)
+        accountPassphrase.error = errorMessage
       }
       AccountExportCodes.INVALID_PASSPHRASE -> {
-        accountPassphrase.error = getString(R.string.account_export__invalid_passphrase)
+        val errorMessage = getString(R.string.account_export__invalid_passphrase)
+        accountPassphrase.error = errorMessage
       }
       else -> {
         fail("Was not expecting $code")
@@ -95,12 +85,8 @@ class AccountExportActivity : BaseActivity(),
     }
   }
 
-  override fun onFolderSelection(dialog: FolderChooserDialog, folder: File) {
-    exportPathInput.editText?.setText(folder.absolutePath)
-  }
-
-  override fun onFolderChooserDismissed(dialog: FolderChooserDialog) {
-    // do nothing?
+  fun onFolderSelection(folder: File) {
+    path.editText?.setText(folder.absolutePath)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,12 +99,20 @@ class AccountExportActivity : BaseActivity(),
     setupToolbar(R.string.account_export__export_account_title)
 
     accountExportFab.setOnClickListener {
-      presenter.export(account, passphrase, encryptionPass, encryptionPassConfirmation, exportPath)
+      presenter.export(
+        account.value(),
+        accountPassphrase.value(),
+        filePassphrase.value(),
+        filePassphraseConfirm.value(),
+        path.value()
+      )
     }
 
-    selectDirectoryButton.setOnClickListener { selectDirectory() }
+    selectDirectoryButton.setOnClickListener {
+      //selectDirectory()
+    }
     presenter.attach(this)
-    accountHex.text = hex
+    account.text = hex
   }
 
   override fun onDestroy() {

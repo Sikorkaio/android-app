@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 
-
 fun File.copyToDirectory(targetLocation: File) {
 
   if (isDirectory) {
@@ -63,7 +62,6 @@ fun InputStream.copyToFile(file: File) {
   bufferedSink.close()
   this.close()
 }
-
 
 fun ByteArray.toFile(file: File) {
   val sink = Okio.sink(file)

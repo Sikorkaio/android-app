@@ -68,7 +68,6 @@ class PendingContractsActivity : BaseActivity(), PendingContractsView {
     Snackbar.make(pending_contracts__contract_list, message, Snackbar.LENGTH_SHORT).show()
   }
 
-
   @javax.inject.Scope
   @Target(AnnotationTarget.CLASS)
   @Retention(AnnotationRetention.RUNTIME)

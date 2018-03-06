@@ -44,6 +44,7 @@ open class BasePresenter<T : BaseView> : Presenter<T>, LifecycleOwner {
   protected class ViewNotAttachedException : RuntimeException(PRESENTER_NOT_ATTACHED)
 
   companion object {
-    private const val PRESENTER_NOT_ATTACHED = "Please call Presenter.attach(BaseView) before calling a method on the presenter"
+    private const val PRESENTER_NOT_ATTACHED = "Please call Presenter.attach(BaseView) " +
+      "before calling a method on the presenter"
   }
 }

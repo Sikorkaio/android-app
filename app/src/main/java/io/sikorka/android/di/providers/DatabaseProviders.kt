@@ -6,7 +6,6 @@ import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.data.contracts.pending.PendingContractDao
 import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.data.balance.AccountBalanceDao
-import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
 import javax.inject.Inject
 import javax.inject.Provider

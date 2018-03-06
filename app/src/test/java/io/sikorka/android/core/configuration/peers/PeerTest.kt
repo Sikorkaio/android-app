@@ -1,6 +1,5 @@
 package io.sikorka.android.core.configuration.peers
 
-
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import kotlin.test.assertFails
@@ -16,11 +15,10 @@ class PeerTest {
     assertThat(peerEntry.nodePort).isEqualTo(30303)
 
     assertThat(peerEntry.toString()).isEqualTo(url)
-    val secondPeerEntry  = Peer.peerFromNode(url)
+    val secondPeerEntry = Peer.peerFromNode(url)
 
     assertThat(peerEntry).isEqualTo(secondPeerEntry)
     assertThat(peerEntry.hashCode()).isEqualTo(secondPeerEntry.hashCode())
-
   }
 
   @Test
@@ -31,8 +29,5 @@ fun passWeirdNodishThingy() {
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException::class.java)
     assertThat(throwable).hasMessageThat().isEqualTo("String doesn't match node url format enode://1234@0129:0000")
-
   }
-
-
 }

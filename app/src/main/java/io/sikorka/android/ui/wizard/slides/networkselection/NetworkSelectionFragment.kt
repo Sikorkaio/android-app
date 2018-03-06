@@ -1,7 +1,5 @@
 package io.sikorka.android.ui.wizard.slides.networkselection
 
-
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -13,12 +11,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.Network
-import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.showShortSnack
 import kotterknife.bindView
 import toothpick.Toothpick
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -57,8 +53,11 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
     presenter.detach()
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     // Inflate the layout for this fragment
     return inflater.inflate(R.layout.fragment__network_selection, container, false)
   }
@@ -80,6 +79,7 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
     ropstenSelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
     rinkebySelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
     mainnetSelection.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+
     val selection = when (network) {
       Network.ROPSTEN -> ropstenSelection
       Network.RINKEBY -> rinkebySelection
@@ -87,8 +87,8 @@ class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
       else -> null
     }
 
-    val context = this.context ?: fail("null context")
-    var drawable: Drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_black_24dp) ?: return
+    val context = requireContext()
+    var drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_black_24dp) ?: return
     drawable = DrawableCompat.wrap(drawable)
     DrawableCompat.setTint(drawable, ContextCompat.getColor(context, R.color.colorAccent))
     selection?.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)

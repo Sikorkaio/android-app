@@ -8,8 +8,8 @@ import javax.inject.Inject
 class WizardPresenterImpl
 @Inject
 constructor(
-    private val accountRepository: AccountRepository,
-    private val schedulerProvider: SchedulerProvider
+  private val accountRepository: AccountRepository,
+  private val schedulerProvider: SchedulerProvider
 ) : WizardPresenter, BasePresenter<WizardView>() {
   override fun checkForDefaultAccount() {
     addDisposable(accountRepository.accountsExist()
@@ -19,9 +19,7 @@ constructor(
         .subscribe({
           attachedView().accountsExists(it)
         }) {
-
         }
     )
-
   }
 }

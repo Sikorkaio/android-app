@@ -13,4 +13,3 @@ interface AccountCreationDialogPresenter : Presenter<AccountCreationDialogView> 
 
   fun createAccount(passphrase: String, passphraseConfirmation: String)
 }
-

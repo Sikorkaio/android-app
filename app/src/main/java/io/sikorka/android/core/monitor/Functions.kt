@@ -4,4 +4,4 @@ import io.sikorka.android.core.model.TransactionReceipt
 
 typealias OnTransactionStatusUpdate = (txHash: String, status: Int) -> Unit
 
-typealias OnDeploymentStatusUpdateListener = (receipt: TransactionReceipt) -> Unit
+typealias statusUpdateListener = (receipt: TransactionReceipt) -> Unit

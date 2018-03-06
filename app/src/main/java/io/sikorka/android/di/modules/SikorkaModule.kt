@@ -1,6 +1,5 @@
 package io.sikorka.android.di.modules
 
-import android.app.Service
 import com.squareup.moshi.Moshi
 import io.sikorka.android.core.ServiceManager
 import io.sikorka.android.core.ServiceManagerImpl
@@ -18,7 +17,14 @@ import io.sikorka.android.data.contracts.pending.PendingContractDao
 import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.data.transactions.PendingTransactionDao
-import io.sikorka.android.di.providers.*
+import io.sikorka.android.di.providers.AccountBalanceDaoProvider
+import io.sikorka.android.di.providers.AppDatabaseProvider
+import io.sikorka.android.di.providers.ApplicationCacheProvider
+import io.sikorka.android.di.providers.DeployedSikorkaContractDaoProvider
+import io.sikorka.android.di.providers.KeystorePathProvider
+import io.sikorka.android.di.providers.MoshiProvider
+import io.sikorka.android.di.providers.PendingContractDaoProvider
+import io.sikorka.android.di.providers.PendingTransactionDaoProvider
 import io.sikorka.android.di.qualifiers.ApplicationCache
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.events.RxBus
@@ -52,7 +58,8 @@ class SikorkaModule : Module() {
       .providesSingletonInScope()
     bind(AccountBalanceDao::class.java).toProvider(AccountBalanceDaoProvider::class.java)
       .providesSingletonInScope()
-    bind(DeployedSikorkaContractDao::class.java).toProvider(DeployedSikorkaContractDaoProvider::class.java)
+    bind(DeployedSikorkaContractDao::class.java)
+      .toProvider(DeployedSikorkaContractDaoProvider::class.java)
       .providesSingletonInScope()
 
     bind(StorageManager::class.java).to(StorageManagerImpl::class.java).singletonInScope()

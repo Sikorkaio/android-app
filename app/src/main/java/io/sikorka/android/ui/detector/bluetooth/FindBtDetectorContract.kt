@@ -8,17 +8,14 @@ import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
 import toothpick.config.Module
 
-interface FindBtDetectorView : BaseView {
+interface FindBtDetectorView : BaseView
 
-}
-
-interface FindBtDetectorPresenter : Presenter<FindBtDetectorView> {
-
-}
+interface FindBtDetectorPresenter : Presenter<FindBtDetectorView>
 
 class FindBtDetectorModule : Module() {
   init {
-    bind(FindBtDetectorPresenter::class.java).to(FindBtDetectorPresenterImpl::class.java).singletonInScope()
+    bind(FindBtDetectorPresenter::class.java).to(FindBtDetectorPresenterImpl::class.java)
+      .singletonInScope()
     bind(BtScanner::class.java).to(BtScannerImpl::class.java).singletonInScope()
     bind(BtConnector::class.java).to(BtConnectorImpl::class.java).singletonInScope()
   }

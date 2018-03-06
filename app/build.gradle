@@ -32,8 +32,6 @@ android {
 
     buildConfigField "String", "GIT_HASH", "\"${version()}\""
     buildConfigField "String", "REVISION", "\"${revision()}\""
-
-
   }
 
   signingConfigs {
@@ -89,15 +87,16 @@ dependencies {
   implementation 'org.ethereum:geth:1.8.2'
 
   implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
-  implementation 'com.squareup.okio:okio:1.13.0'
-  implementation 'com.squareup.okhttp3:okhttp:3.9.1'
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+  implementation 'com.squareup.okio:okio:1.14.0'
+  implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation 'androidx.core:core-ktx:0.2'
 
   //reactive extensions
-  implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+  implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
-  implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+  implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
   implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
 
   implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
@@ -106,11 +105,11 @@ dependencies {
   implementation group: 'commons-io', name: 'commons-io', version: '2.5'
 
   //dependency injection
-  implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.1'
-  implementation 'com.github.stephanenicolas.toothpick:smoothie:1.1.1'
+  implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.3'
+  implementation 'com.github.stephanenicolas.toothpick:smoothie:1.1.3'
   compileOnly 'javax.annotation:jsr250-api:1.0'
 
-  kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.1.1'
+  kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.1.3'
 
   //android persistance (SQLite)
 
@@ -123,13 +122,10 @@ dependencies {
 
   implementation "android.arch.lifecycle:extensions:1.1.0"
 
-  implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-  implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
-
-  implementation 'com.github.apl-devs:appintro:v4.2.2'
+  implementation 'com.github.apl-devs:appintro:v4.2.3'
 
   //Logging
-  implementation 'com.jakewharton.timber:timber:4.6.0'
+  implementation 'com.jakewharton.timber:timber:4.6.1'
 
   implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
@@ -139,9 +135,9 @@ dependencies {
   implementation "com.google.android.gms:play-services-maps:${versions.play_services_version}"
 
   //coroutine
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.2"
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.2"
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.22.2"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.22.5"
 
   //QR support
   implementation 'me.dm7.barcodescanner:zxing:1.9.8'
@@ -151,12 +147,12 @@ dependencies {
 
   //Unit testing
   testImplementation 'junit:junit:4.12'
-  testImplementation 'org.mockito:mockito-core:2.13.0'
-  testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.1.1'
+  testImplementation 'org.mockito:mockito-core:2.16.0'
+  testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing:1.1.3'
   testImplementation "com.google.truth:truth:0.39"
   testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
   testImplementation "android.arch.core:core-testing:1.1.0"
-  testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.1'
+  testImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
 }
 
 
@@ -165,4 +161,37 @@ kapt {
     arg('toothpick_registry_package_name', 'io.sikorka.android.di')
     arg("room.schemaLocation", "$projectDir/schemas".toString())
   }
+}
+
+repositories {
+  jcenter()
+}
+
+configurations {
+  ktlint
+}
+
+dependencies {
+  ktlint "com.github.shyiko:ktlint:0.19.0"
+  // additional 3rd party ruleset(s) can be specified here
+  // just add them to the classpath (e.g. ktlint 'groupId:artifactId:version') and
+  // ktlint will pick them up
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+  description = "Check Kotlin code style."
+  classpath = configurations.ktlint
+  main = "com.github.shyiko.ktlint.Main"
+  args "src/**/*.kt"
+  // to generate report in checkstyle format prepend following args:
+  // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
+  // see https://github.com/shyiko/ktlint#usage for more
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+  description = "Fix Kotlin code style deviations."
+  classpath = configurations.ktlint
+  main = "com.github.shyiko.ktlint.Main"
+  args "-F", "src/**/*.kt"
 }

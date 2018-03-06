@@ -65,5 +65,4 @@ class AccountImportPresenterImpl
         Timber.e(it)
       }
   }
-
 }

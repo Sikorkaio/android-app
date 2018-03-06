@@ -9,8 +9,8 @@ import javax.inject.Inject
 class AccountPresenterImpl
 @Inject
 constructor(
-    private val accountRepository: AccountRepository,
-    private val schedulerProvider: SchedulerProvider
+  private val accountRepository: AccountRepository,
+  private val schedulerProvider: SchedulerProvider
 ) : AccountPresenter, BasePresenter<AccountView>() {
   override fun loadAccounts() {
     addDisposable(accountRepository.accounts().subscribe({
@@ -30,9 +30,7 @@ constructor(
         .subscribe({
           loadAccounts()
         }) {
-
         })
-
   }
 
   override fun deleteAccount(account: Account, passphrase: String) {

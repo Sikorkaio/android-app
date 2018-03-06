@@ -13,12 +13,11 @@ import javax.inject.Inject
 class DeployContractPresenterImpl
 @Inject
 constructor(
-    private val gethNode: GethNode,
-    private val contractRepository: ContractRepository,
-    private val schedulerProvider: SchedulerProvider,
-    private val appPreferences: AppPreferences
+  private val gethNode: GethNode,
+  private val contractRepository: ContractRepository,
+  private val schedulerProvider: SchedulerProvider,
+  private val appPreferences: AppPreferences
 ) : DeployContractPresenter, BasePresenter<DeployContractView>() {
-
 
   override fun load() {
 
@@ -28,11 +27,8 @@ constructor(
         .subscribe({
           attachedView().setSuggestedGasPrice(it.price)
         }) {
-
         }
     )
-
-
   }
 
   override fun deployContract(passphrase: String, contractInfo: ContractData) {
@@ -45,7 +41,6 @@ constructor(
           attachedView().showError(it.message)
           Timber.v(it)
         }
-
   }
 
   override fun prepareGasSelection() {
@@ -70,5 +65,4 @@ constructor(
       attachedView().requestDeployAuthorization(ContractGas(gasPrice, gasLimit))
     }
   }
-
 }

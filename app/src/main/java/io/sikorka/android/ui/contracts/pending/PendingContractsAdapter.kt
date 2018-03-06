@@ -9,7 +9,6 @@ import io.sikorka.android.R
 import io.sikorka.android.data.contracts.pending.PendingContract
 import kotterknife.bindView
 
-
 class PendingContractsAdapter :
   RecyclerView.Adapter<PendingContractsAdapter.PendingContractsViewHolder>() {
 
@@ -31,7 +30,6 @@ class PendingContractsAdapter :
     val view = inflater.inflate(R.layout.item__pending_contract, parent, false)
     return PendingContractsViewHolder(view)
   }
-
 
   class PendingContractsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

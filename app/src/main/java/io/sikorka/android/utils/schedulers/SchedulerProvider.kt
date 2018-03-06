@@ -13,5 +13,4 @@ interface SchedulerProvider {
   fun db(): Scheduler
 
   fun monitor(): Scheduler
-
 }
