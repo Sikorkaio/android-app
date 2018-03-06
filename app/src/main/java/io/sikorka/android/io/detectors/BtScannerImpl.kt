@@ -13,7 +13,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class BtScannerImpl
-@Inject constructor(private val schedulerProvider: SchedulerProvider) : BtScanner {
+@Inject
+constructor(private val schedulerProvider: SchedulerProvider) : BtScanner {
   private val intentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
 
   override fun btSupport(): Boolean {
@@ -31,39 +32,37 @@ class BtScannerImpl
     }
   }
 
-  override fun discover(context: Context): Observable<BluetoothDevice> = Observable.create<BluetoothDevice> { emitter ->
-    Timber.v("Starting discovery")
-    val btAdapter = BluetoothAdapter.getDefaultAdapter()
-    val receiver = object : BroadcastReceiver() {
-      override fun onReceive(ctx: Context?, intent: Intent?) {
-        if (ctx == null || intent == null) {
-          return
+  override fun discover(context: Context): Observable<BluetoothDevice> {
+    return Observable.create<BluetoothDevice> { emitter ->
+      Timber.v("Starting discovery")
+      val btAdapter = BluetoothAdapter.getDefaultAdapter()
+      val receiver = object : BroadcastReceiver() {
+        override fun onReceive(ctx: Context?, intent: Intent?) {
+          if (ctx == null || intent == null) {
+            return
+          }
+          if (intent.action != BluetoothDevice.ACTION_FOUND) {
+            return
+          }
+          val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+          Timber.v("found device:: ${device.name}")
+          emitter.onNext(device)
         }
-        if (intent.action != BluetoothDevice.ACTION_FOUND) {
-          return
+      }
+      context.registerReceiver(receiver, intentFilter)
+
+      btAdapter.startDiscovery()
+
+      emitter.setCancellable {
+        Timber.v("Stopping Discovery")
+        try {
+          context.unregisterReceiver(receiver)
+        } catch (ignored: Exception) {
         }
-        val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-        Timber.v("found device:: ${device.name}")
-        emitter.onNext(device)
+
+        btAdapter.cancelDiscovery()
       }
-    }
-    context.registerReceiver(receiver, intentFilter)
-
-    btAdapter.startDiscovery()
-
-    emitter.setCancellable {
-      Timber.v("Stopping Discovery")
-      try {
-        context.unregisterReceiver(receiver)
-      } catch (ignored: Exception) {
-      }
-
-      btAdapter.cancelDiscovery()
-    }
-  }
-
-      .subscribeOn(schedulerProvider.io())
-
+    }.subscribeOn(schedulerProvider.io())
       .observeOn(schedulerProvider.main())
-
+  }
 }

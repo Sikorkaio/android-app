@@ -5,7 +5,6 @@ import android.arch.persistence.room.Query
 import io.reactivex.Flowable
 import io.sikorka.android.data.BaseDao
 
-
 @Dao
 abstract class PendingContractDao : BaseDao<PendingContract> {
 

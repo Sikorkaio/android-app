@@ -3,9 +3,9 @@ package io.sikorka.android.core.model
 import io.sikorka.android.helpers.fail
 
 data class TransactionReceipt(
-    val successful: Boolean,
-    val txHash: String,
-    private val contractAddressHex: String? = null
+  val successful: Boolean,
+  val txHash: String,
+  private val contractAddressHex: String? = null
 ) {
   /**
    * Returns a new transaction receipt with the [successful] and [txHash] of this transaction

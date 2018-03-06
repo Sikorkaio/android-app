@@ -4,6 +4,4 @@ import io.sikorka.android.mvp.BasePresenter
 import javax.inject.Inject
 
 class FindBtDetectorPresenterImpl
-@Inject constructor() : FindBtDetectorPresenter, BasePresenter<FindBtDetectorView>() {
-
-}
+@Inject constructor() : FindBtDetectorPresenter, BasePresenter<FindBtDetectorView>()

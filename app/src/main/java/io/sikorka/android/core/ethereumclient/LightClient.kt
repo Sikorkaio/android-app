@@ -11,10 +11,9 @@ import org.ethereum.geth.Geth
 import java.math.BigDecimal
 import io.sikorka.android.core.model.Address as SikorkaAddress
 
-
 class LightClient(
-    private val ethereumClient: EthereumClient,
-    private val context: Context
+  private val ethereumClient: EthereumClient,
+  private val context: Context
 ) {
   private val receiptConverter = GethReceiptConverter()
 

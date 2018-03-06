@@ -22,7 +22,8 @@ interface DeployDetectorPresenter : Presenter<DeployDetectorView> {
 
 class DeployDetectorModule : Module() {
   init {
-    bind(DeployDetectorPresenter::class.java).to(DeployDetectorPresenterImpl::class.java).singletonInScope()
+    bind(DeployDetectorPresenter::class.java)
+      .to(DeployDetectorPresenterImpl::class.java)
+      .singletonInScope()
   }
 }
-

@@ -16,7 +16,6 @@ import kotterknife.bindView
 import toothpick.Toothpick
 import javax.inject.Inject
 
-
 /**
  * A simple [Fragment] subclass.
  * Use the [AccountSetupFragment.newInstance] factory method to
@@ -58,7 +57,8 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
   }
 
   override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
+    inflater: LayoutInflater,
+    container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
     // Inflate the layout for this fragment
@@ -82,14 +82,12 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
     presenter.detach()
   }
 
-
   override fun setAccount(accountHex: String) {
     accountAddress.text = accountHex
     if (!accountAddress.isVisible) {
       accountAddress.show()
     }
   }
-
 
   companion object {
 
@@ -98,5 +96,4 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
       return fragment
     }
   }
-
 }

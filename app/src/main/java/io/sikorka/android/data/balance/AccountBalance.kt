@@ -10,10 +10,10 @@ import android.arch.persistence.room.PrimaryKey
     indices = arrayOf(Index(value = "address_hex", unique = true))
 )
 data class AccountBalance(
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0,
-    @ColumnInfo(name = "address_hex")
-    var addressHex: String,
-    @ColumnInfo(name = "balance")
-    var balance: Double
+  @PrimaryKey(autoGenerate = true)
+  var id: Long = 0,
+  @ColumnInfo(name = "address_hex")
+  var addressHex: String,
+  @ColumnInfo(name = "balance")
+  var balance: Double
 )

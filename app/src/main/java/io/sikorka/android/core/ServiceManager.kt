@@ -7,5 +7,4 @@ interface ServiceManager {
   fun stop()
 
   fun restart()
-
 }

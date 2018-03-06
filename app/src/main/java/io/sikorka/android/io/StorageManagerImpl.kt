@@ -9,8 +9,8 @@ import javax.inject.Inject
 class StorageManagerImpl
 @Inject
 constructor(
-    private val application: Application,
-    private val configurationProvider: ConfigurationProvider
+  private val application: Application,
+  private val configurationProvider: ConfigurationProvider
 ) : StorageManager {
 
   override fun storageUsed(): Long {

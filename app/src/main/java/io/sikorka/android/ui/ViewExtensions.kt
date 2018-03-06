@@ -1,14 +1,20 @@
 package io.sikorka.android.ui
 
+import android.content.Context
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
+import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.text.SpannedString
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-
+import androidx.text.buildSpannedString
+import androidx.text.color
+import io.sikorka.android.R
 
 fun EditText.asString(): String = this.text.toString()
 
@@ -43,7 +49,6 @@ fun View.gone() {
 val View.isVisible
   inline get() = visibility == View.VISIBLE
 
-
 fun View.progressSnack(@StringRes resId: Int, duration: Int): Snackbar {
   val bar = Snackbar.make(this, resId, duration)
   val contentLay =
@@ -51,4 +56,16 @@ fun View.progressSnack(@StringRes resId: Int, duration: Int): Snackbar {
   val item = ProgressBar(context)
   contentLay.addView(item)
   return bar
+}
+
+fun Context.coloredSpan(@StringRes resId: Int): SpannedString {
+  return buildSpannedString {
+    color(ContextCompat.getColor(this@coloredSpan, R.color.colorAccent)) {
+      append(getString(resId))
+    }
+  }
+}
+
+fun Fragment.coloredSpan(@StringRes resId: Int): SpannedString {
+  return requireContext().coloredSpan(resId)
 }

@@ -19,13 +19,13 @@ import javax.inject.Inject
 class MainPresenterImpl
 @Inject
 constructor(
-    private val accountRepository: AccountRepository,
-    private val contractRepository: ContractRepository,
-    private val schedulerProvider: SchedulerProvider,
-    private val locationProvider: UserLocationProvider,
-    private val appPreferences: AppPreferences,
-    syncStatusProvider: SyncStatusProvider,
-    private val bus: RxBus
+  private val accountRepository: AccountRepository,
+  private val contractRepository: ContractRepository,
+  private val schedulerProvider: SchedulerProvider,
+  private val locationProvider: UserLocationProvider,
+  private val appPreferences: AppPreferences,
+  syncStatusProvider: SyncStatusProvider,
+  private val bus: RxBus
 ) : MainPresenter, BasePresenter<MainView>() {
 
   init {

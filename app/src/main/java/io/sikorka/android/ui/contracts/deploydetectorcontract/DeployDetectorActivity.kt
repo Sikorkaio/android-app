@@ -4,10 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import io.sikorka.android.R
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.core.contracts.model.DetectorContractData
@@ -15,11 +18,17 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.DeployContractCodes
 import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
+import io.sikorka.android.ui.dialogs.createDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.value
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
-import kotlinx.android.synthetic.main.activity_deploy_detector.*
+import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__advanced_options
+import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__authorization_duration
+import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__contract_name
+import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__contract_tokens
+import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__deploy_fab
+import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__detector_address
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
@@ -66,14 +75,13 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
       myMarker = it.addMarker(MarkerOptions().position(me).title("Me").icon(icon))
       it.animateCamera(CameraUpdateFactory.newCameraPosition(position), null)
       it.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-
     }
 
     deploy_detector__deploy_fab.setOnClickListener {
       deploy_detector__authorization_duration.error = null
       if (authorizationDuration == 0) {
         deploy_detector__authorization_duration.error =
-            getString(R.string.deploy_detector__authorization_duration_not_set)
+          getString(R.string.deploy_detector__authorization_duration_not_set)
       }
 
       deploy_detector__contract_tokens.error = null
@@ -81,7 +89,7 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
 
       if (supply == 0L) {
         deploy_detector__contract_tokens.error =
-            getString(R.string.deploy_detector__token_supply_empty)
+          getString(R.string.deploy_detector__token_supply_empty)
         return@setOnClickListener
       }
 
@@ -108,7 +116,6 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
       requestDeployAuthorization(it)
     }
     dialog.show()
-
   }
 
   override fun showError(message: String) {
@@ -125,33 +132,40 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
         ).show()
       }
       else -> {
-        Snackbar.make(deploy_detector__detector_address, "code $code", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+          deploy_detector__detector_address,
+          "code $code",
+          Snackbar.LENGTH_SHORT
+        ).show()
       }
     }
-
   }
 
   override fun complete(hex: String) {
-    MaterialDialog.Builder(this)
-      .titleColorRes(R.color.colorAccent)
-      .title(R.string.contract_deployment__transaction_sent_title)
-      .content(R.string.contract_deployment__transaction_sent_content, hex)
-      .positiveText(android.R.string.ok)
-      .dismissListener {
-        MainActivity.start(this)
-      }.show()
+    createDialog(
+      R.string.contract_deployment__transaction_sent_title,
+      getString(R.string.contract_deployment__transaction_sent_content, hex)
+    ) {
+      MainActivity.start(this)
+    }
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
     val supply = deploy_detector__contract_tokens.editText?.value()?.toLong() ?: 0
     val dialog = ConfirmDeployDialog.create(supportFragmentManager, gas) { passphrase ->
-      val data =
-        DetectorContractData(name, gas, address, authorizationDuration, latitude, longitude, supply)
+      val data = DetectorContractData(
+        name,
+        gas,
+        address,
+        authorizationDuration,
+        latitude,
+        longitude,
+        supply
+      )
       presenter.deployContract(passphrase, data)
     }
     dialog.show()
   }
-
 
   private val address: String
     get() = intent?.getStringExtra(DETECTOR_ADDRESS) ?: fail("expected a non null value")
@@ -190,7 +204,6 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
     private const val DETECTOR_ADDRESS = "io.sikorka.android.extras.DETECTOR_ADDRESS"
     private const val LONGITUDE = "io.sikorka.android.extras.LONGITUDE"
     private const val LATITUDE = "io.sikorka.android.extras.LATITUDE"
-
 
     fun start(context: Context, address: String, latitute: Double, longitude: Double) {
       val intent = Intent(context, DeployDetectorActivity::class.java)

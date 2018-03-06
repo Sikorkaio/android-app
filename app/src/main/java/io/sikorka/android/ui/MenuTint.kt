@@ -1,4 +1,5 @@
 @file:Suppress("unused")
+
 package io.sikorka.android.ui
 
 /*
@@ -75,10 +76,10 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
     forceIcons = builder.forceIcons
   }
 
-
   /**
    *
-   * Sets a ColorFilter and/or alpha on all the [MenuItem]s in the menu, including the OverflowMenuButton.
+   * Sets a ColorFilter and/or alpha on all the [MenuItem]s in the menu, including the
+   * OverflowMenuButton.
    *
    * Call this method after inflating/creating your menu in [Activity.onCreateOptionsMenu].
    *
@@ -244,7 +245,8 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
     /**
      * Specify an alpha value for visible MenuItem icons, including the OverflowMenuButton.
      *
-     * @param alpha the alpha value for the drawable. 0 means fully transparent, and 255 means fully opaque.
+     * @param alpha the alpha value for the drawable. 0 means fully transparent, and 255 means
+     * fully opaque.
      * @return this Builder object to allow for chaining of calls to set methods
      */
     fun setMenuItemIconAlpha(alpha: Int): Builder = apply { menuItemIconAlpha = alpha }
@@ -264,7 +266,9 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
      * *
      * @return this Builder object to allow for chaining of calls to set methods
      */
-    fun setOriginalMenuItemIconColor(color: Int): Builder = apply { originalMenuItemIconColor = color }
+    fun setOriginalMenuItemIconColor(color: Int): Builder = apply {
+      originalMenuItemIconColor = color
+    }
 
     /**
      * Set the drawable id to set on the OverflowMenuButton.
@@ -277,7 +281,8 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
     /**
      * Specify an alpha value for MenuItems that are in a SubMenu or in the Overflow menu.
      *
-     * @param alpha the alpha value for the drawable. 0 means fully transparent, and 255 means fully opaque.
+     * @param alpha the alpha value for the drawable. 0 means fully transparent, and 255 means
+     * fully opaque.
      * @return this Builder object to allow for chaining of calls to set methods
      */
     fun setSubMenuIconAlpha(alpha: Int): Builder = apply { subMenuIconAlpha = alpha }
@@ -299,7 +304,8 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
 
     /**
      *
-     * Sets a ColorFilter and/or alpha on all the MenuItems in the menu, including the OverflowMenuButton.
+     * Sets a ColorFilter and/or alpha on all the MenuItems in the menu, including the
+     * OverflowMenuButton.
      *
      * Call this method after inflating/creating your menu in [Activity.onCreateOptionsMenu].
      *
@@ -359,10 +365,8 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
           if (!nativeIsActionButton!!.isAccessible) {
             nativeIsActionButton!!.isAccessible = true
           }
-
         } catch (ignored: Exception) {
         }
-
       }
       try {
         return nativeIsActionButton!!.invoke(item, null) as Boolean
@@ -393,11 +397,12 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
      */
     fun colorMenuItem(menuItem: MenuItem, color: Int?, alpha: Int?) {
       if (color == null && alpha == null) {
-        return  // nothing to do.
+        return // nothing to do.
       }
       val drawable = menuItem.icon
       if (drawable != null) {
-        // If we don't mutate the drawable, then all drawables with this id will have the ColorFilter
+        // If we don't mutate the drawable, then all drawables with this id will have the
+        // ColorFilter
         drawable.mutate()
         if (color != null) {
           drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
@@ -416,14 +421,16 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
     fun forceMenuIcons(menu: Menu) {
       try {
         val MenuBuilder = menu.javaClass
-        val setOptionalIconsVisible = MenuBuilder.getDeclaredMethod("setOptionalIconsVisible", Boolean::class.javaPrimitiveType)
+        val setOptionalIconsVisible = MenuBuilder.getDeclaredMethod(
+          "setOptionalIconsVisible",
+          Boolean::class.javaPrimitiveType
+        )
         if (!setOptionalIconsVisible.isAccessible) {
           setOptionalIconsVisible.isAccessible = true
         }
         setOptionalIconsVisible.invoke(menu, true)
       } catch (ignored: Exception) {
       }
-
     }
 
     fun on(menu: Menu): Builder {
@@ -458,7 +465,9 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
       val count = viewGroup.childCount
       while (i < count) {
         val v = viewGroup.getChildAt(i)
-        if (v is ImageView && (v.javaClass.simpleName == "OverflowMenuButton" || v is ActionMenuView.ActionMenuChildView)) {
+        val isActionMenuChild = v is ActionMenuView.ActionMenuChildView
+        val isOverflowButton = v.javaClass.simpleName == "OverflowMenuButton"
+        if (v is ImageView && (isOverflowButton || isActionMenuChild)) {
           overflow = v
         } else if (v is ViewGroup) {
           overflow = findOverflowMenuButton(activity, v)
@@ -472,13 +481,18 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
     }
 
     private fun findActionBar(activity: Activity): ViewGroup? {
-      val id = activity.resources.getIdentifier("action_bar", "id", "android")
+      val id = activity.resources.getIdentifier(
+        "action_bar",
+        "id",
+        "android"
+      )
       var actionBar: ViewGroup? = null
       if (id != 0) {
         actionBar = activity.findViewById<ViewGroup?>(id)
       }
       if (actionBar == null) {
-        actionBar = findToolbar(activity.findViewById<ViewGroup>(android.R.id.content).rootView as ViewGroup)
+        val rootView = activity.findViewById<ViewGroup>(android.R.id.content).rootView as ViewGroup
+        actionBar = findToolbar(rootView)
       }
       return actionBar
     }

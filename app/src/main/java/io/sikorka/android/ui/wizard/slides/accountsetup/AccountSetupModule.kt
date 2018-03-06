@@ -4,6 +4,8 @@ import toothpick.config.Module
 
 class AccountSetupModule : Module() {
   init {
-    bind(AccountSetupPresenter::class.java).to(AccountSetupPresenterImpl::class.java).singletonInScope()
+    bind(AccountSetupPresenter::class.java)
+      .to(AccountSetupPresenterImpl::class.java)
+      .singletonInScope()
   }
 }

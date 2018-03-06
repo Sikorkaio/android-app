@@ -10,9 +10,9 @@ import javax.inject.Inject
 
 class AccountCreationDialogPresenterImpl
 @Inject constructor(
-    private val accountRepository: AccountRepository,
-    private val passphraseValidator: PassphraseValidator,
-    private val schedulerProvider: SchedulerProvider
+  private val accountRepository: AccountRepository,
+  private val passphraseValidator: PassphraseValidator,
+  private val schedulerProvider: SchedulerProvider
 ) : AccountCreationDialogPresenter,
     BasePresenter<AccountCreationDialogView>() {
 
@@ -33,9 +33,6 @@ class AccountCreationDialogPresenterImpl
           Timber.v("account created")
           view.complete()
         }) {
-
         })
-
-
   }
 }

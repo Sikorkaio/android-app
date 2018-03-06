@@ -16,11 +16,11 @@ import javax.inject.Inject
 
 class AccountBalanceMonitor
 @Inject constructor(
-    private val lightClientProvider: LightClientProvider,
-    syncStatusProvider: SyncStatusProvider,
-    private val accountBalanceDao: AccountBalanceDao,
-    private val accountRepository: AccountRepository,
-    private val schedulerProvider: SchedulerProvider
+  private val lightClientProvider: LightClientProvider,
+  syncStatusProvider: SyncStatusProvider,
+  private val accountBalanceDao: AccountBalanceDao,
+  private val accountRepository: AccountRepository,
+  private val schedulerProvider: SchedulerProvider
 ) : LifecycleMonitor() {
 
   init {
@@ -38,20 +38,29 @@ class AccountBalanceMonitor
           updateBalance(client, address)
         }
       }.subscribeOn(schedulerProvider.db())
-          .subscribe({ }) { ex ->
-            Timber.e(ex, "Failed to update balance")
-          }
+        .subscribe({ }) { ex ->
+          Timber.e(ex, "Failed to update balance")
+        }
     })
   }
 
-  private fun updateBalance(client: LightClient, accountAddress: Address) = Completable.fromCallable {
-    val accountBalance = client.getBalance(accountAddress)
-    val addressHex = accountAddress.hex
-    val currentBalance = AccountBalance(addressHex = addressHex, balance = accountBalance.toEther())
-    val previousBalance = accountBalanceDao.getBalance(addressHex)
-    if (previousBalance == null || previousBalance.balance != currentBalance.balance) {
-      Timber.v("updating account balance from ${previousBalance?.balance} to ${currentBalance.balance}")
-      accountBalanceDao.insert(currentBalance)
+  private fun updateBalance(client: LightClient, accountAddress: Address): Completable? {
+    return Completable.fromCallable {
+      val accountBalance = client.getBalance(accountAddress)
+      val addressHex = accountAddress.hex
+
+      val currentBalance = AccountBalance(
+        addressHex = addressHex,
+        balance = accountBalance.toEther()
+      )
+
+      val previousBalance = accountBalanceDao.getBalance(addressHex)
+      val previousBalanceInfo = previousBalance?.balance
+      val currentBalanceInfo = currentBalance.balance
+      if (previousBalance == null || previousBalanceInfo != currentBalanceInfo) {
+        Timber.v("updating balance from $previousBalanceInfo to $currentBalanceInfo")
+        accountBalanceDao.insert(currentBalance)
+      }
     }
   }
 }

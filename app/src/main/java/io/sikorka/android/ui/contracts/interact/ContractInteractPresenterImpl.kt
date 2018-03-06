@@ -2,11 +2,10 @@ package io.sikorka.android.ui.contracts.interact
 
 import io.sikorka.android.contract.DiscountContract
 import io.sikorka.android.core.GethNode
-import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.core.contracts.model.ContractGas
+import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.data.transactions.PendingTransaction
 import io.sikorka.android.data.transactions.PendingTransactionDao
-import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.utils.schedulers.SchedulerProvider
@@ -19,11 +18,10 @@ import javax.inject.Inject
 class ContractInteractPresenterImpl
 @Inject
 constructor(
-    private val contractRepository: ContractRepository,
-    private val schedulerProvider: SchedulerProvider,
-    private val gethNode: GethNode,
-    private val bus: RxBus,
-    private val pendingTransactionDao: PendingTransactionDao
+  private val contractRepository: ContractRepository,
+  private val schedulerProvider: SchedulerProvider,
+  private val gethNode: GethNode,
+  private val pendingTransactionDao: PendingTransactionDao
 ) : ContractInteractPresenter, BasePresenter<ContractInteractView>() {
 
   private var gas: ContractGas? = null
@@ -47,24 +45,22 @@ constructor(
 
   override fun load(contractAddress: String) {
     addDisposable(contractRepository.bindSikorkaInterface(contractAddress)
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
-        .subscribe({
-          boundInterface = it
-          attachedView().update(it.name())
-          val detector = boundInterface.detector()
-          usesDetector = detector.toInt() != 0
-          if (!usesDetector) {
-            attachedView().noDetector()
-          } else {
-            attachedView().detector(detector.hex)
-          }
-        }) {
-          attachedView().showError()
+      .subscribeOn(schedulerProvider.io())
+      .observeOn(schedulerProvider.main())
+      .subscribe({
+        boundInterface = it
+        attachedView().update(it.name())
+        val detector = boundInterface.detector()
+        usesDetector = detector.toInt() != 0
+        if (!usesDetector) {
+          attachedView().noDetector()
+        } else {
+          attachedView().detector(detector.hex)
         }
+      }) {
+        attachedView().showError()
+      }
     )
-
-
   }
 
   override fun verify() {
@@ -79,14 +75,17 @@ constructor(
       contractRepository.transact({
         boundInterface.claimToken(it, data)
       }, passphrase, gas)
-          .subscribeOn(schedulerProvider.io())
-          .observeOn(schedulerProvider.main())
-          .subscribe({
-            attachedView().showConfirmationResult(true)
-            pendingTransactionDao.insert(PendingTransaction(txHash = it.hash.hex, dateAdded = now().epochSecond))
-          }) {
-            Timber.e(it, "failed")
-          }
+        .subscribeOn(schedulerProvider.io())
+        .observeOn(schedulerProvider.main())
+        .subscribe({
+          attachedView().showConfirmationResult(true)
+          pendingTransactionDao.insert(PendingTransaction(
+            txHash = it.hash.hex,
+            dateAdded = now().epochSecond
+          ))
+        }) {
+          Timber.e(it, "failed")
+        }
     }
   }
 
@@ -98,7 +97,11 @@ constructor(
     }
   }
 
-  private fun ifNotNull(gas: ContractGas?, passphrase: String?, action: (gas: ContractGas, passphrase: String) -> Unit): Boolean {
+  private fun ifNotNull(
+    gas: ContractGas?,
+    passphrase: String?,
+    action: (gas: ContractGas, passphrase: String) -> Unit
+  ): Boolean {
     return if (gas != null && passphrase != null) {
       action(gas, passphrase)
       true
@@ -109,20 +112,19 @@ constructor(
 
   override fun prepareGasSelection() {
     addDisposable(gethNode.suggestedGasPrice()
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
-        .subscribe({
-          attachedView().showGasSelection(it)
-        }) {
-          attachedView().showError()
-        }
+      .subscribeOn(schedulerProvider.io())
+      .observeOn(schedulerProvider.main())
+      .subscribe({
+        attachedView().showGasSelection(it)
+      }) {
+        attachedView().showError()
+      }
     )
   }
 
-  fun Address.toInt(): Int {
+  private fun Address.toInt(): Int {
     val hex = hex.replace("0x", "")
     val integer = BigInteger(hex, 16)
     return integer.toInt()
   }
-
 }

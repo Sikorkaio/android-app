@@ -1,7 +1,14 @@
 package io.sikorka.android.contract
 
-import org.ethereum.geth.*
-
+import org.ethereum.geth.Address
+import org.ethereum.geth.Addresses
+import org.ethereum.geth.BigInts
+import org.ethereum.geth.BoundContract
+import org.ethereum.geth.CallOpts
+import org.ethereum.geth.EthereumClient
+import org.ethereum.geth.Geth
+import org.ethereum.geth.TransactOpts
+import org.ethereum.geth.Transaction
 
 /**
  * The wrapper of the SikorkaRegistry Contract
@@ -19,8 +26,11 @@ constructor(private val contract: BoundContract) {
   /**
    * Creates a new instance of SikorkaRegistry, bound to a specific deployed contract.
    */
-  constructor(address: Address, client: EthereumClient) : this(Geth.bindContract(address, ABI, client))
-
+  constructor(address: Address, client: EthereumClient) : this(Geth.bindContract(
+    address,
+    ABI,
+    client
+  ))
 
   /**
    * getContractAddresses is a free data retrieval call binding the contract method 0x953874d2.
@@ -31,21 +41,17 @@ constructor(private val contract: BoundContract) {
     var callOpts = opts
     val args = Geth.newInterfaces(0)
 
-
     val results = Geth.newInterfaces(1)
     val result0 = Geth.newInterface()
     result0.setDefaultAddresses()
     results.set(0, result0)
-
 
     if (callOpts == null) {
       callOpts = Geth.newCallOpts()
     }
     this.contract.call(callOpts, results, "getContractAddresses", args)
     return results.get(0).addresses
-
   }
-
 
   /**
    * getContractCoordinates is a free data retrieval call binding the contract method 0xde866a70.
@@ -56,21 +62,17 @@ constructor(private val contract: BoundContract) {
     var callOpts = opts
     val args = Geth.newInterfaces(0)
 
-
     val results = Geth.newInterfaces(1)
     val result0 = Geth.newInterface()
     result0.setDefaultBigInts()
     results.set(0, result0)
-
 
     if (callOpts == null) {
       callOpts = Geth.newCallOpts()
     }
     this.contract.call(callOpts, results, "getContractCoordinates", args)
     return results.get(0).bigInts
-
   }
-
 
   /**
    * removeContract is a paid mutator transaction binding the contract method 0xc375c2ef.
@@ -89,7 +91,153 @@ constructor(private val contract: BoundContract) {
     /**
      * ABI is the input ABI used to generate the binding from.
      */
-    const val ABI = """[{"constant":true,"inputs":[{"name":"channel","type":"address"}],"name":"contractExists","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"contract_address","type":"address"},{"name":"latitude","type":"int256"},{"name":"longitude","type":"int256"}],"name":"addContract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getContractAddresses","outputs":[{"name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"contract_address","type":"address"}],"name":"removeContract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getContractCoordinates","outputs":[{"name":"","type":"int256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"sikorka_contracts","outputs":[{"name":"contract_address","type":"address"},{"name":"latitude","type":"int256"},{"name":"longitude","type":"int256"}],"payable":false,"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"contract_address","type":"address"},{"indexed":false,"name":"latitude","type":"int256"},{"indexed":false,"name":"longitude","type":"int256"}],"name":"ContractAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"contract_address","type":"address"}],"name":"ContractRemoved","type":"event"}]"""
+
+    const val ABI = """[
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "channel",
+        "type": "address"
+      }
+    ],
+    "name": "contractExists",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "contract_address",
+        "type": "address"
+      },
+      {
+        "name": "latitude",
+        "type": "int256"
+      },
+      {
+        "name": "longitude",
+        "type": "int256"
+      }
+    ],
+    "name": "addContract",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getContractAddresses",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "contract_address",
+        "type": "address"
+      }
+    ],
+    "name": "removeContract",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getContractCoordinates",
+    "outputs": [
+      {
+        "name": "",
+        "type": "int256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "sikorka_contracts",
+    "outputs": [
+      {
+        "name": "contract_address",
+        "type": "address"
+      },
+      {
+        "name": "latitude",
+        "type": "int256"
+      },
+      {
+        "name": "longitude",
+        "type": "int256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "contract_address",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "latitude",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "name": "longitude",
+        "type": "int256"
+      }
+    ],
+    "name": "ContractAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "contract_address",
+        "type": "address"
+      }
+    ],
+    "name": "ContractRemoved",
+    "type": "event"
+  }
+]"""
 
     /**
      * The address of the registry contract that we are going to interface with.
@@ -102,9 +250,5 @@ constructor(private val contract: BoundContract) {
     fun bind(ethereumClient: EthereumClient): SikorkaRegistry {
       return SikorkaRegistry(Geth.newAddressFromHex(REGISTRY_ADDRESS), ethereumClient)
     }
-
   }
-
 }
-
-

@@ -30,7 +30,8 @@ class SikorkaApplication : Application() {
     if (BuildConfig.DEBUG) {
       Timber.plant(object : Timber.DebugTree() {
         override fun createStackElementTag(element: StackTraceElement): String {
-          return "${super.createStackElementTag(element)}:${element.lineNumber} [${Thread.currentThread().name}]"
+          return "${super.createStackElementTag(element)}:" +
+            "${element.lineNumber} [${Thread.currentThread().name}]"
         }
       })
       LeakCanary.install(this)

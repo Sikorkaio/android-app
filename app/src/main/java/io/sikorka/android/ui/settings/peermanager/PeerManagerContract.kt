@@ -22,7 +22,6 @@ interface PeerManagerView : BaseView {
   fun openFailed()
 }
 
-
 interface PeerManagerPresenter : Presenter<PeerManagerView> {
   fun load()
 
@@ -32,7 +31,6 @@ interface PeerManagerPresenter : Presenter<PeerManagerView> {
 
   fun saveFromFile(file: File)
 }
-
 
 class PeerManagerModule : Module() {
   init {

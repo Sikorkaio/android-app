@@ -1,6 +1,5 @@
 package io.sikorka.android.helpers
 
-
 private val HEX_CHARS = "0123456789abcdef".toCharArray()
 
 fun ByteArray.toHex(): String {

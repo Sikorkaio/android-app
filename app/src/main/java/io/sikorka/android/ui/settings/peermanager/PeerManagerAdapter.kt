@@ -42,7 +42,6 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     notifyDataSetChanged()
   }
 
-
   fun selectNode() {
     selection.clear()
     notifyDataSetChanged()
@@ -58,5 +57,4 @@ class PeerManagerAdapter : DataAdapter<PeerEntry, PeerManagerViewHolder>() {
     setList(list)
     notifyDataSetChanged()
   }
-
 }

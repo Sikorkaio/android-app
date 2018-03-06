@@ -23,9 +23,10 @@ interface DeployContractPresenter : Presenter<DeployContractView> {
   fun prepareDeployWithDefaults()
 }
 
-
 class DeployContractModule : Module() {
   init {
-    bind(DeployContractPresenter::class.java).to(DeployContractPresenterImpl::class.java).singletonInScope()
+    bind(DeployContractPresenter::class.java)
+      .to(DeployContractPresenterImpl::class.java)
+      .singletonInScope()
   }
 }

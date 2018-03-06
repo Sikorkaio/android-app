@@ -6,7 +6,6 @@ import io.sikorka.android.mvp.Presenter
 interface AccountExportView : BaseView {
   fun showError(code: Int)
   fun exportComplete()
-
 }
 
 interface AccountExportPresenter : Presenter<AccountExportView> {

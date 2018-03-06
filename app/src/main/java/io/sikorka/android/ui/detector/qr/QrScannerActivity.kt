@@ -30,7 +30,6 @@ class QrScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
     if (!checkCameraPermissions()) {
       startCameraPermissionRequest()
     }
-
   }
 
   private fun startCameraPermissionRequest() {
@@ -48,7 +47,6 @@ class QrScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
 
     return permissionState == PackageManager.PERMISSION_GRANTED
   }
-
 
   override fun onResume() {
     super.onResume()
@@ -68,9 +66,12 @@ class QrScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
     finish()
   }
 
-  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray
+  ) {
     if (requestCode == REQUEST_CAMERA_PERMISSIONS_REQUEST_CODE) {
-
     }
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
   }
@@ -85,6 +86,5 @@ class QrScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
       val intent = Intent(context, QrScannerActivity::class.java)
       context.startActivityForResult(intent, SCANNER_RESULT)
     }
-
   }
 }

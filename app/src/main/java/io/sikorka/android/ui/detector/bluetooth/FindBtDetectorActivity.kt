@@ -19,14 +19,16 @@ import io.sikorka.android.ui.dialogs.progress
 import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.show
 import io.sikorka.android.utils.isDisposed
-import kotlinx.android.synthetic.main.activity_find_detector.*
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__detector_list
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__loading_group
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__no_result_group
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__swipe_layout
 import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieSupportActivityModule
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
 
@@ -57,7 +59,6 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
     setContentView(R.layout.activity_find_detector)
 
     if (!btScanner.btSupport()) {
-
     }
 
     btScanner.enableBt(this, BT_ACTIVATE_REQUEST_CODE)
@@ -139,13 +140,11 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
       }
   }
 
-
   private val latitude: Double
     get() = intent?.getDoubleExtra(LATITUDE, 0.0) ?: fail("got a null value instead")
 
   private val longitude: Double
     get() = intent?.getDoubleExtra(LONGITUDE, 0.0) ?: fail("got a null value instead")
-
 
   @javax.inject.Scope
   @Target(AnnotationTarget.TYPE)

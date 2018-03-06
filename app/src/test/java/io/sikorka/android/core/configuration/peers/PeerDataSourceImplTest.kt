@@ -2,12 +2,17 @@ package io.sikorka.android.core.configuration.peers
 
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import io.sikorka.android.*
+import io.sikorka.android.body
+import io.sikorka.android.code
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.IConfiguration
 import io.sikorka.android.core.configuration.Network.RINKEBY
 import io.sikorka.android.core.configuration.Network.ROPSTEN
 import io.sikorka.android.di.providers.MoshiProvider
+import io.sikorka.android.mockResponse
+import io.sikorka.android.mockServer
+import io.sikorka.android.success
+import io.sikorka.android.url
 import okio.Okio
 import org.junit.After
 import org.junit.Before
@@ -19,7 +24,6 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import java.io.File
 import java.net.SocketTimeoutException
-
 
 class PeerDataSourceImplTest {
 
@@ -100,7 +104,6 @@ class PeerDataSourceImplTest {
       }
     }
   }
-
 
   @Test
   fun attemptToRetrievePeerListWithoutAnError() {
@@ -193,7 +196,6 @@ class PeerDataSourceImplTest {
       assertThat(data[1].nodeAddress).isEqualTo("192.168.90.17")
     }
   }
-
 
   @Test
   fun downloadPeerList() {
@@ -346,9 +348,7 @@ class PeerDataSourceImplTest {
         )
       )
     }
-
   }
-
 
   private fun createMockStaticPeers(data: String) {
     val sink = Okio.buffer(Okio.sink(file))
@@ -375,5 +375,4 @@ class PeerDataSourceImplTest {
         "enode://c144553a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d@192.168.10.12:30303"
       ]
     """.trimIndent()
-
 }

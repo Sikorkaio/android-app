@@ -18,9 +18,7 @@ interface MainView : BaseView {
   fun notifyTransactionMined(txHash: String, success: Boolean)
   fun notifyContractMined(address: String, txHash: String, success: Boolean)
   fun updateDeployed(data: List<DeployedSikorkaContract>)
-
 }
-
 
 interface MainPresenter : Presenter<MainView> {
   fun load()

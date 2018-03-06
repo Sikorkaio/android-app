@@ -5,7 +5,6 @@ import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
 import toothpick.config.Module
 
-
 interface ContractInteractView : BaseView {
   fun showError()
   fun update(name: String)
@@ -16,7 +15,6 @@ interface ContractInteractView : BaseView {
   fun startDetectorFlow()
 }
 
-
 interface ContractInteractPresenter : Presenter<ContractInteractView> {
   fun load(contractAddress: String)
   fun verify()
@@ -26,7 +24,6 @@ interface ContractInteractPresenter : Presenter<ContractInteractView> {
   fun startClaimFlow()
   fun cacheMessage(detectorSignedMessage: String?)
 }
-
 
 class ContractInteractModule : Module() {
   init {

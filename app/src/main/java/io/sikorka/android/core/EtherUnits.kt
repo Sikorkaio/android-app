@@ -23,35 +23,34 @@ object EtherUnits {
   const val ETHER = "ether"
 
   val units = arrayOf(WEI,
-      KWEI,
-      MWEI,
-      GWEI,
-      SZABO,
-      FINNEY,
-      ETHER)
+    KWEI,
+    MWEI,
+    GWEI,
+    SZABO,
+    FINNEY,
+    ETHER)
 
   @StringDef(
-      WEI,
-      KWEI,
-      MWEI,
-      GWEI,
-      SZABO,
-      FINNEY,
-      ETHER
+    WEI,
+    KWEI,
+    MWEI,
+    GWEI,
+    SZABO,
+    FINNEY,
+    ETHER
   )
   @Retention(AnnotationRetention.SOURCE)
   annotation class Currency
 }
 
-
 private var unitMap = mapOf(
-    WEI to 1L,
-    KWEI to 1000L,
-    MWEI to 1000000L,
-    GWEI to 1000000000L,
-    SZABO to 1000000000000L,
-    FINNEY to 100000000000000L,
-    ETHER to 1000000000000000000L
+  WEI to 1L,
+  KWEI to 1000L,
+  MWEI to 1000000L,
+  GWEI to 1000000000L,
+  SZABO to 1000000000000L,
+  FINNEY to 100000000000000L,
+  ETHER to 1000000000000000000L
 )
 
 fun BigInt.toEther(): Double = toUnit(ETHER)
@@ -63,7 +62,9 @@ fun BigDecimal.toEther(): Double {
   return division.setScale(20, RoundingMode.DOWN).toDouble()
 }
 
-private fun BigInt.toUnit(@Currency unit: String): Double = this.int64.toDouble() / unitToValue(unit)
+private fun BigInt.toUnit(@Currency unit: String): Double {
+  return this.int64.toDouble() / unitToValue(unit)
+}
 
 private fun unitToValue(@Currency unit: String): Long = unitMap[unit] ?: 1L
 

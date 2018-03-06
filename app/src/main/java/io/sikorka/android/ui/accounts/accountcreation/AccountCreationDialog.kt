@@ -6,14 +6,15 @@ import android.os.Bundle
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.EditText
-import com.afollestad.materialdialogs.MaterialDialog
 import io.sikorka.android.R
 import io.sikorka.android.core.accounts.ValidationResult
 import io.sikorka.android.core.accounts.ValidationResult.Code
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.asString
+import io.sikorka.android.ui.coloredSpan
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
   @Inject
   lateinit var presenter: AccountCreationDialogPresenter
 
-  private lateinit var dialog: MaterialDialog
+  private lateinit var dialog: AlertDialog
 
   private val passphrase: String
     get() = passphraseField.asString()
@@ -54,19 +55,17 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
       passphraseConfirmationInput = findViewById(R.id.accounts__passphrase_confirmation_input)
     }
 
-    val builder = MaterialDialog.Builder(context)
-        .title(R.string.account__create_account)
-        .customView(view, false)
-        .positiveText(android.R.string.ok)
-        .negativeText(android.R.string.cancel)
-        .dismissListener { presenter.detach() }
-        .autoDismiss(false)
-        .onNegative { dialog, _ -> dialog.dismiss() }
-        .onPositive { _, _ ->
-          presenter.createAccount(passphrase, passphraseConfirmation)
-        }
+    val builder = AlertDialog.Builder(context)
+      .setTitle(coloredSpan(R.string.account__create_account))
+      .setView(view)
+      .setCancelable(false)
+      .setOnDismissListener { presenter.detach() }
+      .setPositiveButton(coloredSpan(android.R.string.ok), { _, _ ->
+        presenter.createAccount(passphrase, passphraseConfirmation)
+      })
+      .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ -> dialog.dismiss() })
 
-    dialog = builder.build()
+    dialog = builder.create()
     return dialog
   }
 
@@ -84,13 +83,16 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
     clearErrors()
     when (code) {
       ValidationResult.CONFIRMATION_MISMATCH -> {
-        passphraseConfirmationInput.error = getString(R.string.account_creation__passphrase_missmatch)
+        val errorMessage = getString(R.string.account_creation__passphrase_missmatch)
+        passphraseConfirmationInput.error = errorMessage
       }
       ValidationResult.EMPTY_PASSPHRASE -> {
-        passphraseInput.error = getString(R.string.account_creation__passphrase_empty)
+        val errorMessage = getString(R.string.account_creation__passphrase_empty)
+        passphraseInput.error = errorMessage
       }
       ValidationResult.PASSWORD_SHORT -> {
-        passphraseInput.error = getString(R.string.account_creation__password_short, 8)
+        val errorMessage = getString(R.string.account_creation__password_short, 8)
+        passphraseInput.error = errorMessage
       }
     }
   }

@@ -8,7 +8,6 @@ interface NetworkSelectionView : BaseView {
   fun updateNetworkSelection(@Network.Selection network: Int)
 }
 
-
 interface NetworkSelectionPresenter : Presenter<NetworkSelectionView> {
   fun selectNetwork(@Network.Selection network: Int)
   fun updateSelected()

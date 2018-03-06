@@ -1,6 +1,10 @@
 package io.sikorka.android
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -8,7 +12,12 @@ import android.support.v4.app.NotificationCompat
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.GethNode
-import io.sikorka.android.core.monitor.*
+import io.sikorka.android.core.monitor.AccountBalanceMonitor
+import io.sikorka.android.core.monitor.DeployedContractMonitor
+import io.sikorka.android.core.monitor.PendingContractMonitor
+import io.sikorka.android.core.monitor.PendingTransactionMonitor
+import io.sikorka.android.core.monitor.PrepareTransactionStatusEvent
+import io.sikorka.android.core.monitor.TransactionStatusEvent
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.ui.main.MainActivity
@@ -107,7 +116,7 @@ class SikorkaService : Service() {
         Timber.v(it, "failed")
       }
 
-    contractMonitor.setOnDeploymentStatusUpdateListener { receipt ->
+    contractMonitor.setStatusUpdateListener { receipt ->
       receipt.run {
         val notification = statusNotification(successful, contractAddress(), txHash)
         notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, notification)
@@ -212,8 +221,8 @@ class SikorkaService : Service() {
   }
 
   private fun transactionSuccess(): Notification {
-    val message =
-      "Your transaction has been mined. 100 Sikorka example discount tokens have been transferred to your account"
+    val message = "Your transaction has been mined. " +
+      "100 Sikorka example discount tokens have been transferred to your account"
     return NotificationCompat.Builder(this, "sikorka_deployment_update_channel")
       .setSmallIcon(R.drawable.ic_stat_ic_launcher)
       .setContentTitle("Transaction Mined")
@@ -225,7 +234,6 @@ class SikorkaService : Service() {
       .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
       .build()
   }
-
 
   companion object {
     const val NOTIFICATION_ID = 1337

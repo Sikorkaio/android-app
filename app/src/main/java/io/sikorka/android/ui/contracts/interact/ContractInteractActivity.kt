@@ -8,9 +8,9 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.widget.TextView
 import android.widget.Toast
-import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -21,16 +21,22 @@ import io.sikorka.android.R
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.BaseActivity
+import io.sikorka.android.ui.detector.qr.QrScannerActivity
 import io.sikorka.android.ui.detector.select.SupportedDetector
 import io.sikorka.android.ui.detector.select.SupportedDetectors
+import io.sikorka.android.ui.dialogs.loading
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import io.sikorka.android.ui.gone
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
-import kotlinx.android.synthetic.main.activity__contract_interact.*
-import io.sikorka.android.ui.detector.qr.QrScannerActivity
+import kotlinx.android.synthetic.main.activity__contract_interact.contract_interact__contract_address
+import kotlinx.android.synthetic.main.activity__contract_interact.contract_interact__verify
+import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__detector_address
+import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__detector_address_group
+import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__interact_with_detector
+import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__manual_gas_selection
 import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
@@ -44,7 +50,7 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
 
   private lateinit var scope: Scope
 
-  private var dialog: MaterialDialog? = null
+  private var dialog: AlertDialog? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     scope = Toothpick.openScopes(application, this)
@@ -91,7 +97,7 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
       it.addMarker(markerOptions)
     }
 
-    interact_contract__interact_with_detector.adapter = DetectorSpinnerAdapter(this, detectors())
+    interact_contract__interact_with_detector.adapter = DetectorSpinnerAdapter(detectors())
     interact_contract__interact_with_detector.setSelection(0)
 
     interact_contract__detector_address.setOnClickListener { view ->
@@ -167,18 +173,11 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
   }
 
   private fun showMethodChoice() {
-    MaterialDialog.Builder(this)
-      .title(R.string.contract_interact__select_method)
-      .items(arrayListOf("claimTokens"))
-      .itemsCallbackSingleChoice(
-        0,
-        MaterialDialog.ListCallbackSingleChoice { dialog, view, which, text ->
-          requestUnlock()
-          return@ListCallbackSingleChoice true
-        })
-      .negativeText(android.R.string.cancel)
-      .positiveText(R.string.contract_interact__select_method_choose)
-      .show()
+    val selectDialog = methodSelectDialog(arrayOf("claimTokens")) { _ ->
+      requestUnlock()
+    }
+
+    selectDialog.show()
   }
 
   private fun requestUnlock() {
@@ -188,7 +187,11 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
         R.string.contract_interact__proceed_with_claiming,
         R.string.contract_interact__proceed_with_claiming_content
       ) {
-        dialog = showLoading()
+        dialog = loading(
+          R.string.contract_interact__claiming_tokens_title,
+          R.string.contact_interact__claiming_tokens
+        )
+        dialog?.show()
         presenter.verify()
       }
     }
@@ -206,7 +209,6 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
     }
   }
 
-
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     Timber.v("result $resultCode")
     if (requestCode == QrScannerActivity.SCANNER_RESULT && resultCode == Activity.RESULT_OK) {
@@ -221,25 +223,12 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
         presenter.cacheMessage(data.getStringExtra(QrScannerActivity.DATA))
         getGasSettings()
       }
-
     }
     super.onActivityResult(requestCode, resultCode, data)
   }
 
-
-  private fun showLoading(): MaterialDialog {
-    return MaterialDialog.Builder(this)
-      .titleColorRes(R.color.colorAccent)
-      .title(R.string.contract_interact__claiming_tokens_title)
-      .content(R.string.contact_interact__claiming_tokens)
-      .progress(true, 100)
-      .cancelable(false)
-      .show()
-  }
-
   private val contractAddress: String
     get() = intent?.getStringExtra(CONTRACT_ADDRESS) ?: fail("expected a non null contract address")
-
 
   private fun detectors(): List<SupportedDetector> {
     val detectors = ArrayList<SupportedDetector>()
@@ -259,7 +248,6 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
     )
     return detectors
   }
-
 
   companion object {
     private const val NAME = "io.sikorka.android.extras.NAME"

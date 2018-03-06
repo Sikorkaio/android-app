@@ -89,7 +89,6 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
       requestDeployAuthorization(it)
     }
     dialog.show()
-
   }
 
   override fun requestDeployAuthorization(gas: ContractGas) {
@@ -129,7 +128,6 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
   }
 
   override fun setSuggestedGasPrice(gasPrice: Long) {
-
   }
 
   private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {

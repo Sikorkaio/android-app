@@ -11,10 +11,10 @@ import javax.inject.Inject
 class PendingTransactionMonitor
 @Inject
 constructor(
-    private val syncStatusProvider: SyncStatusProvider,
-    private val pendingTransactionDao: PendingTransactionDao,
-    private val schedulerProvider: SchedulerProvider,
-    private val lightClientProvider: LightClientProvider
+  private val syncStatusProvider: SyncStatusProvider,
+  private val pendingTransactionDao: PendingTransactionDao,
+  private val schedulerProvider: SchedulerProvider,
+  private val lightClientProvider: LightClientProvider
 ) : LifecycleMonitor() {
 
   override fun start() {
@@ -35,13 +35,9 @@ constructor(
           .toObservable()
           .flatMapSingle { lightClient.getTransactionReceipt(it.txHash) }
           .subscribe({
-
           }) {
             Timber.e(it, "Failure while processing pending transactions")
           }
-
-
     })
   }
 }
-

@@ -8,8 +8,8 @@ import javax.inject.Inject
 @PendingContractsActivity.Presenter
 class PendingContractsPresenterImpl
 @Inject constructor(
-    private val pendingContractDao: PendingContractDao,
-    private val schedulerProvider: SchedulerProvider
+  private val pendingContractDao: PendingContractDao,
+  private val schedulerProvider: SchedulerProvider
 ) : PendingContractsPresenter, BasePresenter<PendingContractsView>() {
   override fun load() {
     addDisposable(pendingContractDao.getAllPendingContracts()
@@ -20,8 +20,5 @@ class PendingContractsPresenterImpl
         }) {
           attachedView().error(it.message)
         })
-
-
   }
-
 }

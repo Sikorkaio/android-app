@@ -10,9 +10,8 @@ import io.sikorka.android.data.BaseDao
 abstract class PendingTransactionDao : BaseDao<PendingTransaction> {
 
   @Query("select * from pending_transactions where transaction_status = -1")
-  abstract fun pendingTransactions() : LiveData<List<PendingTransaction>>
+  abstract fun pendingTransactions(): LiveData<List<PendingTransaction>>
 
   @Query("select * from pending_transactions where transaction_status = -1")
-  abstract fun pendingTransaction() : Flowable<List<PendingTransaction>>
-
+  abstract fun pendingTransaction(): Flowable<List<PendingTransaction>>
 }

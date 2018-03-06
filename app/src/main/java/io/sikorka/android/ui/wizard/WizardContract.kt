@@ -8,11 +8,9 @@ interface WizardView : BaseView {
   fun accountsExists(exists: Boolean)
 }
 
-
 interface WizardPresenter : Presenter<WizardView> {
   fun checkForDefaultAccount()
 }
-
 
 class WizardModule : Module() {
   init {

@@ -15,7 +15,11 @@ import io.sikorka.android.data.balance.AccountBalanceDao
 import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.settings.AppPreferences
-import org.ethereum.geth.*
+import org.ethereum.geth.Account
+import org.ethereum.geth.BigInt
+import org.ethereum.geth.Geth
+import org.ethereum.geth.KeyStore
+import org.ethereum.geth.Transaction
 import timber.log.Timber
 import javax.inject.Inject
 import io.sikorka.android.core.model.Account as SikorkaAccount
@@ -118,10 +122,10 @@ class AccountRepository
   ): Transaction? {
     val account = keystore.accounts.all()
       .first { it.address.hex.equals(address, ignoreCase = true) }
-    Timber.v("Signing ${account.address.hex} - ${transaction.hash.hex} - chain: ${chainId.int64}")
+    val hex = account.address.hex
+    Timber.v("Signing $hex - ${transaction.hash.hex} - chain: ${chainId.int64}")
     return keystore.signTxPassphrase(account, passphrase, transaction, chainId)
   }
-
 
   fun accountsExist(): Single<Boolean> = Single.fromCallable { keystore.accounts.size() > 0 }
 

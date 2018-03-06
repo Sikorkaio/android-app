@@ -13,14 +13,14 @@ import javax.inject.Inject
 
 class PendingContractMonitor
 @Inject constructor(
-    syncStatusProvider: SyncStatusProvider,
-    private val lightClientProvider: LightClientProvider,
-    private val pendingContractDao: PendingContractDao,
-    private val schedulerProvider: SchedulerProvider,
-    private val bus: RxBus
+  syncStatusProvider: SyncStatusProvider,
+  private val lightClientProvider: LightClientProvider,
+  private val pendingContractDao: PendingContractDao,
+  private val schedulerProvider: SchedulerProvider,
+  private val bus: RxBus
 ) : LifecycleMonitor() {
-  private val composite: CompositeDisposable = CompositeDisposable()
-  private var onDeploymentStatusUpdateListener: OnDeploymentStatusUpdateListener? = null
+  private val disposables: CompositeDisposable = CompositeDisposable()
+  private var statusUpdateListener: statusUpdateListener? = null
 
   init {
     syncStatusProvider.observe(this, Observer {
@@ -33,34 +33,32 @@ class PendingContractMonitor
 
       val lightClient = lightClientProvider.get()
 
-      composite.add(pendingContractDao.getAllPendingContracts()
-          .flatMap { it.toFlowable() }
-          .flatMapSingle { pending ->
-            lightClient.getTransactionReceipt(pending.transactionHash)
-                .map { it.withContractAddress(pending.contractAddress) }
-          }
-          .observeOn(schedulerProvider.monitor())
-          .subscribeOn(schedulerProvider.monitor())
-          .subscribe({
-            pendingContractDao.deleteByContractAddress(it.contractAddress())
-            onDeploymentStatusUpdateListener?.invoke(it)
-            bus.post(ContractStatusEvent(it.contractAddress(), it.txHash, it.successful))
-          }) {
-            Timber.e(it, "Db operation failed")
-          })
-
+      disposables.add(pendingContractDao.getAllPendingContracts()
+        .flatMap { it.toFlowable() }
+        .flatMapSingle { pending ->
+          lightClient.getTransactionReceipt(pending.transactionHash)
+            .map { it.withContractAddress(pending.contractAddress) }
+        }
+        .observeOn(schedulerProvider.monitor())
+        .subscribeOn(schedulerProvider.monitor())
+        .subscribe({
+          pendingContractDao.deleteByContractAddress(it.contractAddress())
+          statusUpdateListener?.invoke(it)
+          bus.post(ContractStatusEvent(it.contractAddress(), it.txHash, it.successful))
+        }) {
+          Timber.e(it, "Db operation failed")
+        })
     })
   }
 
   override fun stop() {
     super.stop()
-    composite.clear()
+    disposables.clear()
   }
 
-  fun setOnDeploymentStatusUpdateListener(onDeploymentStatuUpdateListener: OnDeploymentStatusUpdateListener?) {
-    this.onDeploymentStatusUpdateListener = onDeploymentStatuUpdateListener
+  fun setStatusUpdateListener(
+    statusUpdateListener: statusUpdateListener?
+  ) {
+    this.statusUpdateListener = statusUpdateListener
   }
-
 }
-
-

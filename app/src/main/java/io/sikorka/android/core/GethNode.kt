@@ -14,14 +14,22 @@ import io.sikorka.android.core.ethereumclient.LightClientProvider
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.helpers.fail
-import io.sikorka.android.utils.schedulers.SchedulerProvider
 import io.sikorka.android.utils.lastThrottle
-import org.ethereum.geth.*
+import io.sikorka.android.utils.schedulers.SchedulerProvider
+import org.ethereum.geth.Address
+import org.ethereum.geth.BigInt
+import org.ethereum.geth.EthereumClient
+import org.ethereum.geth.Geth
+import org.ethereum.geth.Header
+import org.ethereum.geth.NewHeadHandler
+import org.ethereum.geth.Node
+import org.ethereum.geth.PeerInfos
+import org.ethereum.geth.TransactOpts
+import org.ethereum.geth.Transaction
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-
 
 @Singleton
 class GethNode
@@ -81,7 +89,6 @@ constructor(
     }
   }
 
-
   fun createTransactOpts(
     account: AccountModel,
     gas: ContractGas,
@@ -135,7 +142,6 @@ constructor(
     }) {
       Timber.v(it, "")
     }
-
   }
 
   private fun syncProgress(ec: EthereumClient): Pair<Long, Long> = try {
@@ -165,7 +171,6 @@ constructor(
     .flatMap { checkStatus() }
     .startWith(checkStatus())
 
-
   private fun checkStatus(): Observable<SyncStatus> = Observable.fromCallable {
     val ethNode = node ?: fail("node was null")
     val peers = ethNode.peersInfo
@@ -191,7 +196,10 @@ constructor(
     }
     Timber.v("========")
   }
-
 }
 
-typealias TransactionSigner = (address: Address, transaction: Transaction, chainId: BigInt) -> Transaction
+typealias TransactionSigner = (
+  address: Address,
+  transaction: Transaction,
+  chainId: BigInt
+) -> Transaction

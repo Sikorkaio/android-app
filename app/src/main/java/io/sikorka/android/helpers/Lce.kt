@@ -18,7 +18,6 @@ class Lce<out T>(
 
   fun error(): Throwable = this.error ?: fail("throwable was null")
 
-
   @VisibleForTesting
   fun errorMessage(): String {
     return error?.message ?: "No message found"

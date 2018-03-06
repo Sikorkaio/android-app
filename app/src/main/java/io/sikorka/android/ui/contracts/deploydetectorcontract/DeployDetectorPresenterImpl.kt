@@ -15,10 +15,10 @@ import javax.inject.Inject
 class DeployDetectorPresenterImpl
 @Inject
 constructor(
-    private val gethNode: GethNode,
-    private val contractRepository: ContractRepository,
-    private val schedulerProvider: SchedulerProvider,
-    private val appPreferences: AppPreferences
+  private val gethNode: GethNode,
+  private val contractRepository: ContractRepository,
+  private val schedulerProvider: SchedulerProvider,
+  private val appPreferences: AppPreferences
 ) : DeployDetectorPresenter, BasePresenter<DeployDetectorView>() {
   override fun prepareGasSelection() {
     addDisposable(gethNode.suggestedGasPrice()
@@ -55,5 +55,4 @@ constructor(
       attachedView().requestDeployAuthorization(ContractGas(gasPrice, gasLimit))
     }
   }
-
 }

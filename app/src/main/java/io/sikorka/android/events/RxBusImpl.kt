@@ -1,10 +1,10 @@
 package io.sikorka.android.events
 
-
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import java.util.*
+import java.util.HashMap
+import java.util.LinkedList
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
@@ -25,9 +25,9 @@ constructor() : RxBus {
   }
 
   private fun updateSubscriptions(receiver: Any, subscription: Disposable) {
-    val subscriptions: MutableList<Disposable> = activeSubscriptions[receiver] ?: LinkedList<Disposable>()
+    val subscriptions: MutableList<Disposable> = activeSubscriptions[receiver] ?: LinkedList()
     subscriptions.add(subscription)
-    activeSubscriptions.put(receiver, subscriptions)
+    activeSubscriptions[receiver] = subscriptions
   }
 
   override fun unregister(receiver: Any) {

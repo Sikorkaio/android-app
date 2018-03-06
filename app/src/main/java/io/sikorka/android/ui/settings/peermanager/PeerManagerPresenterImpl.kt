@@ -40,7 +40,6 @@ constructor(
             attachedView().loadingError()
           }
         }
-
       }) {
         attachedView().loadingError()
       }
