@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.accounts.accountcreation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.accountimport.AccountImportActivity
-import io.sikorka.android.ui.isVisible
-import io.sikorka.android.ui.show
 import kotterknife.bindView
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -85,7 +84,7 @@ class AccountSetupFragment : Fragment(), AccountSetupView {
   override fun setAccount(accountHex: String) {
     accountAddress.text = accountHex
     if (!accountAddress.isVisible) {
-      accountAddress.show()
+      accountAddress.isVisible = true
     }
   }
 

@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.widget.TextView
 import android.widget.Toast
+import androidx.view.isVisible
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -29,7 +30,6 @@ import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
-import io.sikorka.android.ui.gone
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
 import kotlinx.android.synthetic.main.activity__contract_interact.contract_interact__contract_address
 import kotlinx.android.synthetic.main.activity__contract_interact.contract_interact__verify
@@ -139,7 +139,7 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
   }
 
   override fun noDetector() {
-    interact_contract__detector_address_group.gone()
+    interact_contract__detector_address_group.isVisible = false
   }
 
   override fun showConfirmationResult(confirmAnswer: Boolean) {
