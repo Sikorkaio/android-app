@@ -5,11 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
+import androidx.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.data.contracts.pending.PendingContract
 import io.sikorka.android.ui.BaseActivity
-import io.sikorka.android.ui.gone
-import io.sikorka.android.ui.show
 import kotlinx.android.synthetic.main.activity_pending_contracts.*
 import toothpick.Scope
 import toothpick.Toothpick
@@ -54,9 +53,9 @@ class PendingContractsActivity : BaseActivity(), PendingContractsView {
 
   override fun update(data: List<PendingContract>) {
     if (data.isEmpty()) {
-      pending_contract__no_data_group.show()
+      pending_contract__no_data_group.isVisible = true
     } else {
-      pending_contract__no_data_group.gone()
+      pending_contract__no_data_group.isVisible = false
     }
     pendingContractAdapter.update(data)
   }

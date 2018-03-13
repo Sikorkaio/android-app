@@ -10,14 +10,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
+import androidx.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import io.sikorka.android.io.copyToFile
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.MenuTint
-import io.sikorka.android.ui.gone
 import io.sikorka.android.ui.settings.peermanager.PeerManagerActionModeCallback.Actions
-import io.sikorka.android.ui.show
 import kotterknife.bindView
 import toothpick.Scope
 import toothpick.Toothpick
@@ -129,9 +128,9 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
 
   override fun loading(loading: Boolean) {
     if (loading) {
-      this.loading.show()
+      this.loading.isVisible = true
     } else {
-      this.loading.gone()
+      this.loading.isVisible = false
     }
   }
 

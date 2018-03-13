@@ -6,13 +6,12 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BaseViewHolder
 import io.sikorka.android.ui.dialogs.showConfirmation
 import io.sikorka.android.ui.dialogs.showInfo
-import io.sikorka.android.ui.gone
-import io.sikorka.android.ui.show
 import kotterknife.bindView
 
 class AccountViewHolder(
@@ -74,9 +73,9 @@ class AccountViewHolder(
   override fun update() {
     this.accountAddress.text = presenter.hex(adapterPosition)
     if (presenter.isDefault(adapterPosition)) {
-      defaultIndicator.show()
+      defaultIndicator.isVisible = true
     } else {
-      defaultIndicator.gone()
+      defaultIndicator.isVisible = false
     }
   }
 }

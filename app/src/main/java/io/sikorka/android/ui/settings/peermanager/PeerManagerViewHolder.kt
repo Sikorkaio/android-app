@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
-import io.sikorka.android.ui.gone
-import io.sikorka.android.ui.show
 import kotterknife.bindView
 
 class PeerManagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -45,9 +44,9 @@ class PeerManagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
   fun selectionMode(selectionMode: Boolean) {
     if (selectionMode) {
-      nodeSelected.show()
+      nodeSelected.isVisible = true
     } else {
-      nodeSelected.gone()
+      nodeSelected.isVisible = false
     }
   }
 

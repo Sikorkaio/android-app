@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
+import androidx.view.isVisible
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -16,8 +17,6 @@ import io.sikorka.android.io.detectors.BtScanner
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity
 import io.sikorka.android.ui.dialogs.progress
-import io.sikorka.android.ui.gone
-import io.sikorka.android.ui.show
 import io.sikorka.android.utils.isDisposed
 import kotlinx.android.synthetic.main.activity_find_detector.find_detector__detector_list
 import kotlinx.android.synthetic.main.activity_find_detector.find_detector__loading_group
@@ -121,14 +120,14 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
       .observeOn(AndroidSchedulers.mainThread())
       .doAfterTerminate {
         find_detector__swipe_layout.isRefreshing = false
-        find_detector__loading_group.gone()
+        find_detector__loading_group.isVisible = false
       }
       .subscribe({ devices ->
         detectorAdapter.update(devices)
         if (devices.isEmpty()) {
-          find_detector__no_result_group.show()
+          find_detector__no_result_group.isVisible = true
         } else {
-          find_detector__no_result_group.gone()
+          find_detector__no_result_group.isVisible = false
         }
       }) {
         Snackbar.make(
