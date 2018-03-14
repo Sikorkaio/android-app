@@ -3,6 +3,7 @@ package io.sikorka.android.ui.accounts.accountimport
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TextInputLayout
 import android.widget.ImageButton
@@ -11,6 +12,7 @@ import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
 import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.accounts.accountimport.AccountImportCodes.FAILED_TO_UNLOCK
+import io.sikorka.android.ui.dialogs.fileselection.FileSelectionDialog
 import io.sikorka.android.ui.setValue
 import io.sikorka.android.ui.value
 import kotterknife.bindView
@@ -88,7 +90,13 @@ class AccountImportActivity : BaseActivity(),
       )
     }
     selectFileButton.setOnClickListener {
-      // todo add proper import dialog
+      val dialog = FileSelectionDialog.create(
+        supportFragmentManager,
+        Environment.getExternalStorageDirectory(),
+        true
+      )
+
+      dialog.show()
     }
     presenter.attach(this)
   }
