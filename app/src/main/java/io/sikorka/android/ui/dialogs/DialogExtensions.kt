@@ -2,15 +2,18 @@ package io.sikorka.android.ui.dialogs
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Environment
 import android.support.annotation.StringRes
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.view.LayoutInflater
 import android.widget.TextView
 import io.sikorka.android.R
 import io.sikorka.android.ui.coloredSpan
+import io.sikorka.android.ui.dialogs.fileselection.FileSelectionDialog
 import io.sikorka.android.ui.value
 
 fun Context.showConfirmation(
@@ -219,4 +222,9 @@ fun Context.createDialog(
     .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ -> dialog.dismiss() })
     .setOnDismissListener { onDismiss() }
     .create()
+}
+
+fun AppCompatActivity.fileSelectionDialog(showFiles:Boolean = false): FileSelectionDialog {
+  val directory = Environment.getExternalStorageDirectory()
+  return FileSelectionDialog.create(supportFragmentManager, directory, showFiles)
 }

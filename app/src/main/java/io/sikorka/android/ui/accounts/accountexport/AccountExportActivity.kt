@@ -15,6 +15,7 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.accounts.accountexport.AccountExportCodes.ACCOUNT_PASSPHRASE_EMPTY
 import io.sikorka.android.ui.accounts.accountexport.AccountExportCodes.FAILED_TO_UNLOCK_ACCOUNT
+import io.sikorka.android.ui.dialogs.fileSelectionDialog
 import io.sikorka.android.ui.value
 import kotterknife.bindView
 import toothpick.Toothpick
@@ -109,7 +110,7 @@ class AccountExportActivity : BaseActivity(),
     }
 
     selectDirectoryButton.setOnClickListener {
-      //selectDirectory()
+      fileSelectionDialog().show { onFolderSelection(it) }
     }
     presenter.attach(this)
     account.text = hex

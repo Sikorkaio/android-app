@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:drawable="@drawable/folder_circle_background" />
+  <item android:drawable="@drawable/file_circle_background" />
   <item
       android:bottom="6dp"
       android:drawable="@drawable/ic_file_white_24dp"

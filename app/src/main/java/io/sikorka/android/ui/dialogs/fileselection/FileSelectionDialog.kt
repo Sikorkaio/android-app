@@ -17,6 +17,8 @@ import android.widget.TextView
 import androidx.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.ui.coloredSpan
+import io.sikorka.android.ui.dialogs.fileselection.Selection.DIRECTORY
+import io.sikorka.android.ui.dialogs.fileselection.Selection.FILE
 import java.io.File
 
 class FileSelectionDialog : DialogFragment() {
@@ -30,6 +32,8 @@ class FileSelectionDialog : DialogFragment() {
   private lateinit var emptyGroup: Group
 
   private lateinit var currentFile: File
+
+  private lateinit var onSelection: (File) -> Unit
 
   private var showFiles: Boolean = false
 
@@ -48,21 +52,29 @@ class FileSelectionDialog : DialogFragment() {
       R.string.file_selection__select_folder
     }
 
+    view.findViewById<View>(R.id.file_selection__folder_hint).isVisible = !showFiles
+
     val builder = AlertDialog.Builder(context)
       .setTitle(coloredSpan(titleResId))
       .setView(view)
-      .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ -> })
+      .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ ->
+        selectedFile?.let {
+          onSelection(it)
+          dialog.dismiss()
+        }
+      })
       .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ -> dialog.dismiss() })
 
     val alertDialog = builder.create()
     alertDialog.setOnShowListener {
       navigateTo(rootDirectory)
 
-      fileSelectionAdapter.setOnFileSelected {
-        if (it.isDirectory) {
-          navigateTo(it)
+      fileSelectionAdapter.setOnFileSelected { file, navigate ->
+        if (navigate) {
+          !navigateTo(file)
         } else {
-          selectedFile = it
+          selectedFile = file
+          true
         }
       }
       upButton.setOnClickListener {
@@ -73,20 +85,29 @@ class FileSelectionDialog : DialogFragment() {
         navigateTo(currentFile.parentFile)
       }
     }
+    fileSelectionAdapter.setSelectionMode(if (showFiles) FILE else DIRECTORY)
     return alertDialog
   }
 
-  private fun navigateTo(file: File) {
+  private fun navigateTo(file: File): Boolean {
     currentFile = file
 
-    fileSelectionAdapter.submitList(listContents(file).also {
-      emptyGroup.isVisible = it.isEmpty()
-      val pathWithoutRoot = file.absolutePath.removePrefix(rootDirectory.absolutePath)
-      currentDirectory.text = pathWithoutRoot
-    })
+    val contents = listContents(file)
+    val emptyDirectory = contents.isEmpty()
+
+    return if (!showFiles && emptyDirectory) {
+      selectedFile = file
+      false
+    } else {
+      emptyGroup.isVisible = emptyDirectory
+      currentDirectory.text = file.absolutePath.removePrefix(rootDirectory.absolutePath)
+      fileSelectionAdapter.submitList(contents)
+      true
+    }
   }
 
-  fun show() {
+  fun show(onSelection: (File) -> Unit) {
+    this.onSelection = onSelection
     show(fm, TAG)
   }
 

@@ -216,5 +216,6 @@
   <string name="file_selection__empty_folder">Empty Folder</string>
   <string name="file_selection__select_file">Select a file</string>
   <string name="file_selection__select_folder">Select a folder</string>
+  <string name="file_selection__folder_hint">Long press a folder to select it.</string>
 
 </resources>
