@@ -133,7 +133,7 @@ fun Context.useDetector(
 ): AlertDialog = AlertDialog.Builder(this)
   .setTitle(coloredSpan(R.string.use_detectors__dialog_title))
   .setMessage(R.string.use_detectors__dialog_content)
-  .setPositiveButton(coloredSpan(R.string.use_detectors__positive), { dialog, which ->
+  .setPositiveButton(coloredSpan(R.string.use_detectors__positive), { dialog, _ ->
     callback(true)
     dialog.dismiss()
   })
@@ -224,7 +224,7 @@ fun Context.createDialog(
     .create()
 }
 
-fun AppCompatActivity.fileSelectionDialog(showFiles:Boolean = false): FileSelectionDialog {
+fun AppCompatActivity.fileSelectionDialog(showFiles: Boolean = false): FileSelectionDialog {
   val directory = Environment.getExternalStorageDirectory()
   return FileSelectionDialog.create(supportFragmentManager, directory, showFiles)
 }

@@ -12,7 +12,6 @@ import io.sikorka.android.ui.dialogs.fileselection.Selection.FILE
 import kotterknife.bindView
 import java.io.File
 
-
 class FileSelectionViewHolder(
   itemView: View,
   onItemClicked: OnItemClick
@@ -27,7 +26,9 @@ class FileSelectionViewHolder(
   private var selectionMode: Int = FILE
 
   init {
-    itemView.setOnClickListener { onItemClicked(adapterPosition, false) }
+    itemView.setOnClickListener {
+      onItemClicked(adapterPosition, false)
+    }
     itemView.setOnLongClickListener {
       onItemClicked(adapterPosition, true)
       return@setOnLongClickListener true
