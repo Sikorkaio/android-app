@@ -56,7 +56,11 @@ class FileSelectionAdapter : ListAdapter<File, FileSelectionViewHolder>(DIFF_CAL
     }
   }
 
-  override fun onBindViewHolder(holder: FileSelectionViewHolder, position: Int, payloads: MutableList<Any>) {
+  override fun onBindViewHolder(
+    holder: FileSelectionViewHolder,
+    position: Int,
+    payloads: MutableList<Any>
+  ) {
     if (payloads.contains(SELECTION)) {
       holder.selectionMode(selectionMode)
       holder.selected(position == selectedItemPosition)

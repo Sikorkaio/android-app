@@ -24,6 +24,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import java.io.File
 import java.net.SocketTimeoutException
+import java.nio.charset.Charset
 
 class PeerDataSourceImplTest {
 
@@ -38,6 +39,15 @@ class PeerDataSourceImplTest {
   private lateinit var configuration: IConfiguration
 
   private lateinit var file: File
+
+  private fun file(name: String): String {
+    val classLoader = javaClass.classLoader
+    val resource = classLoader.getResource(name)
+
+    return Okio.buffer(Okio.source(File(resource.path))).use {
+      it.readString(Charset.forName("UTF-8"))
+    }
+  }
 
   @Before
   fun setUp() {
@@ -108,7 +118,7 @@ class PeerDataSourceImplTest {
   @Test
   fun attemptToRetrievePeerListWithoutAnError() {
     given(configuration.network).willReturn(ROPSTEN)
-    createMockStaticPeers(NODE_JSON_LIST)
+    createMockStaticPeers(file("peers.json"))
 
     peerDataSource.peers().test().run {
       awaitTerminalEvent()
@@ -156,15 +166,19 @@ class PeerDataSourceImplTest {
   @Test
   fun attemptToPersistPeers() {
     given(configuration.network).willReturn(ROPSTEN)
+    val firstNodeId = "a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4" +
+      "929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe"
+    val secondNodeId = "c144053a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15" +
+      "e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d"
 
     val list = listOf(
       PeerEntry(
-        "a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe",
+        firstNodeId,
         "192.168.10.11",
         30303
       ),
       PeerEntry(
-        "c144053a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d",
+        secondNodeId,
         "192.168.90.17",
         30303
       )
@@ -206,16 +220,20 @@ class PeerDataSourceImplTest {
 
     mockWebServer.enqueue(mockResponse {
       success()
-      body(PEER_LIST)
+      body(file("peer_list.txt"))
     })
 
-    peerDataSource.loadPeersFromUrl("http://${mockWebServer.hostName}:${mockWebServer.port}").test()
+    val url = "http://${mockWebServer.hostName}:${mockWebServer.port}"
+
+    peerDataSource.loadPeersFromUrl(url).test()
       .run {
         awaitTerminalEvent()
         assertComplete()
       }
 
-    assertWithMessage("Peer file should now be populated").that(file.length()).isGreaterThan(0)
+    assertWithMessage("Peer file should now be populated")
+      .that(file.length())
+      .isGreaterThan(0)
 
     peerDataSource.peers().test().run {
       awaitTerminalEvent()
@@ -279,13 +297,13 @@ class PeerDataSourceImplTest {
   @Test
   fun downloadPeerListMergePeers() {
     given(configuration.network).willReturn(ROPSTEN)
-    createMockStaticPeers(SECOND_NODE_JSON)
+    createMockStaticPeers(file("peers2.json"))
 
     val mockWebServer = mockServer()
 
     mockWebServer.enqueue(mockResponse {
       success()
-      body(PEER_LIST)
+      body(file("peer_list.txt"))
     })
 
     peerDataSource.loadPeersFromUrl(mockWebServer.url(), true).test()
@@ -316,13 +334,13 @@ class PeerDataSourceImplTest {
   @Test
   fun downloadNodeListMergePeers() {
     given(configuration.network).willReturn(ROPSTEN)
-    createMockStaticPeers(SECOND_NODE_JSON)
+    createMockStaticPeers(file("peers2.json"))
 
     val mockWebServer = mockServer()
 
     mockWebServer.enqueue(mockResponse {
       success()
-      body(NODE_JSON_LIST)
+      body(file("peers.json"))
     })
 
     peerDataSource.loadPeersFromUrl(mockWebServer.url(), true).test()
@@ -356,23 +374,4 @@ class PeerDataSourceImplTest {
     sink.close()
     given(configuration.peerFilePath).willReturn(file.absolutePath)
   }
-
-  private val PEER_LIST = """
-        admin.addPeer("enode://a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe@192.168.90.19:30303");
-        admin.addPeer("enode://c144053a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d@192.168.90.17:30303");
-    """.trimIndent()
-
-  private val NODE_JSON_LIST = """
-      [
-        "enode://a8a31c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe@192.168.90.11:30303",
-        "enode://c144053a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d@192.168.90.12:30303"
-      ]
-    """.trimIndent()
-
-  private val SECOND_NODE_JSON = """
-      [
-        "enode://a8a11c68cb91c0aa5b641cde877dce7c9113d55fb15103a4da004de5a6145ed4929d899a9ef4ce51d3f57fc3d4a2d78fa2b7e50463c6aa29a8799a600464c8fe@192.168.10.11:30303",
-        "enode://c144553a45b724332964174dae678557af8433f0f7fdc3dbd792a0def023fc15e95ae6e2a4b74277947bf1d5d2354ba58a0393f6aa600a7b82cbc127e29dc87d@192.168.10.12:30303"
-      ]
-    """.trimIndent()
 }

@@ -32,15 +32,12 @@ class FileSelectionDialog : DialogFragment() {
   private lateinit var emptyGroup: Group
 
   private lateinit var currentFile: File
-
   private lateinit var onSelection: (File) -> Unit
-
-  private var showFiles: Boolean = false
 
   private val fileSelectionAdapter: FileSelectionAdapter by lazy { FileSelectionAdapter() }
 
+  private var showFiles: Boolean = false
   private var selectedFile: File? = null
-
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val context = requireContext()
