@@ -2,6 +2,7 @@ package io.sikorka.android.core.monitor
 
 import android.arch.lifecycle.Observer
 import io.reactivex.Completable
+import io.reactivex.disposables.Disposable
 import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.core.ethereumclient.LightClient
 import io.sikorka.android.core.ethereumclient.LightClientProvider
@@ -10,7 +11,8 @@ import io.sikorka.android.core.toEther
 import io.sikorka.android.data.balance.AccountBalance
 import io.sikorka.android.data.balance.AccountBalanceDao
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.isDisposed
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -20,8 +22,10 @@ class AccountBalanceMonitor
   syncStatusProvider: SyncStatusProvider,
   private val accountBalanceDao: AccountBalanceDao,
   private val accountRepository: AccountRepository,
-  private val schedulerProvider: SchedulerProvider
+  private val appSchedulers: AppSchedulers
 ) : LifecycleMonitor() {
+
+  private var disposable: Disposable? = null
 
   init {
     syncStatusProvider.observe(this, Observer {
@@ -29,16 +33,22 @@ class AccountBalanceMonitor
       if (it == null || !it.syncing) {
         return@Observer
       }
+      if (!lightClientProvider.initialized) {
+        return@Observer
+      }
 
-      accountRepository.getAccountAddresses().flatMapCompletable { address ->
-        return@flatMapCompletable if (!lightClientProvider.initialized) {
-          Completable.complete()
-        } else {
-          val client = lightClientProvider.get()
+      if (!disposable.isDisposed()) {
+        return@Observer
+      }
+
+      val client = lightClientProvider.get()
+
+      disposable = accountRepository.getAccountAddresses()
+        .subscribeOn(appSchedulers.io)
+        .observeOn(appSchedulers.db)
+        .subscribe({ address ->
           updateBalance(client, address)
-        }
-      }.subscribeOn(schedulerProvider.db())
-        .subscribe({ }) { ex ->
+        }) { ex ->
           Timber.e(ex, "Failed to update balance")
         }
     })
