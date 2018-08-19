@@ -11,7 +11,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.widget.TextView
 import android.widget.Toast
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory

@@ -6,8 +6,8 @@ import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(
-    tableName = "account_balance",
-    indices = arrayOf(Index(value = "address_hex", unique = true))
+  tableName = "account_balance",
+  indices = [Index(value = ["address_hex"], unique = true)]
 )
 data class AccountBalance(
   @PrimaryKey(autoGenerate = true)

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import kotterknife.bindView

@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import io.sikorka.android.io.copyToFile
@@ -127,11 +127,7 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
   }
 
   override fun loading(loading: Boolean) {
-    if (loading) {
-      this.loading.isVisible = true
-    } else {
-      this.loading.isVisible = false
-    }
+    this.loading.isVisible = loading
   }
 
   override fun selectAll() {
@@ -152,13 +148,15 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
     }
 
     data?.let {
-      val file = contentResolver.openInputStream(it.data).use {
+      val uri = checkNotNull(it.data)
+      val file = contentResolver.openInputStream(uri)?.use { stream ->
         val temp = File.createTempFile("peers", "list")
-        it.copyToFile(temp)
+        stream.copyToFile(temp)
         temp
       }
 
-      presenter.saveFromFile(file)
+
+      presenter.saveFromFile(checkNotNull(file))
     }
   }
 

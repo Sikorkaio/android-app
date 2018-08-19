@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.text.buildSpannedString
-import androidx.text.color
+import androidx.core.text.buildSpannedString
+import androidx.core.text.color
 import io.sikorka.android.R
 
 fun EditText.asString(): String = this.text.toString()
