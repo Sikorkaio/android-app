@@ -3,14 +3,14 @@ package io.sikorka.android.ui.accounts
 import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import javax.inject.Inject
 
 class AccountPresenterImpl
 @Inject
 constructor(
   private val accountRepository: AccountRepository,
-  private val schedulerProvider: SchedulerProvider
+  private val appSchedulers: AppSchedulers
 ) : AccountPresenter, BasePresenter<AccountView>() {
   override fun loadAccounts() {
     addDisposable(accountRepository.accounts().subscribe({
@@ -25,8 +25,8 @@ constructor(
 
   override fun setDefault(account: Account) {
     addDisposable(accountRepository.setDefaultAccount(account)
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
+        .subscribeOn(appSchedulers.io)
+        .observeOn(appSchedulers.main)
         .subscribe({
           loadAccounts()
         }) {
@@ -40,8 +40,8 @@ constructor(
     }
 
     addDisposable(accountRepository.deleteAccount(account, passphrase)
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
+        .subscribeOn(appSchedulers.io)
+        .observeOn(appSchedulers.main)
         .subscribe({
           loadAccounts()
         }) {

@@ -15,17 +15,8 @@ import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.utils.lastThrottle
-import io.sikorka.android.utils.schedulers.SchedulerProvider
-import org.ethereum.geth.Address
-import org.ethereum.geth.BigInt
-import org.ethereum.geth.EthereumClient
-import org.ethereum.geth.Geth
-import org.ethereum.geth.Header
-import org.ethereum.geth.NewHeadHandler
-import org.ethereum.geth.Node
-import org.ethereum.geth.PeerInfos
-import org.ethereum.geth.TransactOpts
-import org.ethereum.geth.Transaction
+import io.sikorka.android.utils.schedulers.AppSchedulers
+import org.ethereum.geth.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -36,7 +27,7 @@ class GethNode
 @Inject
 constructor(
   private val configurationProvider: ConfigurationProvider,
-  private val schedulerProvider: SchedulerProvider,
+  private val schedulers: AppSchedulers,
   private val lightClientProvider: LightClientProvider,
   private val syncStatusProvider: SyncStatusProvider
 ) {
@@ -67,8 +58,8 @@ constructor(
     periodicallyCheckIfRunning()
     disposables += loggingThrottler.lastThrottle(1, TimeUnit.MINUTES) { logPeers(it) }
     disposables += headers()
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.io())
+      .subscribeOn(schedulers.io)
+      .observeOn(schedulers.io)
       .subscribe({
         headerRelay.accept(it)
       }) {
@@ -100,7 +91,7 @@ constructor(
       opts.setContext(ethContext)
       opts.from = signerAddress
       opts.nonce = ethereumClient.getPendingNonceAt(ethContext, signerAddress)
-      opts.setSigner({ address, transaction -> signer(address, transaction, chainId()) })
+      opts.setSigner { address, transaction -> signer(address, transaction, chainId()) }
       opts.gasLimit = gas.limit
       opts.gasPrice = Geth.newBigInt(gas.price)
       return@fromCallable opts
@@ -137,10 +128,10 @@ constructor(
   }
 
   private fun periodicallyCheckIfRunning() {
-    disposables += Observable.interval(10, TimeUnit.MINUTES).subscribe({
+    disposables += Observable.interval(10, TimeUnit.MINUTES, schedulers.computation).subscribe({
       checkNodeStatus()
     }) {
-      Timber.v(it, "")
+      Timber.v(it)
     }
   }
 
@@ -167,7 +158,7 @@ constructor(
     ethereumClient.subscribeNewHead(ethContext, handler, 16)
   }
 
-  fun status(): Observable<SyncStatus> = Observable.interval(2, TimeUnit.SECONDS)
+  fun status(): Observable<SyncStatus> = Observable.interval(2, TimeUnit.SECONDS, schedulers.computation)
     .flatMap { checkStatus() }
     .startWith(checkStatus())
 

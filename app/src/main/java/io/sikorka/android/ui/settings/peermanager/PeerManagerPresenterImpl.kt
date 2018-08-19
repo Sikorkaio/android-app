@@ -7,7 +7,7 @@ import io.sikorka.android.core.configuration.peers.PeerEntry
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -17,7 +17,7 @@ class PeerManagerPresenterImpl
 @Inject
 constructor(
   private val peerDataSource: PeerDataSource,
-  private val schedulerProvider: SchedulerProvider,
+  private val appSchedulers: AppSchedulers,
   private val serviceManager: ServiceManager,
   private val bus: RxBus
 ) : PeerManagerPresenter, BasePresenter<PeerManagerView>() {
@@ -26,8 +26,8 @@ constructor(
     disposables += peerDataSource.peers()
       .toObservable()
       .startWith(Lce.loading())
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.main())
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
       .subscribe({
         when {
           it.loading() -> {
@@ -47,8 +47,8 @@ constructor(
 
   override fun save(peers: List<PeerEntry>) {
     disposables += peerDataSource.savePeers(peers)
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.main())
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
       .subscribe({
         Timber.v("ok")
       }) {
@@ -58,8 +58,8 @@ constructor(
 
   override fun download(url: String, merge: Boolean) {
     disposables += peerDataSource.loadPeersFromUrl(url, merge)
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.main())
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
       .subscribe({
         load()
         attachedView().downloadComplete()
@@ -71,8 +71,8 @@ constructor(
 
   override fun saveFromFile(file: File) {
     disposables += peerDataSource.loadPeersFromFile(file, true)
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.main())
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
       .subscribe({
         load()
         attachedView().openComplete()

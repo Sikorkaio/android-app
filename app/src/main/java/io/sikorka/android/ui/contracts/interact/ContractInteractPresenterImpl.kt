@@ -8,7 +8,7 @@ import io.sikorka.android.data.transactions.PendingTransaction
 import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.helpers.hexStringToByteArray
 import io.sikorka.android.mvp.BasePresenter
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import org.ethereum.geth.Address
 import org.threeten.bp.Instant.now
 import timber.log.Timber
@@ -19,7 +19,7 @@ class ContractInteractPresenterImpl
 @Inject
 constructor(
   private val contractRepository: ContractRepository,
-  private val schedulerProvider: SchedulerProvider,
+  private val appSchedulers: AppSchedulers,
   private val gethNode: GethNode,
   private val pendingTransactionDao: PendingTransactionDao
 ) : ContractInteractPresenter, BasePresenter<ContractInteractView>() {
@@ -45,8 +45,8 @@ constructor(
 
   override fun load(contractAddress: String) {
     addDisposable(contractRepository.bindSikorkaInterface(contractAddress)
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.main())
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
       .subscribe({
         boundInterface = it
         attachedView().update(it.name())
@@ -75,8 +75,8 @@ constructor(
       contractRepository.transact({
         boundInterface.claimToken(it, data)
       }, passphrase, gas)
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
+        .subscribeOn(appSchedulers.io)
+        .observeOn(appSchedulers.main)
         .subscribe({
           attachedView().showConfirmationResult(true)
           pendingTransactionDao.insert(PendingTransaction(
@@ -112,8 +112,8 @@ constructor(
 
   override fun prepareGasSelection() {
     addDisposable(gethNode.suggestedGasPrice()
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.main())
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
       .subscribe({
         attachedView().showGasSelection(it)
       }) {

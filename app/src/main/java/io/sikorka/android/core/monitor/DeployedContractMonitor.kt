@@ -2,6 +2,7 @@ package io.sikorka.android.core.monitor
 
 import android.arch.lifecycle.Observer
 import io.reactivex.Completable
+import io.reactivex.disposables.Disposable
 import io.sikorka.android.contract.BasicInterface
 import io.sikorka.android.contract.SikorkaRegistry
 import io.sikorka.android.core.ethereumclient.LightClientProvider
@@ -11,7 +12,8 @@ import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
 import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.isDisposed
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -23,8 +25,10 @@ constructor(
   userLocation: UserLocationProvider,
   private val lightClientProvider: LightClientProvider,
   private val deployedSikorkaContractDao: DeployedSikorkaContractDao,
-  private val schedulerProvider: SchedulerProvider
+  private val appSchedulers: AppSchedulers
 ) : LifecycleMonitor() {
+
+  private var disposable: Disposable? = null
 
   init {
     val observer = Observer<SyncStatus> {
@@ -41,12 +45,16 @@ constructor(
         return@Observer
       }
 
-      cacheContracts()
+      if (!disposable.isDisposed()) {
+        return@Observer
+      }
+
+      disposable = cacheContracts()
     })
   }
 
-  private fun cacheContracts() {
-    cache().subscribeOn(schedulerProvider.monitor())
+  private fun cacheContracts(): Disposable? {
+    return cache().subscribeOn(appSchedulers.monitor)
       .subscribe({
         Timber.v("done")
       }) {
@@ -63,10 +71,10 @@ constructor(
 
     val registry = lightClient.bindContract(
       SikorkaRegistry.REGISTRY_ADDRESS,
-      SikorkaRegistry.ABI,
-      {
-        SikorkaRegistry(it)
-      })
+      SikorkaRegistry.ABI
+    ) {
+      SikorkaRegistry(it)
+    }
 
     val contractAddresses = registry.getContractAddresses()
     val contractCoordinates = registry.getContractCoordinates()
@@ -85,9 +93,8 @@ constructor(
       val longitude = BigDecimal(cordLong).divide(modifier)
       val contract = lightClient.bindContract(
         address.hex,
-        BasicInterface.ABI,
-        { BasicInterface(it) }
-      )
+        BasicInterface.ABI
+      ) { BasicInterface(it) }
       val deployed = DeployedSikorkaContract(
         name = contract.name(),
         addressHex = address.hex,

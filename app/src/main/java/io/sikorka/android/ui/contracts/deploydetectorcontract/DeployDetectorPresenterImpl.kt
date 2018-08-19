@@ -7,7 +7,7 @@ import io.sikorka.android.core.contracts.model.DetectorContractData
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.contracts.DeployContractCodes
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -17,13 +17,13 @@ class DeployDetectorPresenterImpl
 constructor(
   private val gethNode: GethNode,
   private val contractRepository: ContractRepository,
-  private val schedulerProvider: SchedulerProvider,
+  private val appSchedulers: AppSchedulers,
   private val appPreferences: AppPreferences
 ) : DeployDetectorPresenter, BasePresenter<DeployDetectorView>() {
   override fun prepareGasSelection() {
     addDisposable(gethNode.suggestedGasPrice()
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
+        .subscribeOn(appSchedulers.io)
+        .observeOn(appSchedulers.main)
         .subscribe({
           attachedView().showGasDialog(it)
         }) {
@@ -35,8 +35,8 @@ constructor(
 
   override fun deployContract(passphrase: String, data: DetectorContractData) {
     contractRepository.deployContract(passphrase, data)
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
+        .subscribeOn(appSchedulers.io)
+        .observeOn(appSchedulers.main)
         .subscribe({
           attachedView().complete(it.address.hex)
         }) {

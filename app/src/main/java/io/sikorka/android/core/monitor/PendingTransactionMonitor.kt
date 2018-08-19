@@ -1,10 +1,12 @@
 package io.sikorka.android.core.monitor
 
 import android.arch.lifecycle.Observer
+import io.reactivex.disposables.Disposable
 import io.sikorka.android.core.ethereumclient.LightClientProvider
-import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.data.transactions.PendingTransactionDao
+import io.sikorka.android.utils.isDisposed
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -13,13 +15,15 @@ class PendingTransactionMonitor
 constructor(
   private val syncStatusProvider: SyncStatusProvider,
   private val pendingTransactionDao: PendingTransactionDao,
-  private val schedulerProvider: SchedulerProvider,
+  private val appSchedulers: AppSchedulers,
   private val lightClientProvider: LightClientProvider
 ) : LifecycleMonitor() {
 
+  private var disposable: Disposable? = null
+
   override fun start() {
     super.start()
-    syncStatusProvider.observe(this, Observer {
+    syncStatusProvider.observe(this, Observer { _ ->
 
       if (!lightClientProvider.initialized) {
         Timber.v("No light client available yet")
@@ -28,9 +32,13 @@ constructor(
 
       val lightClient = lightClientProvider.get()
 
-      pendingTransactionDao.pendingTransaction()
-          .subscribeOn(schedulerProvider.io())
-          .observeOn(schedulerProvider.io())
+      if (!disposable.isDisposed()) {
+        return@Observer
+      }
+
+      disposable = pendingTransactionDao.pendingTransaction()
+          .subscribeOn(appSchedulers.io)
+          .observeOn(appSchedulers.io)
           .flatMapIterable { it }
           .toObservable()
           .flatMapSingle { lightClient.getTransactionReceipt(it.txHash) }

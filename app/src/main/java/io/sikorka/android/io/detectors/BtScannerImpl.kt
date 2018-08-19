@@ -8,13 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import io.reactivex.Observable
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
 class BtScannerImpl
 @Inject
-constructor(private val schedulerProvider: SchedulerProvider) : BtScanner {
+constructor(private val appSchedulers: AppSchedulers) : BtScanner {
   private val intentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
 
   override fun btSupport(): Boolean {
@@ -62,7 +62,7 @@ constructor(private val schedulerProvider: SchedulerProvider) : BtScanner {
 
         btAdapter.cancelDiscovery()
       }
-    }.subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.main())
+    }.subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
   }
 }

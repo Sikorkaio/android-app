@@ -1,10 +1,6 @@
 package io.sikorka.android
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -12,20 +8,15 @@ import android.support.v4.app.NotificationCompat
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.GethNode
-import io.sikorka.android.core.monitor.AccountBalanceMonitor
-import io.sikorka.android.core.monitor.DeployedContractMonitor
-import io.sikorka.android.core.monitor.PendingContractMonitor
-import io.sikorka.android.core.monitor.PendingTransactionMonitor
-import io.sikorka.android.core.monitor.PrepareTransactionStatusEvent
-import io.sikorka.android.core.monitor.TransactionStatusEvent
+import io.sikorka.android.core.monitor.*
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.ui.main.MainActivity
-import io.sikorka.android.utils.schedulers.SchedulerProvider
-import kotlinx.coroutines.experimental.CommonPool
+import io.sikorka.android.utils.schedulers.AppDispatchers
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
@@ -46,7 +37,9 @@ class SikorkaService : Service() {
   @Inject
   lateinit var deployedContractMonitor: DeployedContractMonitor
   @Inject
-  lateinit var schedulerProvider: SchedulerProvider
+  lateinit var schedulers: AppSchedulers
+  @Inject
+  lateinit var dispatchers: AppDispatchers
   @Inject
   lateinit var bus: RxBus
 
@@ -73,7 +66,9 @@ class SikorkaService : Service() {
   }
 
   private fun stop() {
-    async(CommonPool) {
+    disposables.clear()
+
+    launch(dispatchers.io) {
       contractMonitor.stop()
       pendingTransactionMonitor.stop()
       accountBalanceMonitor.stop()
@@ -107,8 +102,8 @@ class SikorkaService : Service() {
 
     disposables += gethNode.status()
       .distinct()
-      .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.io())
+      .subscribeOn(schedulers.io)
+      .observeOn(schedulers.io)
       .subscribe({
         val notification = createNotification(it)
         notificationManager.notify(NOTIFICATION_ID, notification)
@@ -123,14 +118,14 @@ class SikorkaService : Service() {
       }
     }
 
-    bus.register(this, PrepareTransactionStatusEvent::class.java, {
-      async(UI) {
+    bus.register(this, PrepareTransactionStatusEvent::class.java) {
+      launch(UI) {
         delay(10_000)
         Timber.v("Handling status")
         notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, transactionSuccess())
         bus.post(TransactionStatusEvent(it.txHash, it.success))
       }
-    })
+    }
   }
 
   override fun onTaskRemoved(rootIntent: Intent?) {

@@ -12,7 +12,7 @@ import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences
-import io.sikorka.android.utils.schedulers.SchedulerProvider
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class MainPresenterImpl
 constructor(
   private val accountRepository: AccountRepository,
   private val contractRepository: ContractRepository,
-  private val schedulerProvider: SchedulerProvider,
+  private val appSchedulers: AppSchedulers,
   private val locationProvider: UserLocationProvider,
   private val appPreferences: AppPreferences,
   syncStatusProvider: SyncStatusProvider,
@@ -70,8 +70,8 @@ constructor(
 
   override fun load() {
     addDisposable(accountRepository.selectedAccount()
-        .subscribeOn(schedulerProvider.io())
-        .observeOn(schedulerProvider.main())
+        .subscribeOn(appSchedulers.io)
+        .observeOn(appSchedulers.main)
         .subscribe({
           attachedView().updateAccountInfo(it, appPreferences.preferredBalancePrecision())
           Timber.v(it.toString())
