@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BaseViewHolder
@@ -72,10 +72,6 @@ class AccountViewHolder(
 
   override fun update() {
     this.accountAddress.text = presenter.hex(adapterPosition)
-    if (presenter.isDefault(adapterPosition)) {
-      defaultIndicator.isVisible = true
-    } else {
-      defaultIndicator.isVisible = false
-    }
+    defaultIndicator.isVisible = presenter.isDefault(adapterPosition)
   }
 }

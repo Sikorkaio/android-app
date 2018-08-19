@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.ui.BindingViewHolder
 import io.sikorka.android.ui.dialogs.fileselection.Selection.FILE

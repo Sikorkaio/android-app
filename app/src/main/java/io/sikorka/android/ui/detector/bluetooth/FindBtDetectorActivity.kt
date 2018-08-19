@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -72,14 +72,14 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
     find_detector__swipe_layout.setOnRefreshListener { discover() }
     presenter.attach(this)
 
-    detectorAdapter.setOnClickListener {
+    detectorAdapter.setOnClickListener { device ->
       val dialog = progress(
         R.string.find_detector__connecting_title,
         R.string.find_detector__connecting_content
       )
       dialog.show()
 
-      btConnector.connect(it)
+      btConnector.connect(device)
         .flatMap { it.getDetectorEthAddress() }
         .subscribeOn(Schedulers.io())
         .doAfterTerminate {
@@ -124,11 +124,7 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
       }
       .subscribe({ devices ->
         detectorAdapter.update(devices)
-        if (devices.isEmpty()) {
-          find_detector__no_result_group.isVisible = true
-        } else {
-          find_detector__no_result_group.isVisible = false
-        }
+        find_detector__no_result_group.isVisible = devices.isEmpty()
       }) {
         Snackbar.make(
           find_detector__swipe_layout,

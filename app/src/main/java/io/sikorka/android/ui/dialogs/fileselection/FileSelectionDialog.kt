@@ -14,7 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.ui.coloredSpan
 import io.sikorka.android.ui.dialogs.fileselection.Selection.DIRECTORY
@@ -54,16 +54,16 @@ class FileSelectionDialog : DialogFragment() {
     val builder = AlertDialog.Builder(context)
       .setTitle(coloredSpan(titleResId))
       .setView(view)
-      .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ ->
+      .setPositiveButton(coloredSpan(android.R.string.ok)) { dialog, _ ->
         selectedFile?.let {
           onSelection(it)
           dialog.dismiss()
         }
-      })
-      .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ -> dialog.dismiss() })
+      }
+      .setNegativeButton(coloredSpan(android.R.string.cancel)) { dialog, _ -> dialog.dismiss() }
 
     val alertDialog = builder.create()
-    alertDialog.setOnShowListener {
+    alertDialog.setOnShowListener { _ ->
       navigateTo(rootDirectory)
 
       fileSelectionAdapter.setOnFileSelected { file, navigate ->
