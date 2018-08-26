@@ -3,8 +3,8 @@ package io.sikorka.android.ui.detector.select
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.sikorka.android.R
 import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity
@@ -13,7 +13,7 @@ import kotterknife.bindView
 
 class SelectDetectorTypeActivity : BaseActivity() {
 
-  private val detectors: RecyclerView by bindView(R.id.select_detector_type__supported_detectors)
+  private val detectors: androidx.recyclerview.widget.RecyclerView by bindView(R.id.select_detector_type__supported_detectors)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class SelectDetectorTypeActivity : BaseActivity() {
 
     detectors.apply {
       adapter = detectorTypeAdapter
-      layoutManager = LinearLayoutManager(this@SelectDetectorTypeActivity)
+      layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@SelectDetectorTypeActivity)
     }
   }
 

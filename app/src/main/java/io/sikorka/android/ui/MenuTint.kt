@@ -24,8 +24,8 @@ package io.sikorka.android.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.PorterDuff
-import android.support.v7.view.menu.MenuItemImpl
-import android.support.v7.widget.ActionMenuView
+import androidx.appcompat.view.menu.MenuItemImpl
+import androidx.appcompat.widget.ActionMenuView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MenuItem.OnActionExpandListener
@@ -503,7 +503,7 @@ class MenuTint private constructor(builder: MenuTint.Builder) {
       val len = viewGroup.childCount
       while (i < len) {
         val view = viewGroup.getChildAt(i)
-        val isAppCompatToolbar = view.javaClass == android.support.v7.widget.Toolbar::class.java
+        val isAppCompatToolbar = view.javaClass == androidx.appcompat.widget.Toolbar::class.java
         val isToolbar = view.javaClass.name == "android.widget.Toolbar"
         if (isAppCompatToolbar || isToolbar) {
           toolbar = view as ViewGroup

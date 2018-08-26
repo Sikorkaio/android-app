@@ -1,7 +1,7 @@
 package io.sikorka.android.settings
 
 import android.content.SharedPreferences
-import android.support.annotation.IntRange
+import androidx.annotation.IntRange
 import io.sikorka.android.core.configuration.Network
 import javax.inject.Inject
 

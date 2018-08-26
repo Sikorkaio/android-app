@@ -9,13 +9,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -73,7 +73,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(),
   MainView,
   OnMapReadyCallback,
-  NavigationView.OnNavigationItemSelectedListener {
+  com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener {
 
   @Inject
   lateinit var presenter: MainPresenter
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(),
   override fun notifyTransactionMined(txHash: String, success: Boolean) {
     val message = "Your transaction has been mined. " +
       "100 Sikorka example discount tokens have been transferred to your account"
-    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
+    com.google.android.material.snackbar.Snackbar.make(main__deploy_fab, message, com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
   }
 
   override fun notifyContractMined(address: String, txHash: String, success: Boolean) {
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(),
     } else {
       "Contract $address was not mined successfully"
     }
-    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
+    com.google.android.material.snackbar.Snackbar.make(main__deploy_fab, message, com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
   }
 
   @Inject
@@ -412,10 +412,10 @@ class MainActivity : AppCompatActivity(),
 
   override fun error(error: Throwable) {
     val message = error.message ?: getString(R.string.errors__generic_error)
-    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_SHORT).show()
+    com.google.android.material.snackbar.Snackbar.make(main__deploy_fab, message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
   }
 
-  private var progress: Snackbar? = null
+  private var progress: com.google.android.material.snackbar.Snackbar? = null
 
   override fun loading(loading: Boolean) {
     main__deploy_fab.isVisible = !loading
@@ -423,7 +423,7 @@ class MainActivity : AppCompatActivity(),
     if (loading) {
       progress = main__deploy_fab.progressSnack(
         R.string.main__loading_message,
-        Snackbar.LENGTH_INDEFINITE
+        com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
       )
       progress?.show()
     } else {

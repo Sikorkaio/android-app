@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.accounts
 
-import android.support.v7.widget.PopupMenu
+import androidx.appcompat.widget.PopupMenu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton

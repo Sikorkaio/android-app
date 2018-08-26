@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
 
-  private val peers: RecyclerView by bindView(R.id.peer_manager__peers)
+  private val peers: androidx.recyclerview.widget.RecyclerView by bindView(R.id.peer_manager__peers)
   private val loading: ProgressBar by bindView(R.id.peer_manager__loading_bar)
 
   @Inject
@@ -54,7 +54,7 @@ class PeerManagerActivity : BaseActivity(), PeerManagerView, Actions {
     setupToolbar(R.string.peer_manager__title)
 
     peers.adapter = peerAdapter
-    peers.layoutManager = LinearLayoutManager(this)
+    peers.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
 
     presenter.attach(this)
     presenter.load()

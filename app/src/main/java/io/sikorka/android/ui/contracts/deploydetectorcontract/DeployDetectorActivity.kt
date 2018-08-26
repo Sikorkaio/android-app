@@ -3,7 +3,7 @@ package io.sikorka.android.ui.contracts.deploydetectorcontract
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -119,23 +119,23 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
   }
 
   override fun showError(message: String) {
-    Snackbar.make(deploy_detector__detector_address, message, Snackbar.LENGTH_SHORT).show()
+    com.google.android.material.snackbar.Snackbar.make(deploy_detector__detector_address, message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
   }
 
   override fun showError(code: Int) {
     when (code) {
       DeployContractCodes.NO_GAS_PREFERENCES -> {
-        Snackbar.make(
+        com.google.android.material.snackbar.Snackbar.make(
           deploy_detector__detector_address,
           R.string.deploy_contract__no_gas_preferences,
-          Snackbar.LENGTH_SHORT
+          com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
         ).show()
       }
       else -> {
-        Snackbar.make(
+        com.google.android.material.snackbar.Snackbar.make(
           deploy_detector__detector_address,
           "code $code",
-          Snackbar.LENGTH_SHORT
+          com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
         ).show()
       }
     }

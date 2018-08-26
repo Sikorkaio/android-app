@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.accounts
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.sikorka.android.R
@@ -11,7 +11,7 @@ class AccountAdapter
 @Inject
 constructor(
   private val accountAdapterPresenter: AccountAdapterPresenter
-) : RecyclerView.Adapter<AccountViewHolder>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<AccountViewHolder>() {
 
   private var onDelete: AccountAction? = null
   private var onExport: AccountAction? = null

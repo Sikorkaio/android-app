@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.support.constraint.Group
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.constraintlayout.widget.Group
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
@@ -21,15 +21,15 @@ import io.sikorka.android.ui.dialogs.fileselection.Selection.DIRECTORY
 import io.sikorka.android.ui.dialogs.fileselection.Selection.FILE
 import java.io.File
 
-class FileSelectionDialog : DialogFragment() {
+class FileSelectionDialog : androidx.fragment.app.DialogFragment() {
 
-  private lateinit var fm: FragmentManager
+  private lateinit var fm: androidx.fragment.app.FragmentManager
 
   private lateinit var rootDirectory: File
-  private lateinit var fileList: RecyclerView
+  private lateinit var fileList: androidx.recyclerview.widget.RecyclerView
   private lateinit var upButton: ImageButton
   private lateinit var currentDirectory: TextView
-  private lateinit var emptyGroup: Group
+  private lateinit var emptyGroup: androidx.constraintlayout.widget.Group
 
   private lateinit var currentFile: File
   private lateinit var onSelection: (File) -> Unit
@@ -122,7 +122,7 @@ class FileSelectionDialog : DialogFragment() {
     val inflater = LayoutInflater.from(context)
     return inflater.inflate(R.layout.dialog__file_selection, null, false).also {
       fileList = it.findViewById(R.id.file_selection__file_list)
-      fileList.layoutManager = LinearLayoutManager(context)
+      fileList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
       fileList.adapter = fileSelectionAdapter
       emptyGroup = it.findViewById(R.id.file_selection__empty_group)
       upButton = it.findViewById(R.id.file_selection__navigate_up)
@@ -132,7 +132,7 @@ class FileSelectionDialog : DialogFragment() {
 
   companion object {
     private const val TAG = "io.sikorka.android.ui.dialogs.fileselection.FILE_SELECTION"
-    fun create(fm: FragmentManager, rootDirectory: File, showFiles: Boolean): FileSelectionDialog {
+    fun create(fm: androidx.fragment.app.FragmentManager, rootDirectory: File, showFiles: Boolean): FileSelectionDialog {
       return FileSelectionDialog().apply {
         this.rootDirectory = rootDirectory
         this.showFiles = showFiles

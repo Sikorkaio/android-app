@@ -3,10 +3,10 @@ package io.sikorka.android.ui.gasselectiondialog
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -20,17 +20,17 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.coloredSpan
 import toothpick.Toothpick
 
-class GasSelectionDialog : DialogFragment() {
+class GasSelectionDialog : androidx.fragment.app.DialogFragment() {
 
   private var dialog: AlertDialog? = null
 
-  private lateinit var fm: FragmentManager
+  private lateinit var fm: androidx.fragment.app.FragmentManager
   private lateinit var gas: ContractGas
   private lateinit var onGasSelected: (gas: ContractGas) -> Unit
 
-  private lateinit var gasPriceInput: TextInputLayout
+  private lateinit var gasPriceInput: com.google.android.material.textfield.TextInputLayout
   private lateinit var gasPriceUnit: Spinner
-  private lateinit var gasLimitInput: TextInputLayout
+  private lateinit var gasLimitInput: com.google.android.material.textfield.TextInputLayout
   private lateinit var gasLimitUnit: Spinner
 
   @SuppressLint("InflateParams")
@@ -116,7 +116,7 @@ class GasSelectionDialog : DialogFragment() {
     const val TAG = "io.sikorka.android.ui.gasselectiondialog"
 
     fun create(
-      fm: FragmentManager,
+      fm: androidx.fragment.app.FragmentManager,
       gas: ContractGas,
       onGasSelected: (gas: ContractGas) -> Unit
     ): GasSelectionDialog {

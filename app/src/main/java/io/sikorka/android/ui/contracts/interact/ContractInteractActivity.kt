@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AlertDialog
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AlertDialog
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -157,10 +157,10 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
   }
 
   override fun showError() {
-    Snackbar.make(
+    com.google.android.material.snackbar.Snackbar.make(
       contract_interact__verify,
       R.string.contract_interact__generic_error,
-      Snackbar.LENGTH_LONG
+      com.google.android.material.snackbar.Snackbar.LENGTH_LONG
     ).show()
   }
 
@@ -213,10 +213,10 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
     Timber.v("result $resultCode")
     if (requestCode == QrScannerActivity.SCANNER_RESULT && resultCode == Activity.RESULT_OK) {
       if (data == null) {
-        Snackbar.make(
+        com.google.android.material.snackbar.Snackbar.make(
           contract_interact__verify,
           R.string.contract_interact__generic_error,
-          Snackbar.LENGTH_LONG
+          com.google.android.material.snackbar.Snackbar.LENGTH_LONG
         ).show()
       } else {
 

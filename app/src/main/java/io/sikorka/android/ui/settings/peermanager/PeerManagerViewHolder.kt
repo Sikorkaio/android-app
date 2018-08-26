@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.settings.peermanager
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import kotterknife.bindView
 
-class PeerManagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PeerManagerViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
   private val nodeId: TextView by bindView(R.id.peers__node_id)
   private val nodeAddress: TextView by bindView(R.id.peers__node_address)

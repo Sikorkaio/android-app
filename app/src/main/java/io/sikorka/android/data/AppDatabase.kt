@@ -1,7 +1,7 @@
 package io.sikorka.android.data
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
+import androidx.room.Database
+import androidx.room.RoomDatabase
 import io.sikorka.android.data.balance.AccountBalance
 import io.sikorka.android.data.balance.AccountBalanceDao
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract

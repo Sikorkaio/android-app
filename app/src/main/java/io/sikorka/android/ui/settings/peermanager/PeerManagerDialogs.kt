@@ -1,8 +1,8 @@
 package io.sikorka.android.ui.settings.peermanager
 
 import android.annotation.SuppressLint
-import android.support.design.widget.TextInputLayout
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.appcompat.app.AlertDialog
 import android.util.Patterns.WEB_URL
 import android.view.LayoutInflater
 import android.widget.CheckBox
@@ -17,7 +17,7 @@ fun PeerManagerActivity.urlInputDialog(
 
   val inflater = LayoutInflater.from(this)
   val view = inflater.inflate(R.layout.dialog__peer_url, null, false)
-  val input = view.findViewById<TextInputLayout>(R.id.peer_manager__url_dialog_input)
+  val input = view.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.peer_manager__url_dialog_input)
   val mergeCheckBox: CheckBox = view.findViewById(R.id.peer_manager__peers_merge_check)
 
   val dialog = AlertDialog.Builder(this)

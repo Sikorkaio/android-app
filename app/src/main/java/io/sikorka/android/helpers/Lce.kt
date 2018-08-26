@@ -1,6 +1,6 @@
 package io.sikorka.android.helpers
 
-import android.support.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting
 
 class Lce<out T>(
   private val loading: Boolean,

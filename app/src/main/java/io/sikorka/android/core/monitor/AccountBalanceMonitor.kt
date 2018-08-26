@@ -1,6 +1,6 @@
 package io.sikorka.android.core.monitor
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.sikorka.android.core.accounts.AccountRepository

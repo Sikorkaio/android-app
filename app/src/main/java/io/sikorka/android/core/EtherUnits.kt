@@ -1,6 +1,6 @@
 package io.sikorka.android.core
 
-import android.support.annotation.StringDef
+import androidx.annotation.StringDef
 import io.sikorka.android.core.EtherUnits.Currency
 import io.sikorka.android.core.EtherUnits.ETHER
 import io.sikorka.android.core.EtherUnits.FINNEY

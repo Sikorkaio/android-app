@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity">
 
-  <android.support.v7.widget.Toolbar
+  <androidx.appcompat.widget.Toolbar
       android:id="@+id/toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -44,14 +44,14 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/deploy_detector__title" />
 
-  <android.support.constraint.Guideline
+  <androidx.constraintlayout.widget.Guideline
       android:id="@+id/deploy_detector__guideline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.4" />
 
-  <android.support.design.widget.TextInputLayout
+  <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/deploy_detector__contract_name"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -63,12 +63,12 @@
       app:layout_constraintTop_toBottomOf="@+id/deploy_detector__detector_address"
       app:passwordToggleEnabled="true">
 
-    <android.support.design.widget.TextInputEditText
+    <com.google.android.material.textfield.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/deploy_detector__contract_name"
         android:inputType="text" />
-  </android.support.design.widget.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
   <TextView
       android:id="@+id/deploy_detector__bound_detector"
@@ -112,7 +112,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="@+id/deploy_detector__authorization_duration" />
 
-  <android.support.design.widget.TextInputLayout
+  <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/deploy_detector__authorization_duration"
       android:layout_width="0dp"
       android:layout_height="58dp"
@@ -125,14 +125,14 @@
       app:layout_constraintTop_toBottomOf="@+id/deploy_detector__contract_name"
       app:passwordToggleEnabled="true">
 
-    <android.support.design.widget.TextInputEditText
+    <com.google.android.material.textfield.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/deploy_detector__authorization_duration"
         android:inputType="number" />
-  </android.support.design.widget.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
-  <android.support.design.widget.TextInputLayout
+  <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/deploy_detector__contract_tokens"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -144,12 +144,12 @@
       app:layout_constraintTop_toBottomOf="@+id/deploy_detector__authorization_duration"
       app:passwordToggleEnabled="true">
 
-    <android.support.design.widget.TextInputEditText
+    <com.google.android.material.textfield.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/deploy_detector__contract_tokens"
         android:inputType="number" />
-  </android.support.design.widget.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
   <CheckBox
       android:id="@+id/deploy_detector__advanced_options"
@@ -163,7 +163,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/deploy_detector__contract_tokens" />
 
-  <android.support.design.widget.FloatingActionButton
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
       android:id="@+id/deploy_detector__deploy_fab"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -174,4 +174,4 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:srcCompat="@drawable/ic_insert_drive_file_black_24dp" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

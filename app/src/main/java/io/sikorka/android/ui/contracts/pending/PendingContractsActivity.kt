@@ -3,8 +3,8 @@ package io.sikorka.android.ui.contracts.pending
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.core.view.isVisible
 import io.sikorka.android.R
 import io.sikorka.android.data.contracts.pending.PendingContract
@@ -34,7 +34,7 @@ class PendingContractsActivity : BaseActivity(), PendingContractsView {
     pendingContractAdapter = PendingContractsAdapter()
     pending_contracts__contract_list.apply {
       adapter = pendingContractAdapter
-      layoutManager = LinearLayoutManager(this@PendingContractsActivity)
+      layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@PendingContractsActivity)
     }
 
     setupToolbar(R.string.pending_contracts__title)
@@ -64,7 +64,7 @@ class PendingContractsActivity : BaseActivity(), PendingContractsView {
     if (message == null) {
       return
     }
-    Snackbar.make(pending_contracts__contract_list, message, Snackbar.LENGTH_SHORT).show()
+    com.google.android.material.snackbar.Snackbar.make(pending_contracts__contract_list, message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
   }
 
   @javax.inject.Scope

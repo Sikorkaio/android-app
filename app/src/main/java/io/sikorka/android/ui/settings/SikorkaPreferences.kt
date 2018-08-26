@@ -1,9 +1,9 @@
 package io.sikorka.android.ui.settings
 
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceFragmentCompat
+import androidx.annotation.StringRes
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.Network

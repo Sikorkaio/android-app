@@ -1,7 +1,7 @@
 package io.sikorka.android.ui.dialogs.fileselection
 
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import android.view.ViewGroup
 import io.sikorka.android.ui.dialogs.fileselection.Selection.DIRECTORY
 import io.sikorka.android.ui.dialogs.fileselection.Selection.FILE
@@ -74,11 +74,11 @@ class FileSelectionAdapter : ListAdapter<File, FileSelectionViewHolder>(DIFF_CAL
     private const val SELECTION = "selection"
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<File>() {
-      override fun areItemsTheSame(oldItem: File?, newItem: File?): Boolean {
-        return oldItem?.absolutePath == newItem?.absolutePath
+      override fun areItemsTheSame(oldItem: File, newItem: File): Boolean {
+        return oldItem.absolutePath == newItem.absolutePath
       }
 
-      override fun areContentsTheSame(oldItem: File?, newItem: File?): Boolean {
+      override fun areContentsTheSame(oldItem: File, newItem: File): Boolean {
         return oldItem == newItem
       }
     }
