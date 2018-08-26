@@ -1,6 +1,6 @@
 package io.sikorka.android.core.accounts
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 object ValidationResult {
   const val EMPTY_PASSPHRASE = -1

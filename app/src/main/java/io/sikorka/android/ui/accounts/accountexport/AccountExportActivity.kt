@@ -3,9 +3,9 @@ package io.sikorka.android.ui.accounts.accountexport
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TextInputLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import io.sikorka.android.R
@@ -27,14 +27,14 @@ class AccountExportActivity : BaseActivity(),
   AccountExportView {
 
   private val account: TextView by bindView(R.id.account_export__account_hex)
-  private val path: TextInputLayout by bindView(R.id.account_export__path_input)
-  private val accountPassphrase: TextInputLayout by bindView(R.id.account_export__passphrase)
-  private val accountExportFab: FloatingActionButton by bindView(R.id.account_export__export_fab)
+  private val path: com.google.android.material.textfield.TextInputLayout by bindView(R.id.account_export__path_input)
+  private val accountPassphrase: com.google.android.material.textfield.TextInputLayout by bindView(R.id.account_export__passphrase)
+  private val accountExportFab: com.google.android.material.floatingactionbutton.FloatingActionButton by bindView(R.id.account_export__export_fab)
   private val selectDirectoryButton: ImageButton by bindView(R.id.account_export__select_directory)
-  private val filePassphrase: TextInputLayout by bindView(
+  private val filePassphrase: com.google.android.material.textfield.TextInputLayout by bindView(
     R.id.account_export__encryption_passphrase
   )
-  private val filePassphraseConfirm: TextInputLayout by bindView(
+  private val filePassphraseConfirm: com.google.android.material.textfield.TextInputLayout by bindView(
     R.id.account_export__encryption_passphrase_confirmation
   )
 
@@ -52,7 +52,7 @@ class AccountExportActivity : BaseActivity(),
   }
 
   override fun exportComplete() {
-    Snackbar.make(account, R.string.account_export__export_complete, Snackbar.LENGTH_SHORT)
+    com.google.android.material.snackbar.Snackbar.make(account, R.string.account_export__export_complete, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT)
     finish()
   }
 

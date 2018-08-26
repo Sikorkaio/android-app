@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.detector.select
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 object SupportedDetectors {
   const val BLUETOOTH = 1

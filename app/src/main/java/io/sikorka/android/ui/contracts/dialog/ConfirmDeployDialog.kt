@@ -3,10 +3,10 @@ package io.sikorka.android.ui.contracts.dialog
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.TextView
@@ -15,15 +15,15 @@ import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.coloredSpan
 
-class ConfirmDeployDialog : DialogFragment() {
+class ConfirmDeployDialog : androidx.fragment.app.DialogFragment() {
 
   private lateinit var gasPriceWei: TextView
   private lateinit var gasLimitWei: TextView
-  private lateinit var passphraseInput: TextInputLayout
+  private lateinit var passphraseInput: com.google.android.material.textfield.TextInputLayout
 
   private lateinit var dialog: AlertDialog
 
-  private lateinit var fm: FragmentManager
+  private lateinit var fm: androidx.fragment.app.FragmentManager
   private lateinit var onDeployConfirm: OnDeployConfirm
   private lateinit var contractGas: ContractGas
 
@@ -77,7 +77,7 @@ class ConfirmDeployDialog : DialogFragment() {
   companion object {
     private const val TAG = "io.sikorka.android.ui.contracts.deploy.ConfirmDeployDialog"
     fun create(
-      fm: FragmentManager,
+      fm: androidx.fragment.app.FragmentManager,
       gas: ContractGas,
       onDeployConfirm: OnDeployConfirm
     ): ConfirmDeployDialog {

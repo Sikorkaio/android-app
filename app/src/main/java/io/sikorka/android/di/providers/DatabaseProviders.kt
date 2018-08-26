@@ -1,7 +1,7 @@
 package io.sikorka.android.di.providers
 
 import android.app.Application
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.data.contracts.pending.PendingContractDao
 import io.sikorka.android.data.transactions.PendingTransactionDao

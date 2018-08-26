@@ -1,8 +1,8 @@
 package io.sikorka.android.ui.settings.peermanager
 
 import android.app.Activity
-import android.support.v4.content.ContextCompat
-import android.support.v7.view.ActionMode
+import androidx.core.content.ContextCompat
+import androidx.appcompat.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import io.sikorka.android.R

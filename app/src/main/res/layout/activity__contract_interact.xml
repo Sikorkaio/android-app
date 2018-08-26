@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <android.support.v7.widget.Toolbar
+  <androidx.appcompat.widget.Toolbar
       android:id="@+id/toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/contract_interact__contract_address" />
 
-  <android.support.constraint.Guideline
+  <androidx.constraintlayout.widget.Guideline
       android:id="@+id/contract_interact__guideline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
       app:layout_constraintTop_toBottomOf="@+id/interact_contract__detector_address_label"
       tools:text="0x1041267bA4c69c1E2760519F3909009B07FFcb29" />
 
-  <android.support.constraint.Group
+  <androidx.constraintlayout.widget.Group
       android:id="@+id/interact_contract__detector_address_group"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/interact_contract__interact_with_detector" />
 
-  <android.support.design.widget.FloatingActionButton
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
       android:id="@+id/contract_interact__verify"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -153,4 +153,4 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:srcCompat="@drawable/ic_check_black_24dp" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

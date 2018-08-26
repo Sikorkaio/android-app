@@ -1,6 +1,6 @@
 package io.sikorka.android.core.configuration
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 object Network {
 

@@ -1,8 +1,8 @@
 package io.sikorka.android.ui.detector.select
 
-import android.support.design.widget.TextInputEditText
-import android.support.design.widget.TextInputLayout
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import androidx.appcompat.app.AlertDialog
 import android.text.InputType
 import android.widget.Toast
 import io.sikorka.android.R
@@ -14,8 +14,8 @@ import org.ethereum.geth.Geth
 fun SelectDetectorTypeActivity.addressSpecificationDialog(
   onAddress: (address: Address) -> Unit
 ): AlertDialog {
-  val inputLayout = TextInputLayout(this)
-  val editText = TextInputEditText(this)
+  val inputLayout = com.google.android.material.textfield.TextInputLayout(this)
+  val editText = com.google.android.material.textfield.TextInputEditText(this)
   editText.inputType = InputType.TYPE_CLASS_TEXT
   inputLayout.hint = getString(R.string.select_detector__manual_dialog_hint)
   inputLayout.addView(editText)

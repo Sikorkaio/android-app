@@ -1,7 +1,7 @@
 package io.sikorka.android.ui.wizard.slides
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,7 @@ import io.sikorka.android.R
  * Use the [InformationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class InformationFragment : Fragment() {
+class InformationFragment : androidx.fragment.app.Fragment() {
 
   override fun onCreateView(
     inflater: LayoutInflater,

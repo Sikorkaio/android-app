@@ -3,10 +3,10 @@ package io.sikorka.android.ui.accounts
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import io.sikorka.android.R
@@ -24,8 +24,8 @@ import toothpick.smoothie.module.SmoothieSupportActivityModule
 import javax.inject.Inject
 
 class AccountActivity : BaseActivity(), AccountView {
-  private val accountsRecycler: RecyclerView by bindView(R.id.accounts__recycler_view)
-  private val createAccount: FloatingActionButton by bindView(R.id.accounts__create_account)
+  private val accountsRecycler: androidx.recyclerview.widget.RecyclerView by bindView(R.id.accounts__recycler_view)
+  private val createAccount: com.google.android.material.floatingactionbutton.FloatingActionButton by bindView(R.id.accounts__create_account)
 
   @Inject
   lateinit var presenter: AccountPresenter
@@ -40,7 +40,7 @@ class AccountActivity : BaseActivity(), AccountView {
     Toothpick.inject(this, scope)
 
     accountsRecycler.adapter = adapter
-    accountsRecycler.layoutManager = LinearLayoutManager(this)
+    accountsRecycler.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
     setupToolbar(R.string.account_management__title)
 
     createAccount.setOnClickListener {

@@ -1,7 +1,7 @@
 package io.sikorka.android.ui.wizard.slides.accountsetup
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +20,7 @@ import javax.inject.Inject
  * Use the [AccountSetupFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AccountSetupFragment : Fragment(), AccountSetupView {
+class AccountSetupFragment : androidx.fragment.app.Fragment(), AccountSetupView {
 
   private val accountAddress: TextView by bindView(R.id.account_setup__account_address)
   private val createNew: TextView by bindView(R.id.account_setup__create_new)

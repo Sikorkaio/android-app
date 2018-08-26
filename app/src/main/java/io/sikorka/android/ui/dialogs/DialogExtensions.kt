@@ -3,11 +3,11 @@ package io.sikorka.android.ui.dialogs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
-import android.support.annotation.StringRes
-import android.support.design.widget.TextInputEditText
-import android.support.design.widget.TextInputLayout
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.StringRes
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import android.text.InputType
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -91,8 +91,8 @@ fun Context.showInfo(
 }
 
 fun Context.verifyPassphraseDialog(onInput: (input: String) -> Unit) {
-  val inputLayout = TextInputLayout(this)
-  val editText = TextInputEditText(this)
+  val inputLayout = com.google.android.material.textfield.TextInputLayout(this)
+  val editText = com.google.android.material.textfield.TextInputEditText(this)
   editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
   inputLayout.hint = getString(R.string.dialog__input_hint)
   inputLayout.addView(editText)
@@ -152,8 +152,8 @@ fun Context.balancePrecisionDialog(
   val inflater = LayoutInflater.from(this@balancePrecisionDialog)
   val builder = AlertDialog.Builder(this)
   val view = inflater.inflate(R.layout.dialog__balance_precision, null)
-  val inputLayout: TextInputLayout = view.findViewById(R.id.balance_precision__digits_input)
-  val editText: TextInputEditText = view.findViewById(R.id.balance_precision__digits_text)
+  val inputLayout: com.google.android.material.textfield.TextInputLayout = view.findViewById(R.id.balance_precision__digits_input)
+  val editText: com.google.android.material.textfield.TextInputEditText = view.findViewById(R.id.balance_precision__digits_text)
   builder.setView(view)
     .setTitle(R.string.balance_precision__title)
     .setCancelable(false)

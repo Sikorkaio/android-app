@@ -4,7 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.github.paolorotolo.appintro.AppIntro2
 import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
@@ -55,7 +55,7 @@ class WizardActivity : AppIntro2(), WizardView {
     super.onDestroy()
   }
 
-  override fun onDonePressed(currentFragment: Fragment?) {
+  override fun onDonePressed(currentFragment: androidx.fragment.app.Fragment?) {
     presenter.checkForDefaultAccount()
   }
 

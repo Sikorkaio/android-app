@@ -3,10 +3,10 @@ package io.sikorka.android.ui.accounts.accountcreation
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.EditText
 import io.sikorka.android.R
@@ -18,12 +18,12 @@ import io.sikorka.android.ui.coloredSpan
 import toothpick.Toothpick
 import javax.inject.Inject
 
-class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
+class AccountCreationDialog : androidx.fragment.app.DialogFragment(), AccountCreationDialogView {
 
   private lateinit var passphraseField: EditText
   private lateinit var passphraseConfirmationField: EditText
-  private lateinit var passphraseInput: TextInputLayout
-  private lateinit var passphraseConfirmationInput: TextInputLayout
+  private lateinit var passphraseInput: com.google.android.material.textfield.TextInputLayout
+  private lateinit var passphraseConfirmationInput: com.google.android.material.textfield.TextInputLayout
 
   @Inject
   lateinit var presenter: AccountCreationDialogPresenter
@@ -37,7 +37,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
     get() = passphraseConfirmationField.asString()
 
   private lateinit var onDismissAction: (() -> Unit)
-  private lateinit var fm: FragmentManager
+  private lateinit var fm: androidx.fragment.app.FragmentManager
 
   @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -118,7 +118,7 @@ class AccountCreationDialog : DialogFragment(), AccountCreationDialogView {
   companion object {
     const val TAG = "account_creation_dialog"
 
-    fun newInstance(fm: FragmentManager, action: (() -> Unit)): AccountCreationDialog {
+    fun newInstance(fm: androidx.fragment.app.FragmentManager, action: (() -> Unit)): AccountCreationDialog {
       val creationDialog = AccountCreationDialog()
       creationDialog.fm = fm
       creationDialog.onDismissAction = action

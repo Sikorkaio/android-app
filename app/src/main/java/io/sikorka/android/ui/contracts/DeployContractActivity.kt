@@ -3,7 +3,7 @@ package io.sikorka.android.ui.contracts
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -75,10 +75,10 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
   override fun showError(code: Int) {
     when (code) {
       NO_GAS_PREFERENCES -> {
-        Snackbar.make(
+        com.google.android.material.snackbar.Snackbar.make(
           deploy_contract__deploy_fab,
           R.string.deploy_contract__no_gas_preferences,
-          Snackbar.LENGTH_LONG
+          com.google.android.material.snackbar.Snackbar.LENGTH_LONG
         ).show()
       }
     }
@@ -102,7 +102,7 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
   }
 
   override fun showError(message: String?) {
-    Snackbar.make(deploy_contract__deploy_fab, message ?: "error", Snackbar.LENGTH_LONG)
+    com.google.android.material.snackbar.Snackbar.make(deploy_contract__deploy_fab, message ?: "error", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
   }
 
   override fun complete(hex: String?) {

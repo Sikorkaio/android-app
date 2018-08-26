@@ -1,7 +1,7 @@
 package io.sikorka.android.data.contracts.pending
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Query
+import androidx.room.Dao
+import androidx.room.Query
 import io.reactivex.Flowable
 import io.sikorka.android.data.BaseDao
 

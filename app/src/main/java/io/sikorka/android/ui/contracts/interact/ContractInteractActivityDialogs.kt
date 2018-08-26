@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.contracts.interact
 
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import io.sikorka.android.R
 import io.sikorka.android.ui.coloredSpan
 

@@ -1,6 +1,6 @@
 package io.sikorka.android.core.accounts
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

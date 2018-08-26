@@ -3,8 +3,8 @@ package io.sikorka.android.ui.detector.bluetooth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.core.view.isVisible
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -63,7 +63,7 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
     btScanner.enableBt(this, BT_ACTIVATE_REQUEST_CODE)
     find_detector__detector_list.apply {
       adapter = detectorAdapter
-      layoutManager = LinearLayoutManager(this@FindBtDetectorActivity)
+      layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@FindBtDetectorActivity)
     }
 
     setupToolbar(R.string.find_detector__title)
@@ -87,10 +87,10 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
         }.subscribe({
           DeployDetectorActivity.start(this, it.hex, latitude, longitude)
         }) {
-          Snackbar.make(
+          com.google.android.material.snackbar.Snackbar.make(
             find_detector__swipe_layout,
             R.string.find_detector__connection_failed,
-            Snackbar.LENGTH_SHORT
+            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
           ).show()
           Timber.e(it, "connection failed")
         }
@@ -126,10 +126,10 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
         detectorAdapter.update(devices)
         find_detector__no_result_group.isVisible = devices.isEmpty()
       }) {
-        Snackbar.make(
+        com.google.android.material.snackbar.Snackbar.make(
           find_detector__swipe_layout,
           R.string.find_detector__discovery_failed,
-          Snackbar.LENGTH_SHORT
+          com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
         ).show()
         Timber.e(it, "error")
       }

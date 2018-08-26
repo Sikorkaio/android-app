@@ -1,6 +1,6 @@
 package io.sikorka.android.ui.main
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import io.sikorka.android.core.accounts.AccountModel
 import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.core.monitor.ContractStatusEvent

@@ -1,6 +1,6 @@
 package io.sikorka.android.settings
 
-import android.support.annotation.IntRange
+import androidx.annotation.IntRange
 import io.sikorka.android.core.configuration.Network
 
 interface AppPreferences {

@@ -3,8 +3,8 @@ package io.sikorka.android.ui.accounts.accountimport
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.TextInputLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import android.widget.ImageButton
 import io.sikorka.android.R
 import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
@@ -24,14 +24,14 @@ import javax.inject.Inject
 class AccountImportActivity : BaseActivity(),
   AccountImportView {
 
-  private val filePassphrase: TextInputLayout by bindView(R.id.account_import__file_passphrase)
-  private val filePath: TextInputLayout by bindView(R.id.account_import__file_path)
-  private val importAction: FloatingActionButton by bindView(R.id.account_import__import_action)
+  private val filePassphrase: com.google.android.material.textfield.TextInputLayout by bindView(R.id.account_import__file_passphrase)
+  private val filePath: com.google.android.material.textfield.TextInputLayout by bindView(R.id.account_import__file_path)
+  private val importAction: com.google.android.material.floatingactionbutton.FloatingActionButton by bindView(R.id.account_import__import_action)
   private val selectFileButton: ImageButton by bindView(R.id.account_import__select_file_button)
-  private val accountPassphrase: TextInputLayout by bindView(
+  private val accountPassphrase: com.google.android.material.textfield.TextInputLayout by bindView(
     R.id.account_import__account_passphrase
   )
-  private val accountPassphraseConfirmation: TextInputLayout by bindView(
+  private val accountPassphraseConfirmation: com.google.android.material.textfield.TextInputLayout by bindView(
     R.id.account_import__account_passphrase_confirmation
   )
 

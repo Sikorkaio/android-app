@@ -1,6 +1,6 @@
 package io.sikorka.android.core.configuration.peers
 
-import android.support.annotation.IntRange
+import androidx.annotation.IntRange
 
 data class PeerEntry(
   val nodeId: String,

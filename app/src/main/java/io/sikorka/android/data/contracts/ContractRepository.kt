@@ -1,6 +1,6 @@
 package io.sikorka.android.data.contracts
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import io.reactivex.Single
 import io.reactivex.rxkotlin.Singles
 import io.sikorka.android.contract.DiscountContract

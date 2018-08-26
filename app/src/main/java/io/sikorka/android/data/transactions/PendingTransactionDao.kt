@@ -1,8 +1,8 @@
 package io.sikorka.android.data.transactions
 
-import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Query
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Query
 import io.reactivex.Flowable
 import io.sikorka.android.data.BaseDao
 

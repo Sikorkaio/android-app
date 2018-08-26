@@ -1,10 +1,10 @@
 package io.sikorka.android.ui
 
 import android.annotation.SuppressLint
-import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.annotation.StringRes
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
 import io.sikorka.android.R
 import kotterknife.bindView
@@ -40,6 +40,6 @@ open class BaseActivity : AppCompatActivity() {
   }
 
   protected fun snackBar(@StringRes resId: Int) {
-    Snackbar.make(findViewById(android.R.id.content), resId, Snackbar.LENGTH_SHORT).show()
+    com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content), resId, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
   }
 }

@@ -1,10 +1,10 @@
 package io.sikorka.android.ui.wizard.slides.networkselection
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.appcompat.content.res.AppCompatResources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +21,7 @@ import javax.inject.Inject
  * Use the [NetworkSelectionFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NetworkSelectionFragment : Fragment(), NetworkSelectionView {
+class NetworkSelectionFragment : androidx.fragment.app.Fragment(), NetworkSelectionView {
 
   private val ropstenSelection: TextView by bindView(R.id.network_selection__ropsten)
   private val mainnetSelection: TextView by bindView(R.id.network_selection__mainnet)
