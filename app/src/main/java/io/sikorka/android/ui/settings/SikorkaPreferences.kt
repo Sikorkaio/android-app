@@ -8,35 +8,22 @@ import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.Network
 import io.sikorka.android.core.configuration.Network.ROPSTEN
-import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.bytes
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.dialogs.balancePrecisionDialog
 import io.sikorka.android.ui.settings.peermanager.PeerManagerActivity
-import toothpick.Scope
-import toothpick.Toothpick
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class SikorkaPreferences : PreferenceFragmentCompat() {
 
-  @Inject
-  lateinit var appPreferences: AppPreferences
-  @Inject
-  lateinit var storageManager: StorageManager
+  private val appPreferences: AppPreferences by inject()
 
-  private lateinit var scope: Scope
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
+  private val storageManager: StorageManager by inject()
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-    val context = context ?: fail("context was null")
+    val context = requireContext()
 
-    scope = Toothpick.openScopes(context.applicationContext, this)
-    Toothpick.inject(this, scope)
     addPreferencesFromResource(R.xml.sikorka_preferences)
     val version = "${BuildConfig.VERSION_NAME}-${BuildConfig.GIT_HASH}"
     findPreference(R.string.preferences__about_version_key).summary = version

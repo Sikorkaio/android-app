@@ -11,15 +11,11 @@ import io.sikorka.android.ui.accounts.accountimport.AccountImportCodes.FAILED_TO
 import io.sikorka.android.ui.accounts.accountimport.AccountImportCodes.UNKNOWN_ERROR
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
-@AccountImportActivity.Presenter
-class AccountImportPresenterImpl
-@Inject constructor(
+class AccountImportPresenterImpl(
   private val accountRepository: AccountRepository,
   private val passphraseValidator: PassphraseValidator
-) :
-  BasePresenter<AccountImportView>(),
+) : BasePresenter<AccountImportView>(),
   AccountImportPresenter {
 
   override fun import(

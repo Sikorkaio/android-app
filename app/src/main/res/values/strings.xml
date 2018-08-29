@@ -50,11 +50,11 @@
 
   <string name="main_nav__exit">Exit</string>
   <string name="main_nav__accounts">Accounts</string>
-  <string name="main_nav__network_statistics">%d Peers | %d of %d Blocks</string>
+  <string name="main_nav__network_statistics">%1$d Peers | %2$d of %3$d Blocks</string>
   <string name="main_nav__header_no_balance">No balance information</string>
   <string name="main_nav_balance_eth">%s ether</string>
 
-  <string name="notification__network_statistics">%d Peers | %d of %d Blocks</string>
+  <string name="notification__network_statistics">%1$d Peers | %2$d of %3$d Blocks</string>
 
   <string name="dialog__passphrase_title">Verify your Passphrase</string>
   <string name="dialog__passphrase_content">In order to proceed you need to insert the passphrase for this account.</string>
@@ -141,7 +141,7 @@
   <string name="main_nav__pending_contracts">Pending Contracts</string>
   <string name="pending_contracts__title">Pending Contracts</string>
   <string name="pending_contract__no_data_label">No Pending Contracts…</string>
-  <string name="contract_deployment__status_success_notification">Contract %s has been successfully deployed by transaction %s</string>
+  <string name="contract_deployment__status_success_notification">Contract %1$s has been successfully deployed by transaction %2$s</string>
   <string name="notification_channel__deployment_status">Deployment Status Updates</string>
   <string name="deploy_contract__name">Contract Name</string>
   <string name="interact_contract__detector_address">Detector Address</string>
@@ -164,7 +164,7 @@
   <string name="deploy_contract__token_supply_empty">Token supply should not be empty</string>
   <string name="deploy_detector__token_supply_empty">Token supply cannot be empty</string>
   <string name="interact_contract__select_gas_before_transaction">Select gas before transaction</string>
-  <string name="contract_deployment__status_failed_notification">Contract %s deployment failed %s</string>
+  <string name="contract_deployment__status_failed_notification">Contract %1$s deployment failed %2$s</string>
   <string name="contract_interact__proceed_with_claiming">Claim Your Tokens</string>
   <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
   <string name="contract_interact__select_method">Select contract method to interact with</string>
@@ -180,7 +180,7 @@
   <string name="preferences__balance_precision_key" translatable="false">pref_key_balance_precision</string>
   <string name="balance_precision__precision_digits_hint">Precision (digits)</string>
   <string name="balance_precision__invalid_input">Invalid input value</string>
-  <string name="balance_precision__invalid_range">You have to select a number between %d–%d</string>
+  <string name="balance_precision__invalid_range">You have to select a number between %1$d–%2$d</string>
   <string name="balance_precision__title">Select the number of decimal digits</string>
   <string name="account_export__invalid_passphrase">Could not decrypt the key with this passphrase.</string>
   <string name="account_import__invalid_passphrase">Could not decrypt the key with this passphrase.</string>

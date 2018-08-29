@@ -1,10 +1,8 @@
 package io.sikorka.android.core.configuration
 
 import io.sikorka.android.settings.AppPreferences
-import javax.inject.Inject
 
-class ConfigurationProviderImpl
-@Inject constructor(
+class ConfigurationProviderImpl(
   private val configurationFactory: ConfigurationFactory,
   private val appPreferences: AppPreferences
 ) : ConfigurationProvider {

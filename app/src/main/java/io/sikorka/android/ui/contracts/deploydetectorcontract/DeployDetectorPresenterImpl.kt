@@ -9,12 +9,8 @@ import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.contracts.DeployContractCodes
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
-import javax.inject.Inject
 
-@DeployDetectorActivity.Presenter
-class DeployDetectorPresenterImpl
-@Inject
-constructor(
+class DeployDetectorPresenterImpl(
   private val gethNode: GethNode,
   private val contractRepository: ContractRepository,
   private val appSchedulers: AppSchedulers,

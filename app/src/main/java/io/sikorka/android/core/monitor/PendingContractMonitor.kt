@@ -10,10 +10,8 @@ import io.sikorka.android.events.RxBus
 import io.sikorka.android.utils.isDisposed
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
-import javax.inject.Inject
 
-class PendingContractMonitor
-@Inject constructor(
+class PendingContractMonitor(
   syncStatusProvider: SyncStatusProvider,
   private val lightClientProvider: LightClientProvider,
   private val pendingContractDao: PendingContractDao,

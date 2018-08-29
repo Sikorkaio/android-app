@@ -8,7 +8,6 @@ import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.IConfiguration
 import io.sikorka.android.core.configuration.Network.RINKEBY
 import io.sikorka.android.core.configuration.Network.ROPSTEN
-import io.sikorka.android.di.providers.MoshiProvider
 import io.sikorka.android.mockResponse
 import io.sikorka.android.mockServer
 import io.sikorka.android.success

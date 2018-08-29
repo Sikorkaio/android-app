@@ -3,14 +3,14 @@ package io.sikorka.android.ui.dialogs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
-import androidx.annotation.StringRes
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.text.InputType
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import io.sikorka.android.R
 import io.sikorka.android.ui.coloredSpan
 import io.sikorka.android.ui.dialogs.fileselection.FileSelectionDialog
@@ -24,11 +24,11 @@ fun Context.showConfirmation(
   AlertDialog.Builder(this)
     .setTitle(coloredSpan(title))
     .setMessage(content)
-    .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ ->
+    .setPositiveButton(coloredSpan(android.R.string.ok)) { dialog, _ ->
       action()
       dialog.dismiss()
-    })
-    .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ -> dialog.dismiss() })
+    }
+    .setNegativeButton(coloredSpan(android.R.string.cancel)) { dialog, _ -> dialog.dismiss() }
     .show()
 }
 
@@ -41,11 +41,11 @@ fun Context.showConfirmation(
   AlertDialog.Builder(this)
     .setTitle(coloredSpan(title))
     .setMessage(getString(content, contentMessage))
-    .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ ->
+    .setPositiveButton(coloredSpan(android.R.string.ok)) { dialog, _ ->
       action()
       dialog.dismiss()
-    })
-    .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ -> dialog.dismiss() })
+    }
+    .setNegativeButton(coloredSpan(android.R.string.cancel)) { dialog, _ -> dialog.dismiss() }
     .show()
 }
 
@@ -58,10 +58,10 @@ fun Context.showInfo(
   AlertDialog.Builder(this)
     .setTitle(coloredSpan(title))
     .setMessage(getString(content, contentMessage))
-    .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ ->
+    .setPositiveButton(coloredSpan(android.R.string.ok)) { dialog, _ ->
       action()
       dialog.dismiss()
-    }).show()
+    }.show()
 }
 
 fun Context.showInfo(
@@ -71,9 +71,9 @@ fun Context.showInfo(
   AlertDialog.Builder(this)
     .setTitle(coloredSpan(title))
     .setMessage(content)
-    .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ ->
+    .setPositiveButton(coloredSpan(android.R.string.ok)) { dialog, _ ->
       dialog.dismiss()
-    }).show()
+    }.show()
 }
 
 fun Context.showInfo(
@@ -84,15 +84,15 @@ fun Context.showInfo(
   AlertDialog.Builder(this)
     .setTitle(coloredSpan(title))
     .setMessage(content)
-    .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ ->
+    .setPositiveButton(coloredSpan(android.R.string.ok)) { dialog, _ ->
       action()
       dialog.dismiss()
-    }).show()
+    }.show()
 }
 
 fun Context.verifyPassphraseDialog(onInput: (input: String) -> Unit) {
-  val inputLayout = com.google.android.material.textfield.TextInputLayout(this)
-  val editText = com.google.android.material.textfield.TextInputEditText(this)
+  val inputLayout = TextInputLayout(this)
+  val editText = TextInputEditText(this)
   editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
   inputLayout.hint = getString(R.string.dialog__input_hint)
   inputLayout.addView(editText)
@@ -100,12 +100,12 @@ fun Context.verifyPassphraseDialog(onInput: (input: String) -> Unit) {
   val passphraseDialog = AlertDialog.Builder(this)
     .setTitle(coloredSpan(R.string.dialog__passphrase_title))
     .setMessage(R.string.dialog__passphrase_content)
-    .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ -> dialog.dismiss() })
+    .setNegativeButton(coloredSpan(android.R.string.cancel)) { dialog, _ -> dialog.dismiss() }
     .create()
 
   passphraseDialog.setOnShowListener {
     val button = passphraseDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-    button.setOnClickListener {
+    button.setOnClickListener { _ ->
       onInput(editText.value())
     }
   }
@@ -133,15 +133,15 @@ fun Context.useDetector(
 ): AlertDialog = AlertDialog.Builder(this)
   .setTitle(coloredSpan(R.string.use_detectors__dialog_title))
   .setMessage(R.string.use_detectors__dialog_content)
-  .setPositiveButton(coloredSpan(R.string.use_detectors__positive), { dialog, _ ->
+  .setPositiveButton(coloredSpan(R.string.use_detectors__positive)) { dialog, _ ->
     callback(true)
     dialog.dismiss()
-  })
-  .setNegativeButton(coloredSpan(android.R.string.cancel), { dialog, _ -> dialog.dismiss() })
-  .setNeutralButton(coloredSpan(R.string.use_detectors__neutral), { dialog, _ ->
+  }
+  .setNegativeButton(coloredSpan(android.R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+  .setNeutralButton(coloredSpan(R.string.use_detectors__neutral)) { dialog, _ ->
     callback(false)
     dialog.dismiss()
-  })
+  }
   .create()
 
 @SuppressLint("InflateParams")
@@ -152,12 +152,12 @@ fun Context.balancePrecisionDialog(
   val inflater = LayoutInflater.from(this@balancePrecisionDialog)
   val builder = AlertDialog.Builder(this)
   val view = inflater.inflate(R.layout.dialog__balance_precision, null)
-  val inputLayout: com.google.android.material.textfield.TextInputLayout = view.findViewById(R.id.balance_precision__digits_input)
-  val editText: com.google.android.material.textfield.TextInputEditText = view.findViewById(R.id.balance_precision__digits_text)
+  val inputLayout: TextInputLayout = view.findViewById(R.id.balance_precision__digits_input)
+  val editText: TextInputEditText = view.findViewById(R.id.balance_precision__digits_text)
   builder.setView(view)
     .setTitle(R.string.balance_precision__title)
     .setCancelable(false)
-  val dialog = builder.setPositiveButton(android.R.string.ok, { _, _ -> })
+  val dialog = builder.setPositiveButton(android.R.string.ok) { _, _ -> }
     .setNegativeButton(android.R.string.cancel) { dialog, _ ->
       with(dialog) {
         cancel()
@@ -168,7 +168,7 @@ fun Context.balancePrecisionDialog(
   editText.setText(currentPrecision.toString())
 
   dialog.setOnShowListener {
-    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { _ ->
       val value = editText.value()
       val number = value.toIntOrNull()
 
@@ -219,7 +219,7 @@ fun Context.createDialog(
   return AlertDialog.Builder(this)
     .setTitle(coloredSpan(setTitleResId))
     .setMessage(message)
-    .setPositiveButton(coloredSpan(android.R.string.ok), { dialog, _ -> dialog.dismiss() })
+    .setPositiveButton(coloredSpan(android.R.string.ok)) { dialog, _ -> dialog.dismiss() }
     .setOnDismissListener { onDismiss() }
     .create()
 }

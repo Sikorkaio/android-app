@@ -5,13 +5,8 @@ import org.ethereum.geth.Enodes
 import org.ethereum.geth.Geth
 import org.ethereum.geth.NodeConfig
 import java.io.File
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class RopstenConfiguration
-@Inject
-constructor(private val peerHelper: PeerHelper) : IConfiguration {
+class RopstenConfiguration(private val peerHelper: PeerHelper) : IConfiguration {
 
   private val dataDirectory: File by lazy {
     File(Environment.getExternalStorageDirectory(), "/$directoryPath")

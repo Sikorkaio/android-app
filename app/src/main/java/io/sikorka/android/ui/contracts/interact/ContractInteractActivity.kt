@@ -7,10 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AlertDialog
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -18,6 +17,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import io.sikorka.android.R
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.helpers.fail
@@ -31,33 +31,20 @@ import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import io.sikorka.android.utils.getBitmapFromVectorDrawable
-import kotlinx.android.synthetic.main.activity__contract_interact.contract_interact__contract_address
-import kotlinx.android.synthetic.main.activity__contract_interact.contract_interact__verify
-import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__detector_address
-import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__detector_address_group
-import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__interact_with_detector
-import kotlinx.android.synthetic.main.activity__contract_interact.interact_contract__manual_gas_selection
+import kotlinx.android.synthetic.main.activity__contract_interact.*
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import toothpick.Scope
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
-import javax.inject.Inject
 
 class ContractInteractActivity : BaseActivity(), ContractInteractView {
 
-  @Inject
-  lateinit var presenter: ContractInteractPresenter
-
-  private lateinit var scope: Scope
+  private val presenter: ContractInteractPresenter by inject()
 
   private var dialog: AlertDialog? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    scope = Toothpick.openScopes(application, this)
-    scope.installModules(SmoothieSupportActivityModule(this), ContractInteractModule())
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__contract_interact)
-    Toothpick.inject(this, scope)
+
     setupToolbar(title = intent?.getStringExtra(NAME) ?: "")
 
     contract_interact__verify.setOnClickListener {
@@ -134,7 +121,6 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
 
   override fun onDestroy() {
     presenter.detach()
-    Toothpick.closeScope(this)
     super.onDestroy()
   }
 
@@ -157,10 +143,10 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
   }
 
   override fun showError() {
-    com.google.android.material.snackbar.Snackbar.make(
+    Snackbar.make(
       contract_interact__verify,
       R.string.contract_interact__generic_error,
-      com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+      Snackbar.LENGTH_LONG
     ).show()
   }
 
@@ -213,10 +199,10 @@ class ContractInteractActivity : BaseActivity(), ContractInteractView {
     Timber.v("result $resultCode")
     if (requestCode == QrScannerActivity.SCANNER_RESULT && resultCode == Activity.RESULT_OK) {
       if (data == null) {
-        com.google.android.material.snackbar.Snackbar.make(
+        Snackbar.make(
           contract_interact__verify,
           R.string.contract_interact__generic_error,
-          com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+          Snackbar.LENGTH_LONG
         ).show()
       } else {
 

@@ -16,16 +16,20 @@ import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.helpers.fail
 import io.sikorka.android.utils.lastThrottle
 import io.sikorka.android.utils.schedulers.AppSchedulers
-import org.ethereum.geth.*
+import org.ethereum.geth.Address
+import org.ethereum.geth.BigInt
+import org.ethereum.geth.EthereumClient
+import org.ethereum.geth.Geth
+import org.ethereum.geth.Header
+import org.ethereum.geth.NewHeadHandler
+import org.ethereum.geth.Node
+import org.ethereum.geth.PeerInfos
+import org.ethereum.geth.TransactOpts
+import org.ethereum.geth.Transaction
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class GethNode
-@Inject
-constructor(
+class GethNode(
   private val configurationProvider: ConfigurationProvider,
   private val schedulers: AppSchedulers,
   private val lightClientProvider: LightClientProvider,
@@ -108,7 +112,8 @@ constructor(
     val gasLimit = ethereumClient.getBlockByNumber(ethContext, -1).gasLimit
     Timber.v("suggested gas price ${suggestGasPrice.getString(10)} wei")
     ContractGas(suggestGasPrice.getString(10).toLong(), gasLimit)
-  }.timeout(1, TimeUnit.SECONDS).onErrorReturn { ContractGas(0, 0) }
+  }.timeout(1, TimeUnit.SECONDS, schedulers.computation)
+    .onErrorReturn { ContractGas(0, 0) }
 
   fun ethereumClient(): Single<EthereumClient> = Single.fromCallable { ethereumClient }
 
@@ -158,9 +163,11 @@ constructor(
     ethereumClient.subscribeNewHead(ethContext, handler, 16)
   }
 
-  fun status(): Observable<SyncStatus> = Observable.interval(2, TimeUnit.SECONDS, schedulers.computation)
-    .flatMap { checkStatus() }
-    .startWith(checkStatus())
+  fun status(): Observable<SyncStatus> {
+    return Observable.interval(2, TimeUnit.SECONDS, schedulers.computation)
+      .flatMap { checkStatus() }
+      .startWith(checkStatus())
+  }
 
   private fun checkStatus(): Observable<SyncStatus> = Observable.fromCallable {
     val ethNode = node ?: fail("node was null")

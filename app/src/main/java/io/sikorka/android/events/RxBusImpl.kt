@@ -5,12 +5,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import java.util.HashMap
 import java.util.LinkedList
-import javax.inject.Inject
 import kotlin.reflect.KClass
 
-class RxBusImpl
-@Inject
-constructor() : RxBus {
+class RxBusImpl : RxBus {
   private val serializedRelay = PublishRelay.create<Any>().toSerialized()
   private val activeSubscriptions = HashMap<Any, MutableList<Disposable>>()
 

@@ -4,7 +4,6 @@ import io.sikorka.android.core.contracts.model.ContractData
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
-import toothpick.config.Module
 
 interface DeployContractView : BaseView {
   fun setSuggestedGasPrice(gasPrice: Long)
@@ -21,12 +20,4 @@ interface DeployContractPresenter : Presenter<DeployContractView> {
   fun deployContract(passphrase: String, contractInfo: ContractData)
   fun prepareGasSelection()
   fun prepareDeployWithDefaults()
-}
-
-class DeployContractModule : Module() {
-  init {
-    bind(DeployContractPresenter::class.java)
-      .to(DeployContractPresenterImpl::class.java)
-      .singletonInScope()
-  }
 }

@@ -1,12 +1,12 @@
 package io.sikorka.android.ui.detector.select
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import io.sikorka.android.R
 import io.sikorka.android.ui.BindingViewHolder
 import kotterknife.bindView
@@ -14,7 +14,7 @@ import kotterknife.bindView
 class SelectDetectorTypeAdapter(
   context: Context,
   private val detectors: List<SupportedDetector>
-) : androidx.recyclerview.widget.RecyclerView.Adapter<SelectDetectorTypeAdapter.SelectDetectorViewHolder>() {
+) : Adapter<SelectDetectorTypeAdapter.SelectDetectorViewHolder>() {
 
   private val inflater: LayoutInflater = LayoutInflater.from(context)
   private var onSelection: ((typeId: Int) -> Unit)? = null

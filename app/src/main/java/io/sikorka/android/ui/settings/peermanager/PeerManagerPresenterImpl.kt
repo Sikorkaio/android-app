@@ -4,22 +4,16 @@ import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.ServiceManager
 import io.sikorka.android.core.configuration.peers.PeerDataSource
 import io.sikorka.android.core.configuration.peers.PeerEntry
-import io.sikorka.android.events.RxBus
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
-@PeerManagerActivity.Presenter
-class PeerManagerPresenterImpl
-@Inject
-constructor(
+class PeerManagerPresenterImpl(
   private val peerDataSource: PeerDataSource,
   private val appSchedulers: AppSchedulers,
-  private val serviceManager: ServiceManager,
-  private val bus: RxBus
+  private val serviceManager: ServiceManager
 ) : PeerManagerPresenter, BasePresenter<PeerManagerView>() {
 
   override fun load() {

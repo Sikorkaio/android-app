@@ -13,6 +13,7 @@ import org.ethereum.geth.Geth
 import org.ethereum.geth.TransactOpts
 import org.ethereum.geth.Transaction
 
+@Suppress("unused")
 class DiscountContract
 private constructor(private val contract: BoundContract) {
 
@@ -121,7 +122,7 @@ private constructor(private val contract: BoundContract) {
   // Solidity: function owner() constant returns(address)
   @Throws(Exception::class)
   fun owner(opts: CallOpts? = null): Address {
-    var opts = opts
+    var callOpts = opts
     val args = Geth.newInterfaces(0)
 
     val results = Geth.newInterfaces(1)
@@ -129,10 +130,10 @@ private constructor(private val contract: BoundContract) {
     result0.setDefaultAddress()
     results.set(0, result0)
 
-    if (opts == null) {
-      opts = Geth.newCallOpts()
+    if (callOpts == null) {
+      callOpts = Geth.newCallOpts()
     }
-    this.contract.call(opts, results, "owner", args)
+    this.contract.call(callOpts, results, "owner", args)
     return results.get(0).address
   }
 
@@ -140,8 +141,8 @@ private constructor(private val contract: BoundContract) {
   //
   // Solidity: function seconds_allowed() constant returns(uint256)
   @Throws(Exception::class)
-  fun seconds_allowed(opts: CallOpts? = null): BigInt {
-    var opts = opts
+  fun secondsAllowed(opts: CallOpts? = null): BigInt {
+    var callOpts = opts
     val args = Geth.newInterfaces(0)
 
     val results = Geth.newInterfaces(1)
@@ -149,10 +150,10 @@ private constructor(private val contract: BoundContract) {
     result0.setDefaultBigInt()
     results.set(0, result0)
 
-    if (opts == null) {
-      opts = Geth.newCallOpts()
+    if (callOpts == null) {
+      callOpts = Geth.newCallOpts()
     }
-    this.contract.call(opts, results, "seconds_allowed", args)
+    this.contract.call(callOpts, results, "seconds_allowed", args)
     return results.get(0).bigInt
   }
 
@@ -161,7 +162,7 @@ private constructor(private val contract: BoundContract) {
   // Solidity: function totalSupply() constant returns(uint256)
   @Throws(Exception::class)
   fun totalSupply(opts: CallOpts? = null): BigInt {
-    var opts = opts
+    var callOpts = opts
     val args = Geth.newInterfaces(0)
 
     val results = Geth.newInterfaces(1)
@@ -169,10 +170,10 @@ private constructor(private val contract: BoundContract) {
     result0.setDefaultBigInt()
     results.set(0, result0)
 
-    if (opts == null) {
-      opts = Geth.newCallOpts()
+    if (callOpts == null) {
+      callOpts = Geth.newCallOpts()
     }
-    this.contract.call(opts, results, "totalSupply", args)
+    this.contract.call(callOpts, results, "totalSupply", args)
     return results.get(0).bigInt
   }
 
@@ -181,7 +182,7 @@ private constructor(private val contract: BoundContract) {
   // Solidity: function version() constant returns(string)
   @Throws(Exception::class)
   fun version(opts: CallOpts? = null): String {
-    var opts = opts
+    var callOpts = opts
     val args = Geth.newInterfaces(0)
 
     val results = Geth.newInterfaces(1)
@@ -189,10 +190,10 @@ private constructor(private val contract: BoundContract) {
     result0.setDefaultString()
     results.set(0, result0)
 
-    if (opts == null) {
-      opts = Geth.newCallOpts()
+    if (callOpts == null) {
+      callOpts = Geth.newCallOpts()
     }
-    this.contract.call(opts, results, "version", args)
+    this.contract.call(callOpts, results, "version", args)
     return results.get(0).string
   }
 
@@ -214,7 +215,7 @@ private constructor(private val contract: BoundContract) {
   //
   // Solidity: function authorize_user(user address, duration uint256) returns()
   @Throws(Exception::class)
-  fun authorize_user(opts: TransactOpts, user: Address, duration: BigInt): Transaction {
+  fun authorizeUser(opts: TransactOpts, user: Address, duration: BigInt): Transaction {
     val args = Geth.newInterfaces(2)
     args.set(0, Geth.newInterface())
     args.get(0).address = user
@@ -228,7 +229,7 @@ private constructor(private val contract: BoundContract) {
   //
   // Solidity: function change_owner(_newOwner address) returns()
   @Throws(Exception::class)
-  fun change_owner(opts: TransactOpts, _newOwner: Address): Transaction {
+  fun changeOwner(opts: TransactOpts, _newOwner: Address): Transaction {
     val args = Geth.newInterfaces(1)
     args.set(0, Geth.newInterface())
     args.get(0).address = _newOwner

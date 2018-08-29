@@ -1,11 +1,10 @@
 package io.sikorka.android.ui.settings
 
 import android.content.SharedPreferences
-import javax.inject.Inject
 
-class DebugPreferencesStoreImpl
-@Inject
-constructor(private val sharedPreferences: SharedPreferences) : DebugPreferencesStore {
+class DebugPreferencesStoreImpl(
+  private val sharedPreferences: SharedPreferences
+) : DebugPreferencesStore {
   override fun isLocationRandomizationEnabled(): Boolean {
     return sharedPreferences.getBoolean(LOCATION_RADNOMIZATION_SETTING_KEY, false)
   }
@@ -15,6 +14,6 @@ constructor(private val sharedPreferences: SharedPreferences) : DebugPreferences
   }
 
   companion object {
-    private val LOCATION_RADNOMIZATION_SETTING_KEY = "pref_key_randomize_location"
+    private const val LOCATION_RADNOMIZATION_SETTING_KEY = "pref_key_randomize_location"
   }
 }

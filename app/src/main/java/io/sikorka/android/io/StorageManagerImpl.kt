@@ -1,15 +1,12 @@
 package io.sikorka.android.io
 
-import android.app.Application
+import android.content.Context
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import org.apache.commons.io.FileUtils
 import java.io.File
-import javax.inject.Inject
 
-class StorageManagerImpl
-@Inject
-constructor(
-  private val application: Application,
+class StorageManagerImpl(
+  private val context: Context,
   private val configurationProvider: ConfigurationProvider
 ) : StorageManager {
 
@@ -19,7 +16,7 @@ constructor(
   }
 
   private fun getTransactionDirectory(): File {
-    val filesDir = application.filesDir
+    val filesDir = context.filesDir
     val registryUpdateTrasactionsDir = File(filesDir, REGISTRY_TRANSACTION_DIR)
     if (!registryUpdateTrasactionsDir.exists()) {
       val created = registryUpdateTrasactionsDir.mkdir()
@@ -32,6 +29,6 @@ constructor(
   }
 
   companion object {
-    private val REGISTRY_TRANSACTION_DIR = "registry_update_transactions"
+    private const val REGISTRY_TRANSACTION_DIR = "registry_update_transactions"
   }
 }

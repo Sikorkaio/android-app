@@ -7,7 +7,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.Network
-import io.sikorka.android.di.qualifiers.ApplicationCache
 import io.sikorka.android.helpers.Lce
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
@@ -15,13 +14,10 @@ import okhttp3.Request
 import okio.Okio
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
-class PeerDataSourceImpl
-@Inject constructor(
+class PeerDataSourceImpl(
   private val configurationProvider: ConfigurationProvider,
   private val moshi: Moshi,
-  @ApplicationCache
   private val cache: File
 ) : PeerDataSource {
 

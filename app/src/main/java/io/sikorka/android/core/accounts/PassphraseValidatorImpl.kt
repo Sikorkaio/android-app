@@ -2,10 +2,8 @@ package io.sikorka.android.core.accounts
 
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.helpers.fail
-import javax.inject.Inject
 
-class PassphraseValidatorImpl
-@Inject constructor() : PassphraseValidator {
+class PassphraseValidatorImpl : PassphraseValidator {
   override fun validate(passphrase: String, passphraseConfirmation: String): Int = when {
     passphrase.isBlank() -> ValidationResult.EMPTY_PASSPHRASE
     passphrase.length < PASSWORD_MIN_LENGTH && !BuildConfig.DEBUG -> ValidationResult.PASSWORD_SHORT

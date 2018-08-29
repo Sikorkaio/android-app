@@ -18,29 +18,25 @@ import io.sikorka.android.ui.accounts.accountexport.AccountExportActivity
 import io.sikorka.android.ui.accounts.accountimport.AccountImportActivity
 import io.sikorka.android.ui.dialogs.verifyPassphraseDialog
 import kotterknife.bindView
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
-import javax.inject.Inject
 
 class AccountActivity : BaseActivity(), AccountView {
-  private val accountsRecycler: androidx.recyclerview.widget.RecyclerView by bindView(R.id.accounts__recycler_view)
-  private val createAccount: com.google.android.material.floatingactionbutton.FloatingActionButton by bindView(R.id.accounts__create_account)
 
-  @Inject
-  lateinit var presenter: AccountPresenter
-  @Inject
-  lateinit var adapter: AccountAdapter
+  private val accountsRecycler: RecyclerView by bindView(R.id.accounts__recycler_view)
+
+  private val createAccount: FloatingActionButton by bindView(R.id.accounts__create_account)
+
+  private val presenter: AccountPresenter by inject()
+
+  private val adapter: AccountAdapter by inject()
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    val scope = Toothpick.openScopes(application, this)
-    scope.installModules(SmoothieSupportActivityModule(this), AccountModule())
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account)
-    Toothpick.inject(this, scope)
 
     accountsRecycler.adapter = adapter
-    accountsRecycler.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+    accountsRecycler.layoutManager = LinearLayoutManager(this)
     setupToolbar(R.string.account_management__title)
 
     createAccount.setOnClickListener {
@@ -62,7 +58,7 @@ class AccountActivity : BaseActivity(), AccountView {
 
   override fun onDestroy() {
     presenter.detach()
-    Toothpick.closeScope(this)
+
     super.onDestroy()
   }
 

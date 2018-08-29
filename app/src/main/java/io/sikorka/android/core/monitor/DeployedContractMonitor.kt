@@ -5,7 +5,9 @@ import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.sikorka.android.contract.BasicInterface
 import io.sikorka.android.contract.SikorkaRegistry
+import io.sikorka.android.core.NoContractCodeAtGivenAddressException
 import io.sikorka.android.core.ethereumclient.LightClientProvider
+import io.sikorka.android.core.messageValue
 import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContract
 import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
@@ -16,11 +18,8 @@ import io.sikorka.android.utils.isDisposed
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
 import java.math.BigDecimal
-import javax.inject.Inject
 
-class DeployedContractMonitor
-@Inject
-constructor(
+class DeployedContractMonitor(
   syncStatusProvider: SyncStatusProvider,
   userLocation: UserLocationProvider,
   private val lightClientProvider: LightClientProvider,
@@ -76,7 +75,14 @@ constructor(
       SikorkaRegistry(it)
     }
 
-    val contractAddresses = registry.getContractAddresses()
+    val contractAddresses = try {
+      registry.getContractAddresses()
+    } catch (e: Exception) {
+      if (e.messageValue.contains("no contract code at given address")) {
+        throw NoContractCodeAtGivenAddressException(e)
+      }
+      throw e
+    }
     val contractCoordinates = registry.getContractCoordinates()
 
     val contracts: MutableList<DeployedSikorkaContract> = ArrayList()

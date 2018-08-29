@@ -1,16 +1,13 @@
 package io.sikorka.android.core.configuration
 
-import android.app.Application
-import toothpick.Toothpick
-import javax.inject.Inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 
-class ConfigurationFactory
-@Inject constructor(application: Application) {
-  private val scope = Toothpick.openScope(application)
+class ConfigurationFactory : KoinComponent {
 
   fun configuration(@Network.Selection network: Int): IConfiguration {
     return when (network) {
-      Network.ROPSTEN -> scope.getInstance(RopstenConfiguration::class.java)
+      Network.ROPSTEN -> get<RopstenConfiguration>()
       else -> error("Invalid selection")
     }
   }

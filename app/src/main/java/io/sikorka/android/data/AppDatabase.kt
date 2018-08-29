@@ -12,13 +12,13 @@ import io.sikorka.android.data.transactions.PendingTransaction
 import io.sikorka.android.data.transactions.PendingTransactionDao
 
 @Database(
-    version = 1,
-    entities = arrayOf(
-        PendingContract::class,
-        PendingTransaction::class,
-        AccountBalance::class,
-        DeployedSikorkaContract::class
-    )
+  version = 1,
+  entities = [
+    PendingContract::class,
+    PendingTransaction::class,
+    AccountBalance::class,
+    DeployedSikorkaContract::class
+  ]
 )
 abstract class AppDatabase : RoomDatabase() {
   abstract fun accountBalanceDao(): AccountBalanceDao

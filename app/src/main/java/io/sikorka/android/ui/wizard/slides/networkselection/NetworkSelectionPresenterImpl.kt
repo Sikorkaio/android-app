@@ -2,11 +2,10 @@ package io.sikorka.android.ui.wizard.slides.networkselection
 
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences
-import javax.inject.Inject
 
-class NetworkSelectionPresenterImpl
-@Inject
-constructor(private val appPreferences: AppPreferences) : NetworkSelectionPresenter,
+class NetworkSelectionPresenterImpl(
+  private val appPreferences: AppPreferences
+) : NetworkSelectionPresenter,
     BasePresenter<NetworkSelectionView>() {
   override fun updateSelected() {
     val selectedNetwork = appPreferences.selectedNetwork()

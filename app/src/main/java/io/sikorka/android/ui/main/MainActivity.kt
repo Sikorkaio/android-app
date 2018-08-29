@@ -9,17 +9,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,6 +29,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import io.sikorka.android.BuildConfig
 import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
@@ -61,27 +61,23 @@ import kotlinx.android.synthetic.main.app_bar__main.toolbar
 import kotlinx.android.synthetic.main.content__main.main__empty_text
 import kotlinx.android.synthetic.main.content__main.main__map
 import kotlinx.android.synthetic.main.nav_header__main.main__header_account
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import toothpick.Scope
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
 import java.text.NumberFormat
 import java.util.ArrayList
 import java.util.Random
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
   MainView,
   OnMapReadyCallback,
-  com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener {
+  NavigationView.OnNavigationItemSelectedListener {
 
-  @Inject
-  lateinit var presenter: MainPresenter
+  private val presenter: MainPresenter by inject()
 
   override fun notifyTransactionMined(txHash: String, success: Boolean) {
     val message = "Your transaction has been mined. " +
       "100 Sikorka example discount tokens have been transferred to your account"
-    com.google.android.material.snackbar.Snackbar.make(main__deploy_fab, message, com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
   }
 
   override fun notifyContractMined(address: String, txHash: String, success: Boolean) {
@@ -90,13 +86,11 @@ class MainActivity : AppCompatActivity(),
     } else {
       "Contract $address was not mined successfully"
     }
-    com.google.android.material.snackbar.Snackbar.make(main__deploy_fab, message, com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_LONG).show()
   }
 
-  @Inject
-  lateinit var debugPreferences: DebugPreferencesStore
+  private val debugPreferences: DebugPreferencesStore by inject()
 
-  private lateinit var scope: Scope
   private var map: GoogleMap? = null
 
   private var myMarker: Marker? = null
@@ -107,11 +101,9 @@ class MainActivity : AppCompatActivity(),
   private val markers = ArrayList<Marker>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    scope = Toothpick.openScopes(application, this)
-    scope.installModules(SmoothieSupportActivityModule(this), MainModule())
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__main)
-    Toothpick.inject(this, scope)
+
     presenter.attach(this)
     val mapFragment = supportFragmentManager.findFragmentById(R.id.main__map) as SupportMapFragment
     mapFragment.getMapAsync(this)
@@ -174,7 +166,7 @@ class MainActivity : AppCompatActivity(),
   private fun getLocation() {
     LocationServices.getFusedLocationProviderClient(this)
       .lastLocation
-      .addOnCompleteListener(this, {
+      .addOnCompleteListener(this) {
         if (!it.isSuccessful) {
           return@addOnCompleteListener
         }
@@ -203,7 +195,7 @@ class MainActivity : AppCompatActivity(),
         presenter.userLocation(UserLocation.set(latitude, longitude))
 
         updateMyMarker(latitude, longitude, map)
-      })
+      }
   }
 
   override fun onStart() {
@@ -330,7 +322,7 @@ class MainActivity : AppCompatActivity(),
 
   override fun onDestroy() {
     presenter.detach()
-    Toothpick.closeScope(this)
+
     super.onDestroy()
   }
 
@@ -412,10 +404,10 @@ class MainActivity : AppCompatActivity(),
 
   override fun error(error: Throwable) {
     val message = error.message ?: getString(R.string.errors__generic_error)
-    com.google.android.material.snackbar.Snackbar.make(main__deploy_fab, message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+    Snackbar.make(main__deploy_fab, message, Snackbar.LENGTH_SHORT).show()
   }
 
-  private var progress: com.google.android.material.snackbar.Snackbar? = null
+  private var progress: Snackbar? = null
 
   override fun loading(loading: Boolean) {
     main__deploy_fab.isVisible = !loading
@@ -423,7 +415,7 @@ class MainActivity : AppCompatActivity(),
     if (loading) {
       progress = main__deploy_fab.progressSnack(
         R.string.main__loading_message,
-        com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
+        Snackbar.LENGTH_INDEFINITE
       )
       progress?.show()
     } else {

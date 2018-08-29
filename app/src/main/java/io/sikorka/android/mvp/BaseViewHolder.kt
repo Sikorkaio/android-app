@@ -1,9 +1,9 @@
 package io.sikorka.android.mvp
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
-abstract class BaseViewHolder<in Data>(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+abstract class BaseViewHolder<in Data>(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
   abstract fun update()
 }

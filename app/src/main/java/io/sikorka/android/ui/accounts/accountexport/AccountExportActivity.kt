@@ -3,11 +3,11 @@ package io.sikorka.android.ui.accounts.accountexport
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
+import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import android.widget.ImageButton
-import android.widget.TextView
 import io.sikorka.android.R
 import io.sikorka.android.core.accounts.ValidationResult.CONFIRMATION_MISMATCH
 import io.sikorka.android.core.accounts.ValidationResult.EMPTY_PASSPHRASE
@@ -18,31 +18,27 @@ import io.sikorka.android.ui.accounts.accountexport.AccountExportCodes.FAILED_TO
 import io.sikorka.android.ui.dialogs.fileSelectionDialog
 import io.sikorka.android.ui.value
 import kotterknife.bindView
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
+import org.koin.android.ext.android.inject
 import java.io.File
-import javax.inject.Inject
 
-class AccountExportActivity : BaseActivity(),
-  AccountExportView {
+class AccountExportActivity : BaseActivity(), AccountExportView {
 
   private val account: TextView by bindView(R.id.account_export__account_hex)
-  private val path: com.google.android.material.textfield.TextInputLayout by bindView(R.id.account_export__path_input)
-  private val accountPassphrase: com.google.android.material.textfield.TextInputLayout by bindView(R.id.account_export__passphrase)
-  private val accountExportFab: com.google.android.material.floatingactionbutton.FloatingActionButton by bindView(R.id.account_export__export_fab)
+  private val path: TextInputLayout by bindView(R.id.account_export__path_input)
+  private val accountPassphrase: TextInputLayout by bindView(R.id.account_export__passphrase)
+  private val accountExportFab: FloatingActionButton by bindView(R.id.account_export__export_fab)
   private val selectDirectoryButton: ImageButton by bindView(R.id.account_export__select_directory)
-  private val filePassphrase: com.google.android.material.textfield.TextInputLayout by bindView(
+  private val filePassphrase: TextInputLayout by bindView(
     R.id.account_export__encryption_passphrase
   )
-  private val filePassphraseConfirm: com.google.android.material.textfield.TextInputLayout by bindView(
+  private val filePassphraseConfirm: TextInputLayout by bindView(
     R.id.account_export__encryption_passphrase_confirmation
   )
 
   private val hex: String
     get() = intent?.getStringExtra(ACCOUNT_HEX) ?: ""
 
-  @Inject
-  lateinit var presenter: AccountExportPresenter
+  private val presenter: AccountExportPresenter by inject()
 
   private fun clearErrors() {
     path.error = null
@@ -52,7 +48,7 @@ class AccountExportActivity : BaseActivity(),
   }
 
   override fun exportComplete() {
-    com.google.android.material.snackbar.Snackbar.make(account, R.string.account_export__export_complete, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT)
+    Snackbar.make(account, R.string.account_export__export_complete, Snackbar.LENGTH_SHORT)
     finish()
   }
 
@@ -86,17 +82,13 @@ class AccountExportActivity : BaseActivity(),
     }
   }
 
-  fun onFolderSelection(folder: File) {
+  private fun onFolderSelection(folder: File) {
     path.editText?.setText(folder.absolutePath)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    val scope = Toothpick.openScopes(application, this)
-    scope.installModules(SmoothieSupportActivityModule(this), AccountExportModule())
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__account_export)
-    Toothpick.inject(this, scope)
-
     setupToolbar(R.string.account_export__export_account_title)
 
     accountExportFab.setOnClickListener {
@@ -109,7 +101,7 @@ class AccountExportActivity : BaseActivity(),
       )
     }
 
-    selectDirectoryButton.setOnClickListener {
+    selectDirectoryButton.setOnClickListener { _ ->
       fileSelectionDialog().show { onFolderSelection(it) }
     }
     presenter.attach(this)
@@ -118,12 +110,10 @@ class AccountExportActivity : BaseActivity(),
 
   override fun onDestroy() {
     presenter.detach()
-    Toothpick.closeScope(this)
     super.onDestroy()
   }
 
   companion object {
-
     const val ACCOUNT_HEX = "io.sikorka.extra.ACCOUNT_HEX"
 
     fun start(context: Context, accountHex: String) {

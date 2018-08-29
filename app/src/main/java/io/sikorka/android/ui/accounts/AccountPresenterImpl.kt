@@ -4,11 +4,8 @@ import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.core.model.Account
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.utils.schedulers.AppSchedulers
-import javax.inject.Inject
 
-class AccountPresenterImpl
-@Inject
-constructor(
+class AccountPresenterImpl(
   private val accountRepository: AccountRepository,
   private val appSchedulers: AppSchedulers
 ) : AccountPresenter, BasePresenter<AccountView>() {

@@ -8,11 +8,8 @@ import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
-import javax.inject.Inject
 
-class DeployContractPresenterImpl
-@Inject
-constructor(
+class DeployContractPresenterImpl(
   private val gethNode: GethNode,
   private val contractRepository: ContractRepository,
   private val appSchedulers: AppSchedulers,

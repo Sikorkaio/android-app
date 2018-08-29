@@ -1,6 +1,10 @@
 package io.sikorka.android
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -8,7 +12,12 @@ import androidx.core.app.NotificationCompat
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.GethNode
-import io.sikorka.android.core.monitor.*
+import io.sikorka.android.core.monitor.AccountBalanceMonitor
+import io.sikorka.android.core.monitor.DeployedContractMonitor
+import io.sikorka.android.core.monitor.PendingContractMonitor
+import io.sikorka.android.core.monitor.PendingTransactionMonitor
+import io.sikorka.android.core.monitor.PrepareTransactionStatusEvent
+import io.sikorka.android.core.monitor.TransactionStatusEvent
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.events.RxBus
 import io.sikorka.android.ui.main.MainActivity
@@ -17,41 +26,34 @@ import io.sikorka.android.utils.schedulers.AppSchedulers
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import toothpick.Scope
-import toothpick.Toothpick
-import javax.inject.Inject
 
 class SikorkaService : Service() {
 
-  @Inject
-  lateinit var notificationManager: NotificationManager
-  @Inject
-  lateinit var gethNode: GethNode
-  @Inject
-  lateinit var contractMonitor: PendingContractMonitor
-  @Inject
-  lateinit var pendingTransactionMonitor: PendingTransactionMonitor
-  @Inject
-  lateinit var accountBalanceMonitor: AccountBalanceMonitor
-  @Inject
-  lateinit var deployedContractMonitor: DeployedContractMonitor
-  @Inject
-  lateinit var schedulers: AppSchedulers
-  @Inject
-  lateinit var dispatchers: AppDispatchers
-  @Inject
-  lateinit var bus: RxBus
+  private val notificationManager: NotificationManager by inject()
+
+  private val gethNode: GethNode by inject()
+
+  private val contractMonitor: PendingContractMonitor by inject()
+
+  private val pendingTransactionMonitor: PendingTransactionMonitor by inject()
+
+  private val accountBalanceMonitor: AccountBalanceMonitor by inject()
+
+  private val deployedContractMonitor: DeployedContractMonitor by inject()
+
+  private val schedulers: AppSchedulers by inject()
+
+  private val dispatchers: AppDispatchers by inject()
+
+  private val bus: RxBus by inject()
 
   override fun onBind(intent: Intent): IBinder? = null
-
-  private lateinit var scope: Scope
 
   private val disposables = CompositeDisposable()
 
   override fun onCreate() {
-    scope = Toothpick.openScopes(application, this)
-    Toothpick.inject(this, scope)
     super.onCreate()
     createNotificationChannel()
     val startNotification = notification("Starting...")
@@ -61,7 +63,6 @@ class SikorkaService : Service() {
   override fun onDestroy() {
     Timber.v("Sikorka service is stopping")
     stop()
-    Toothpick.closeScope(this)
     super.onDestroy()
   }
 

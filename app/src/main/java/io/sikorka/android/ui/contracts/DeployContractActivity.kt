@@ -3,12 +3,10 @@ package io.sikorka.android.ui.contracts
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -21,24 +19,20 @@ import io.sikorka.android.ui.contracts.dialog.ConfirmDeployDialog
 import io.sikorka.android.ui.dialogs.showInfo
 import io.sikorka.android.ui.gasselectiondialog.GasSelectionDialog
 import io.sikorka.android.ui.value
-import kotlinx.android.synthetic.main.activity__deploy_contract.*
-import toothpick.Scope
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.activity__deploy_contract.deploy_contract__advanced_options
+import kotlinx.android.synthetic.main.activity__deploy_contract.deploy_contract__deploy_fab
+import kotlinx.android.synthetic.main.activity__deploy_contract.deploy_contract__name
+import kotlinx.android.synthetic.main.activity__deploy_contract.deploy_contract__token_supply
+import org.koin.android.ext.android.inject
 
 class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCallback {
 
-  @Inject
-  lateinit var presenter: DeployContractPresenter
-
-  private lateinit var scope: Scope
+  private val presenter: DeployContractPresenter by inject()
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    scope = Toothpick.openScopes(application, this)
-    scope.installModules(SmoothieSupportActivityModule(this), DeployContractModule())
+
     super.onCreate(savedInstanceState)
-    Toothpick.inject(this, scope)
+
     setContentView(R.layout.activity__deploy_contract)
     val mapFragment =
       supportFragmentManager.findFragmentById(R.id.deploy_contract__map) as SupportMapFragment
@@ -56,7 +50,7 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
 
       if (supply == 0L) {
         deploy_contract__token_supply.error =
-            getString(R.string.deploy_contract__token_supply_empty)
+          getString(R.string.deploy_contract__token_supply_empty)
         return@setOnClickListener
       }
 
@@ -102,7 +96,8 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
   }
 
   override fun showError(message: String?) {
-    com.google.android.material.snackbar.Snackbar.make(deploy_contract__deploy_fab, message ?: "error", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
+    com.google.android.material.snackbar.Snackbar.make(deploy_contract__deploy_fab, message
+      ?: "error", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
   }
 
   override fun complete(hex: String?) {
@@ -123,7 +118,7 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
 
   override fun onDestroy() {
     presenter.detach()
-    Toothpick.closeScope(this)
+
     super.onDestroy()
   }
 
@@ -132,8 +127,6 @@ class DeployContractActivity : BaseActivity(), DeployContractView, OnMapReadyCal
 
   private fun updateMyMarker(latitude: Double, longitude: Double, map: GoogleMap) {
     val me = LatLng(latitude, longitude)
-
-    val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black_24dp)
 
     val position = CameraPosition.builder()
       .target(me)

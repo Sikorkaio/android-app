@@ -3,11 +3,8 @@ package io.sikorka.android.settings
 import android.content.SharedPreferences
 import androidx.annotation.IntRange
 import io.sikorka.android.core.configuration.Network
-import javax.inject.Inject
 
-class AppPreferencesImpl
-@Inject
-constructor(private val sharedPreferences: SharedPreferences) : AppPreferences {
+class AppPreferencesImpl(private val sharedPreferences: SharedPreferences) : AppPreferences {
 
   @Network.Selection
   override fun selectedNetwork(): Int {
@@ -16,18 +13,18 @@ constructor(private val sharedPreferences: SharedPreferences) : AppPreferences {
 
   override fun selectNetwork(@Network.Selection network: Int) {
     sharedPreferences.edit()
-        .putInt(SELECTED_NETWORK, network)
-        .apply()
+      .putInt(SELECTED_NETWORK, network)
+      .apply()
   }
 
   override fun selectedAccount(): String {
-    return sharedPreferences.getString(SELECTED_ACCOUNT, "")
+    return sharedPreferences.getString(SELECTED_ACCOUNT, "") ?: ""
   }
 
   override fun selectAccount(account: String) {
     sharedPreferences.edit()
-        .putString(SELECTED_ACCOUNT, account)
-        .apply()
+      .putString(SELECTED_ACCOUNT, account)
+      .apply()
   }
 
   override fun preferredGasPrice(): Long {
@@ -36,8 +33,8 @@ constructor(private val sharedPreferences: SharedPreferences) : AppPreferences {
 
   override fun setPreferredGasPrice(gasPrice: Long) {
     sharedPreferences.edit()
-        .putLong(PREFERRED_GAS_PRICE, gasPrice)
-        .apply()
+      .putLong(PREFERRED_GAS_PRICE, gasPrice)
+      .apply()
   }
 
   override fun preferredGasLimit(): Long {
@@ -46,8 +43,8 @@ constructor(private val sharedPreferences: SharedPreferences) : AppPreferences {
 
   override fun setPreferredGasLimit(gasLimit: Long) {
     sharedPreferences.edit()
-        .putLong(PREFERRED_GAS_LIMIT, gasLimit)
-        .apply()
+      .putLong(PREFERRED_GAS_LIMIT, gasLimit)
+      .apply()
   }
 
   @IntRange(from = 0, to = 10)
@@ -57,8 +54,8 @@ constructor(private val sharedPreferences: SharedPreferences) : AppPreferences {
 
   override fun setPreferredBalancePrecision(@IntRange(from = 0, to = 10) digits: Int) {
     sharedPreferences.edit()
-        .putInt(BALANCE_PRECISION, digits)
-        .apply()
+      .putInt(BALANCE_PRECISION, digits)
+      .apply()
   }
 
   companion object {

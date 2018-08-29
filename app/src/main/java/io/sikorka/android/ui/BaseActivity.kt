@@ -1,11 +1,11 @@
 package io.sikorka.android.ui
 
 import android.annotation.SuppressLint
+import android.view.MenuItem
 import androidx.annotation.StringRes
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.MenuItem
+import com.google.android.material.snackbar.Snackbar
 import io.sikorka.android.R
 import kotterknife.bindView
 
@@ -30,7 +30,7 @@ open class BaseActivity : AppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
-    // Respond to the action bar's Up/Home button
+      // Respond to the action bar's Up/Home button
       android.R.id.home -> {
         onBackPressed()
         return true
@@ -40,6 +40,6 @@ open class BaseActivity : AppCompatActivity() {
   }
 
   protected fun snackBar(@StringRes resId: Int) {
-    com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content), resId, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+    Snackbar.make(findViewById(android.R.id.content), resId, Snackbar.LENGTH_SHORT).show()
   }
 }

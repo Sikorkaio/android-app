@@ -2,42 +2,34 @@ package io.sikorka.android.ui.splash
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
-import io.sikorka.android.di.modules.SikorkaModule
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.WizardActivity
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieApplicationModule
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
+import org.koin.android.ext.android.inject
 
 class SplashActivity : AppCompatActivity() {
 
-  @Inject
-  lateinit var appPreferences: AppPreferences
+  private val appPreferences: AppPreferences by inject()
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    val scope = Toothpick.openScope(application)
-    scope.installModules(SmoothieApplicationModule(application), SikorkaModule())
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity__splash)
-    Toothpick.inject(this, scope)
 
-    Completable.timer(400, TimeUnit.MILLISECONDS)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe {
-          if (appPreferences.selectedAccount().isNotBlank()) {
-            SikorkaService.start(this)
-            MainActivity.start(this)
-          } else {
-            WizardActivity.start(this)
-          }
+    launch {
+      delay(400)
 
-          finish()
-        }
+      if (appPreferences.selectedAccount().isNotBlank()) {
+        SikorkaService.start(this@SplashActivity)
+        MainActivity.start(this@SplashActivity)
+      } else {
+        WizardActivity.start(this@SplashActivity)
+      }
+
+      finish()
+    }
   }
 }

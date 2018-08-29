@@ -14,11 +14,8 @@ import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
-import javax.inject.Inject
 
-class MainPresenterImpl
-@Inject
-constructor(
+class MainPresenterImpl(
   private val accountRepository: AccountRepository,
   private val contractRepository: ContractRepository,
   private val appSchedulers: AppSchedulers,
@@ -55,12 +52,12 @@ constructor(
 
   override fun attach(view: MainView) {
     super.attach(view)
-    bus.register(this, TransactionStatusEvent::class.java, {
+    bus.register(this, TransactionStatusEvent::class.java) {
       attachedView().notifyTransactionMined(it.txHash, it.success)
-    })
-    bus.register(this, ContractStatusEvent::class.java, {
+    }
+    bus.register(this, ContractStatusEvent::class.java) {
       attachedView().notifyContractMined(it.address, it.txHash, it.success)
-    })
+    }
   }
 
   override fun detach() {
