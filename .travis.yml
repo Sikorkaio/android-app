@@ -1,20 +1,28 @@
 language: android
 android:
   components:
-  - tools # to get the new `repository-11.xml`
-  - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+  - tools
+  - tools
   - platform-tools
   - build-tools-28.0.2
   - android-28
 before_install:
 - yes | sdkmanager "platforms;android-28"
 script:
-- ./gradlew ktlint
+- "./gradlew ktlint"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - $HOME/.gradle/caches/
-  - $HOME/.gradle/wrapper/
-  - $HOME/.android/build-cache
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+jobs:
+  include:
+  - stage: lint
+    script: "./gradlew ktlint"
+  - script: "./gradlew lint"
+env:
+  matrix:
+    secure: TZ3kKYQ81yY3L+YZy61QcNwU9qoi0S73icZ8wV3eSQgwZBxombahL9Jr/4jsnF1qoEAWu6hiaVj3U9asMyFVA1+hDbZnONDDZP6poa5fSKcc/3BdAacEvV098wzFNOB1Faz9eliuzaku+LEFOdWesbdBY/aNnEUam0Ft2s7BWTZ6TbgT8pFtlTiArAWWp+l1NMobxOpjuFdkJk9RBaQvukGS9Z8cPmloMBfJqx2vgTcAplmtfvOwWcGG+DRTtqUNjc4D57Hg9ZKBIqFJaBRUDg4RM5rckuRXhNLk4QyATVaKVd84CSy6vnJghw/t3mFA1tRR3qUeceXoPNg+xjXTis8tYDmT4USujUZW0R1+CECZWBjfLv6QfaDT5a8Jr+LdO3gTe0D/kvADGeFrG6kZWcYn/trf3Z3fRBxqOMDNtn2ij/1qy8d+T+ia+POk5zliT6dcV1mVTwmoHDSQd/GWkBq62Rdiz6pGvkvpr01JB0XPSFB8Fhy3OoMOnUGwBAvas5XWrq/NL35bfSy7aKHMCm6zpDM3nGikVWiLlvCzq+kJVdHlOTDxkkRSvbgMrw9mxWjXC3JndqwTIvV7VjBLuUYD5t7G3a3MdFP641Hdx9c1kM53HUtTT5C2TiPf6Z0f1/WBnRJQ8/iPob8Q6XY9/ZUTTkf/pIjpYlxC1Bc+9sI=
