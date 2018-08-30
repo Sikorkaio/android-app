@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
+initGoogleMapsApiKeys()
 // load api key from properties file
 def properties = new Properties()
 file("$rootDir/api-keys.properties").withInputStream { properties.load(it) }
@@ -190,10 +191,6 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
   classpath = configurations.ktlint
   main = "com.github.shyiko.ktlint.Main"
   args "-F", "src/**/*.kt"
-}
-
-afterEvaluate {
-  initGoogleMapsApiKeys()
 }
 
 def initGoogleMapsApiKeys() {
