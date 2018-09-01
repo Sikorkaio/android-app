@@ -1,5 +1,6 @@
 Sikorka Android Application
 ---------
+[![Build Status](https://travis-ci.org/Sikorkaio/android-app.svg?branch=master)](https://travis-ci.org/Sikorkaio/android-app)
 
 ### Google Maps 
 For google maps integration you should provide a `api-keys.properties` file in the project `root directory`
