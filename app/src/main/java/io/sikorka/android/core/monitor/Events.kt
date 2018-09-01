@@ -1,7 +1,7 @@
 package io.sikorka.android.core.monitor
 
-data class PrepareTransactionStatusEvent(val txHash: String, val success: Boolean)
+data class PrepareTransactionStatus(val txHash: String, val success: Boolean)
 
-data class TransactionStatusEvent(val txHash: String, val success: Boolean)
+data class TransactionStatus(val txHash: String, val success: Boolean)
 
-data class ContractStatusEvent(val address: String, val txHash: String, val success: Boolean)
+data class ContractStatus(val address: String, val txHash: String, val success: Boolean)

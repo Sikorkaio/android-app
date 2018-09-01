@@ -17,17 +17,17 @@ class AccountPresenterImpl(
         it.loading() -> view.loading()
         it.failure() -> view.showError(it.error().message ?: "")
       }
-    }))
+    }) {})
   }
 
   override fun setDefault(account: Account) {
     addDisposable(accountRepository.setDefaultAccount(account)
-        .subscribeOn(appSchedulers.io)
-        .observeOn(appSchedulers.main)
-        .subscribe({
-          loadAccounts()
-        }) {
-        })
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
+      .subscribe({
+        loadAccounts()
+      }) {
+      })
   }
 
   override fun deleteAccount(account: Account, passphrase: String) {
@@ -37,12 +37,12 @@ class AccountPresenterImpl(
     }
 
     addDisposable(accountRepository.deleteAccount(account, passphrase)
-        .subscribeOn(appSchedulers.io)
-        .observeOn(appSchedulers.main)
-        .subscribe({
-          loadAccounts()
-        }) {
-          view.showError("")
-        })
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
+      .subscribe({
+        loadAccounts()
+      }) {
+        view.showError("")
+      })
   }
 }

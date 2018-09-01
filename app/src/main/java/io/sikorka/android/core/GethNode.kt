@@ -60,7 +60,12 @@ class GethNode(
     lightClientProvider.initialize(LightClient(node.ethereumClient, ethContext))
 
     periodicallyCheckIfRunning()
-    disposables += loggingThrottler.lastThrottle(1, TimeUnit.MINUTES) { logPeers(it) }
+    disposables += loggingThrottler.lastThrottle(
+      1,
+      TimeUnit.MINUTES,
+      { logPeers(it) },
+      schedulers.computation
+    )
     disposables += headers()
       .subscribeOn(schedulers.io)
       .observeOn(schedulers.io)

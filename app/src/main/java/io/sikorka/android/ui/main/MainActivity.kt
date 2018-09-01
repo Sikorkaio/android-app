@@ -229,8 +229,9 @@ class MainActivity : AppCompatActivity(),
   override fun updateSyncStatus(status: SyncStatus) {
     onSyncStatus(status.syncing)
     val statusMessage = if (status.syncing) {
-      getString(
-        R.string.main_nav__network_statistics,
+      resources.getQuantityString(
+        R.plurals.main_nav__network_statistics,
+        status.peers,
         status.peers,
         status.currentBlock,
         status.highestBlock

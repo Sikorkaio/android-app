@@ -12,6 +12,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:background="?attr/selectableItemBackground"
+      android:contentDescription="@string/file_selection__navigate_up_content_description"
       android:padding="8dp"
       android:tint="@color/colorAccent"
       app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +69,7 @@
       android:layout_marginTop="8dp"
       android:layout_marginEnd="8dp"
       android:layout_marginBottom="8dp"
+      android:contentDescription="@string/file_selection__icon_content_description"
       android:tint="@color/colorPrimary"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -92,6 +94,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:visibility="gone"
-      app:constraint_referenced_ids="file_selection__empty_label, file_selection__empty_icon" />
+      app:constraint_referenced_ids="file_selection__empty_label, file_selection__empty_icon"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

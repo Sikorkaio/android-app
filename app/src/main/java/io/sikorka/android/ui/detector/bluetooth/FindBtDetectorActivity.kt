@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
@@ -16,7 +17,11 @@ import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity
 import io.sikorka.android.ui.dialogs.progress
 import io.sikorka.android.utils.isDisposed
-import kotlinx.android.synthetic.main.activity_find_detector.*
+import io.sikorka.android.utils.schedulers.AppSchedulers
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__detector_list
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__loading_group
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__no_result_group
+import kotlinx.android.synthetic.main.activity_find_detector.find_detector__swipe_layout
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -31,6 +36,7 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
 
   private val detectorAdapter: FindDetectorAdapter by inject()
 
+  private val schdulers: AppSchedulers by inject()
   private val compositeDisposable = CompositeDisposable()
   private var discoveryDisposable: Disposable? = null
 
@@ -60,7 +66,7 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
       )
       dialog.show()
 
-      btConnector.connect(device)
+      compositeDisposable += btConnector.connect(device)
         .flatMap { it.getDetectorEthAddress() }
         .subscribeOn(Schedulers.io())
         .doAfterTerminate {
@@ -91,9 +97,10 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
     }
 
     discoveryDisposable = btScanner.discover(this)
-      .buffer(15, TimeUnit.SECONDS)
+      .buffer(15, TimeUnit.SECONDS, schdulers.io)
       .distinct()
       .first(emptyList())
+      .subscribeOn(schdulers.io)
       .observeOn(AndroidSchedulers.mainThread())
       .doAfterTerminate {
         find_detector__swipe_layout.isRefreshing = false

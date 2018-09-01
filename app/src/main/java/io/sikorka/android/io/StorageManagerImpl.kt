@@ -1,8 +1,8 @@
 package io.sikorka.android.io
 
 import android.content.Context
+import android.os.StatFs
 import io.sikorka.android.core.configuration.ConfigurationProvider
-import org.apache.commons.io.FileUtils
 import java.io.File
 
 class StorageManagerImpl(
@@ -12,7 +12,8 @@ class StorageManagerImpl(
 
   override fun storageUsed(): Long {
     val active = configurationProvider.getActive()
-    return FileUtils.sizeOf(active.dataDir)
+    val statFs = StatFs(active.dataDir.absolutePath)
+    return statFs.blockCountLong
   }
 
   private fun getTransactionDirectory(): File {

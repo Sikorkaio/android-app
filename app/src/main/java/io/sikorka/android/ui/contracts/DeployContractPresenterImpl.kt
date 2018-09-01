@@ -1,9 +1,10 @@
 package io.sikorka.android.ui.contracts
 
+import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.GethNode
-import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.core.contracts.model.ContractData
 import io.sikorka.android.core.contracts.model.ContractGas
+import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.utils.schedulers.AppSchedulers
@@ -19,36 +20,36 @@ class DeployContractPresenterImpl(
   override fun load() {
 
     addDisposable(gethNode.suggestedGasPrice()
-        .subscribeOn(appSchedulers.io)
-        .observeOn(appSchedulers.main)
-        .subscribe({
-          attachedView().setSuggestedGasPrice(it.price)
-        }) {
-        }
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
+      .subscribe({
+        attachedView().setSuggestedGasPrice(it.price)
+      }) {
+      }
     )
   }
 
   override fun deployContract(passphrase: String, contractInfo: ContractData) {
-    contractRepository.deployContract(passphrase, contractInfo)
-        .subscribeOn(appSchedulers.io)
-        .observeOn(appSchedulers.main)
-        .subscribe({
-          attachedView().complete(it.address.hex)
-        }) {
-          attachedView().showError(it.message)
-          Timber.v(it)
-        }
+    disposables += contractRepository.deployContract(passphrase, contractInfo)
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
+      .subscribe({
+        attachedView().complete(it.address.hex)
+      }) {
+        attachedView().showError(it.message)
+        Timber.v(it)
+      }
   }
 
   override fun prepareGasSelection() {
     addDisposable(gethNode.suggestedGasPrice()
-        .subscribeOn(appSchedulers.io)
-        .observeOn(appSchedulers.main)
-        .subscribe({
-          attachedView().showGasDialog(it)
-        }) {
-          attachedView().showError(it.message)
-        }
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
+      .subscribe({
+        attachedView().showGasDialog(it)
+      }) {
+        attachedView().showError(it.message)
+      }
     )
   }
 

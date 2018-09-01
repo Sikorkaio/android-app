@@ -1,5 +1,6 @@
 package io.sikorka.android.ui.contracts.interact
 
+import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.contract.DiscountContract
 import io.sikorka.android.core.GethNode
 import io.sikorka.android.core.contracts.model.ContractGas
@@ -69,7 +70,7 @@ class ContractInteractPresenterImpl(
     }
 
     ifNotNull(gas, passphrase) { gas, passphrase ->
-      contractRepository.transact({
+      disposables += contractRepository.transact({
         boundInterface.claimToken(it, data)
       }, passphrase, gas)
         .subscribeOn(appSchedulers.io)

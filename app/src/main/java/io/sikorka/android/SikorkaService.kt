@@ -4,11 +4,10 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.GethNode
@@ -16,10 +15,11 @@ import io.sikorka.android.core.monitor.AccountBalanceMonitor
 import io.sikorka.android.core.monitor.DeployedContractMonitor
 import io.sikorka.android.core.monitor.PendingContractMonitor
 import io.sikorka.android.core.monitor.PendingTransactionMonitor
-import io.sikorka.android.core.monitor.PrepareTransactionStatusEvent
-import io.sikorka.android.core.monitor.TransactionStatusEvent
+import io.sikorka.android.core.monitor.PrepareTransactionStatus
+import io.sikorka.android.core.monitor.TransactionStatus
 import io.sikorka.android.data.syncstatus.SyncStatus
-import io.sikorka.android.events.RxBus
+import io.sikorka.android.events.Event
+import io.sikorka.android.events.EventLiveDataProvider
 import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.utils.schedulers.AppDispatchers
 import io.sikorka.android.utils.schedulers.AppSchedulers
@@ -29,7 +29,7 @@ import kotlinx.coroutines.experimental.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class SikorkaService : Service() {
+class SikorkaService : LifecycleService() {
 
   private val notificationManager: NotificationManager by inject()
 
@@ -47,9 +47,7 @@ class SikorkaService : Service() {
 
   private val dispatchers: AppDispatchers by inject()
 
-  private val bus: RxBus by inject()
-
-  override fun onBind(intent: Intent): IBinder? = null
+  private val eventProvider: EventLiveDataProvider by inject()
 
   private val disposables = CompositeDisposable()
 
@@ -70,11 +68,11 @@ class SikorkaService : Service() {
     disposables.clear()
 
     launch(dispatchers.io) {
-      contractMonitor.stop()
+
       pendingTransactionMonitor.stop()
       accountBalanceMonitor.stop()
       deployedContractMonitor.stop()
-      bus.unregister(this)
+      contractMonitor.stop()
       disposables.clear()
       gethNode.stop()
     }
@@ -83,6 +81,7 @@ class SikorkaService : Service() {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    super.onStartCommand(intent, flags, startId)
     Timber.v("Sikorka service is starting")
     return try {
       start()
@@ -119,12 +118,16 @@ class SikorkaService : Service() {
       }
     }
 
-    bus.register(this, PrepareTransactionStatusEvent::class.java) {
-      launch(UI) {
-        delay(10_000)
-        Timber.v("Handling status")
-        notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, transactionSuccess())
-        bus.post(TransactionStatusEvent(it.txHash, it.success))
+    eventProvider.observe(this) {
+      val content = it.getContentIfNotHandled() ?: return@observe
+
+      if (content is PrepareTransactionStatus) {
+        launch(UI) {
+          delay(10_000)
+          Timber.v("Handling status")
+          notificationManager.notify(SikorkaService.STATUS_NOTIFICATION_ID, transactionSuccess())
+          eventProvider.post(Event(TransactionStatus(content.txHash, content.success)))
+        }
       }
     }
   }
@@ -164,8 +167,9 @@ class SikorkaService : Service() {
     val message = if (status.empty()) {
       getString(R.string.notification__not_syncing)
     } else {
-      getString(
-        R.string.notification__network_statistics,
+      resources.getQuantityString(
+        R.plurals.notification__network_statistics,
+        status.peers,
         status.peers,
         status.currentBlock,
         status.highestBlock

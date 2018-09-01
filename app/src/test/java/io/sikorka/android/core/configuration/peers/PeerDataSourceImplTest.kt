@@ -2,6 +2,7 @@ package io.sikorka.android.core.configuration.peers
 
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import com.squareup.moshi.Moshi
 import io.sikorka.android.body
 import io.sikorka.android.code
 import io.sikorka.android.core.configuration.ConfigurationProvider
@@ -40,7 +41,7 @@ class PeerDataSourceImplTest {
   private lateinit var file: File
 
   private fun file(name: String): String {
-    val classLoader = javaClass.classLoader
+    val classLoader = checkNotNull(javaClass.classLoader)
     val resource = classLoader.getResource(name)
 
     return Okio.buffer(Okio.source(File(resource.path))).use {
@@ -51,7 +52,9 @@ class PeerDataSourceImplTest {
   @Before
   fun setUp() {
     MockitoAnnotations.initMocks(this)
-    val moshi = MoshiProvider().get()
+    val moshi = Moshi.Builder()
+      .add(PeerAdapter())
+      .build()
     file = temporaryFolder.newFile("static-nodes.json")
 
     given(configurationProvider.getActive()).willReturn(configuration)

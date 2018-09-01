@@ -5,7 +5,6 @@ import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.core.GethNode
@@ -31,8 +30,7 @@ import io.sikorka.android.data.AppDatabase
 import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
-import io.sikorka.android.events.RxBus
-import io.sikorka.android.events.RxBusImpl
+import io.sikorka.android.events.EventLiveDataProvider
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.StorageManagerImpl
 import io.sikorka.android.io.detectors.BtConnector
@@ -41,6 +39,7 @@ import io.sikorka.android.io.detectors.BtScanner
 import io.sikorka.android.io.detectors.BtScannerImpl
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.settings.AppPreferencesImpl
+import io.sikorka.android.ui.accounts.AccountAdapter
 import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.DebugPreferencesStoreImpl
 import io.sikorka.android.utils.schedulers.AppDispatchers
@@ -68,7 +67,6 @@ val sikorkaModule = module {
   single {
     Moshi.Builder()
       .add(PeerAdapter())
-      .add(KotlinJsonAdapterFactory())
       .build()
   }
 
@@ -100,7 +98,7 @@ val sikorkaModule = module {
   factory { PassphraseValidatorImpl() as PassphraseValidator }
 
   factory { AppPreferencesImpl(get()) as AppPreferences }
-  single { RxBusImpl() as RxBus }
+  single { create<EventLiveDataProvider>() }
 
   single { create<GethNode>() }
 
@@ -138,6 +136,8 @@ val sikorkaModule = module {
 
   factory { BtScannerImpl(get()) as BtScanner }
   factory { BtConnectorImpl() as BtConnector }
+
+  factory { create<AccountAdapter>() }
 
   single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
   single { checkNotNull(androidContext().getSystemService<NotificationManager>()) }
