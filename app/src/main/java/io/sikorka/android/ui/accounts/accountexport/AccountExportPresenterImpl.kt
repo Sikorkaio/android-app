@@ -9,10 +9,8 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.io.toFile
 import io.sikorka.android.mvp.BasePresenter
 import java.io.File
-import javax.inject.Inject
 
-class AccountExportPresenterImpl
-@Inject constructor(
+class AccountExportPresenterImpl(
   private val accountRepository: AccountRepository,
   private val passphraseValidator: PassphraseValidator
 ) : AccountExportPresenter, BasePresenter<AccountExportView>() {

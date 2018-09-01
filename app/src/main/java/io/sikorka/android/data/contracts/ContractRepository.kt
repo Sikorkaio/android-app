@@ -23,11 +23,8 @@ import org.ethereum.geth.Transaction
 import org.threeten.bp.Instant
 import timber.log.Timber
 import java.math.BigDecimal
-import javax.inject.Inject
 
-class ContractRepository
-@Inject
-constructor(
+class ContractRepository(
   private val gethNode: GethNode,
   private val accountRepository: AccountRepository,
   private val pendingContractDao: PendingContractDao,

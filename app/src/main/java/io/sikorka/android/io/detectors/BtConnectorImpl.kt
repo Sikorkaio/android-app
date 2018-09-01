@@ -8,12 +8,8 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.io.IOException
 import java.util.UUID
-import javax.inject.Inject
 
-class BtConnectorImpl
-@Inject
-constructor() : BtConnector {
-
+class BtConnectorImpl : BtConnector {
   override fun connect(device: BluetoothDevice): Single<BtService> {
     return attemptConnection(device)
       .subscribeOn(Schedulers.single())

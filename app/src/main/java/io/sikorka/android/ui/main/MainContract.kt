@@ -7,7 +7,6 @@ import io.sikorka.android.data.location.UserLocation
 import io.sikorka.android.data.syncstatus.SyncStatus
 import io.sikorka.android.mvp.BaseView
 import io.sikorka.android.mvp.Presenter
-import toothpick.config.Module
 
 interface MainView : BaseView {
   fun updateAccountInfo(model: AccountModel, preferredBalancePrecision: Int)
@@ -23,10 +22,4 @@ interface MainView : BaseView {
 interface MainPresenter : Presenter<MainView> {
   fun load()
   fun userLocation(userLocation: UserLocation)
-}
-
-class MainModule : Module() {
-  init {
-    bind(MainPresenter::class.java).to(MainPresenterImpl::class.java)
-  }
 }

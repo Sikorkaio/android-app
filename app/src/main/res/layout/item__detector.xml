@@ -2,17 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/clickable_layout"
     android:layout_width="match_parent"
-    android:background="?attr/selectableItemBackground"
     android:layout_height="48dp">
 
   <ImageView
       android:id="@+id/find_detector__icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
+      android:layout_marginBottom="8dp"
+      android:contentDescription="@string/find_detector__icon_content_description"
       android:tint="@color/colorAccent"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -20,15 +21,15 @@
       app:srcCompat="@drawable/ic_settings_input_antenna_black_24dp" />
 
   <TextView
-      android:textSize="16sp"
       android:id="@+id/find_detector__detector_name"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
-      android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
       android:fontFamily="sans-serif-condensed"
+      android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/find_detector__icon"

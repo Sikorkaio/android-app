@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.github.paolorotolo.appintro.AppIntro2
 import io.sikorka.android.R
 import io.sikorka.android.SikorkaService
@@ -13,27 +12,19 @@ import io.sikorka.android.ui.main.MainActivity
 import io.sikorka.android.ui.wizard.slides.InformationFragment
 import io.sikorka.android.ui.wizard.slides.accountsetup.AccountSetupFragment
 import io.sikorka.android.ui.wizard.slides.networkselection.NetworkSelectionFragment
-import toothpick.Scope
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class WizardActivity : AppIntro2(), WizardView {
 
-  @Inject lateinit var presenter: WizardPresenter
-
-  private lateinit var scope: Scope
+  private val presenter: WizardPresenter by inject()
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    scope = Toothpick.openScopes(application, this)
-    scope.installModules(SmoothieSupportActivityModule(this), WizardModule())
     super.onCreate(savedInstanceState)
-    Toothpick.inject(this, scope)
 
     askForPermissions(arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.ACCESS_FINE_LOCATION
+      Manifest.permission.READ_EXTERNAL_STORAGE,
+      Manifest.permission.WRITE_EXTERNAL_STORAGE,
+      Manifest.permission.ACCESS_FINE_LOCATION
     ), 2)
 
     setNavBarColor(R.color.colorPrimaryDark)
@@ -51,7 +42,6 @@ class WizardActivity : AppIntro2(), WizardView {
 
   override fun onDestroy() {
     presenter.detach()
-    Toothpick.closeScope(this)
     super.onDestroy()
   }
 

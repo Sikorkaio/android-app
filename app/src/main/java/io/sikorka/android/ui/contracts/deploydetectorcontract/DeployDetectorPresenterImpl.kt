@@ -1,20 +1,17 @@
 package io.sikorka.android.ui.contracts.deploydetectorcontract
 
+import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.core.GethNode
-import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.core.contracts.model.DetectorContractData
+import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.ui.contracts.DeployContractCodes
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
-import javax.inject.Inject
 
-@DeployDetectorActivity.Presenter
-class DeployDetectorPresenterImpl
-@Inject
-constructor(
+class DeployDetectorPresenterImpl(
   private val gethNode: GethNode,
   private val contractRepository: ContractRepository,
   private val appSchedulers: AppSchedulers,
@@ -22,27 +19,27 @@ constructor(
 ) : DeployDetectorPresenter, BasePresenter<DeployDetectorView>() {
   override fun prepareGasSelection() {
     addDisposable(gethNode.suggestedGasPrice()
-        .subscribeOn(appSchedulers.io)
-        .observeOn(appSchedulers.main)
-        .subscribe({
-          attachedView().showGasDialog(it)
-        }) {
-          attachedView().showError(it.message ?: "")
-          Timber.e(it, "failed to get suggested gas price")
-        }
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
+      .subscribe({
+        attachedView().showGasDialog(it)
+      }) {
+        attachedView().showError(it.message ?: "")
+        Timber.e(it, "failed to get suggested gas price")
+      }
     )
   }
 
   override fun deployContract(passphrase: String, data: DetectorContractData) {
-    contractRepository.deployContract(passphrase, data)
-        .subscribeOn(appSchedulers.io)
-        .observeOn(appSchedulers.main)
-        .subscribe({
-          attachedView().complete(it.address.hex)
-        }) {
-          attachedView().showError(it.message ?: "")
-          Timber.v(it)
-        }
+    disposables += contractRepository.deployContract(passphrase, data)
+      .subscribeOn(appSchedulers.io)
+      .observeOn(appSchedulers.main)
+      .subscribe({
+        attachedView().complete(it.address.hex)
+      }) {
+        attachedView().showError(it.message ?: "")
+        Timber.v(it)
+      }
   }
 
   override fun prepareDeployWithDefaults() {

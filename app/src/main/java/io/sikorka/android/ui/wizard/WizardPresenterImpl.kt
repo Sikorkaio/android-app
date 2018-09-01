@@ -3,11 +3,8 @@ package io.sikorka.android.ui.wizard
 import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.mvp.BasePresenter
 import io.sikorka.android.utils.schedulers.AppSchedulers
-import javax.inject.Inject
 
-class WizardPresenterImpl
-@Inject
-constructor(
+class WizardPresenterImpl(
   private val accountRepository: AccountRepository,
   private val appSchedulers: AppSchedulers
 ) : WizardPresenter, BasePresenter<WizardView>() {

@@ -1,30 +1,28 @@
 package io.sikorka.android.core
 
-import android.app.Application
+import android.content.Context
 import android.content.Intent
 import io.sikorka.android.SikorkaService
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import io.sikorka.android.utils.schedulers.AppDispatchers
 import kotlinx.coroutines.experimental.delay
-import javax.inject.Inject
+import kotlinx.coroutines.experimental.launch
 
-class ServiceManagerImpl
-@Inject
-constructor(
-  private val application: Application
+class ServiceManagerImpl(
+  private val context: Context,
+  private val dispatchers: AppDispatchers
 ) : ServiceManager {
   override fun start() {
-    val intent = Intent(application, SikorkaService::class.java)
-    application.startService(intent)
+    val intent = Intent(context, SikorkaService::class.java)
+    context.startService(intent)
   }
 
   override fun stop() {
-    val intent = Intent(application, SikorkaService::class.java)
-    application.stopService(intent)
+    val intent = Intent(context, SikorkaService::class.java)
+    context.stopService(intent)
   }
 
   override fun restart() {
-    async(CommonPool) {
+    launch(dispatchers.io) {
       stop()
       delay(3000)
       start()

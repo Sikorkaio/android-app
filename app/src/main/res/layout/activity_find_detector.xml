@@ -23,10 +23,10 @@
       style="?android:attr/progressBarStyle"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
-      android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -36,10 +36,10 @@
       android:id="@+id/find_detector__loading_message"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
-      android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
       android:fontFamily="sans-serif-condensed"
       android:text="@string/find_detector__searching_for_detectors"
       android:textSize="14sp"
@@ -53,7 +53,9 @@
       android:id="@+id/find_detector__loading_group"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      app:constraint_referenced_ids="find_detector__loading_message,find_detector__loading_progress" />
+      app:constraint_referenced_ids="find_detector__loading_message,find_detector__loading_progress"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
       android:id="@+id/find_detector__swipe_layout"
@@ -77,10 +79,10 @@
       android:id="@+id/find_detector__no_result_message"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
-      android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
       android:fontFamily="sans-serif-condensed"
       android:text="@string/find_detector__no_devices_found"
       android:textSize="14sp"
@@ -95,7 +97,8 @@
       android:layout_height="wrap_content"
       android:visibility="gone"
       app:constraint_referenced_ids="find_detector__no_result_message"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       tools:visibility="visible" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,13 +10,13 @@ import org.ethereum.geth.Geth
 import org.ethereum.geth.TransactOpts
 import org.ethereum.geth.Transaction
 
+@Suppress("unused")
 /**
  * The wrapper of the SikorkaRegistry Contract
  *
  * @property contract instance bound to a blockchain address.
  */
-class SikorkaRegistry
-constructor(private val contract: BoundContract) {
+class SikorkaRegistry(private val contract: BoundContract) {
 
   /**
    * Ethereum address where this contract is located at.

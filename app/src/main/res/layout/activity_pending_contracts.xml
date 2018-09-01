@@ -32,17 +32,20 @@
       android:id="@+id/pending_contract__no_data_group"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      app:constraint_referenced_ids="pending_contract__no_data_icon,pending_contract__no_data_label" />
+      app:constraint_referenced_ids="pending_contract__no_data_icon,pending_contract__no_data_label"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
   <ImageView
       android:id="@+id/pending_contract__no_data_icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
-      android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
       android:alpha="0.4"
+      android:contentDescription="@string/error_icon__content_description"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

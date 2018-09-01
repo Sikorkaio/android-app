@@ -1,15 +1,14 @@
 package io.sikorka.android.ui.settings.peermanager
 
 import android.app.Activity
-import androidx.core.content.ContextCompat
-import androidx.appcompat.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.view.ActionMode
+import androidx.core.content.ContextCompat
 import io.sikorka.android.R
 import io.sikorka.android.ui.MenuTint
 
-class PeerManagerActionModeCallback
-constructor(
+class PeerManagerActionModeCallback(
   private val activity: Activity
 ) : ActionMode.Callback {
 

@@ -14,10 +14,8 @@ import io.sikorka.android.data.syncstatus.SyncStatusProvider
 import io.sikorka.android.utils.isDisposed
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
-import javax.inject.Inject
 
-class AccountBalanceMonitor
-@Inject constructor(
+class AccountBalanceMonitor(
   private val lightClientProvider: LightClientProvider,
   syncStatusProvider: SyncStatusProvider,
   private val accountBalanceDao: AccountBalanceDao,

@@ -1,46 +1,26 @@
 package io.sikorka.android.ui.wizard.slides.networkselection
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.appcompat.content.res.AppCompatResources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.Network
 import io.sikorka.android.ui.showShortSnack
 import kotterknife.bindView
-import toothpick.Toothpick
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-/**
- * A simple [Fragment] subclass.
- * Use the [NetworkSelectionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class NetworkSelectionFragment : androidx.fragment.app.Fragment(), NetworkSelectionView {
 
   private val ropstenSelection: TextView by bindView(R.id.network_selection__ropsten)
   private val mainnetSelection: TextView by bindView(R.id.network_selection__mainnet)
   private val rinkebySelection: TextView by bindView(R.id.network_selection__rinkeby)
 
-  @Inject
-  lateinit var presenter: NetworkSelectionPresenter
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    val scope = Toothpick.openScopes(requireContext().applicationContext, this)
-    scope.installModules(NetworkSelectionModule())
-    Toothpick.inject(this, scope)
-    super.onCreate(savedInstanceState)
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
-  }
+  private val presenter: NetworkSelectionPresenter by inject()
 
   override fun onStart() {
     super.onStart()
@@ -98,8 +78,7 @@ class NetworkSelectionFragment : androidx.fragment.app.Fragment(), NetworkSelect
   companion object {
 
     fun newInstance(): NetworkSelectionFragment {
-      val fragment = NetworkSelectionFragment()
-      return fragment
+      return NetworkSelectionFragment()
     }
   }
 }

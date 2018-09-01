@@ -1,11 +1,6 @@
 package io.sikorka.android.core.ethereumclient
 
-import javax.inject.Inject
-import javax.inject.Provider
-
-class LightClientProvider
-@Inject
-constructor() : Provider<LightClient> {
+class LightClientProvider {
 
   private var _initialized: Boolean = false
   private var lightClient: LightClient? = null
@@ -18,7 +13,7 @@ constructor() : Provider<LightClient> {
     _initialized = true
   }
 
-  override fun get(): LightClient = checkNotNull(lightClient) { "light client was null" }
+  fun get(): LightClient = checkNotNull(lightClient) { "light client was null" }
 
   fun reset() {
     _initialized = false

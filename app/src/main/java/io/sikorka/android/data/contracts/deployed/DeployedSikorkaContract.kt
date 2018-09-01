@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "deployed_contracts",
-    indices = arrayOf(Index(value = "address_hex", unique = true))
+    indices = [Index(value = ["address_hex"], unique = true)]
 )
 data class DeployedSikorkaContract(
   @PrimaryKey(autoGenerate = true)

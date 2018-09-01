@@ -3,7 +3,6 @@ package io.sikorka.android.ui.contracts.deploydetectorcontract
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -11,6 +10,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import io.sikorka.android.R
 import io.sikorka.android.core.contracts.model.ContractGas
 import io.sikorka.android.core.contracts.model.DetectorContractData
@@ -29,27 +29,17 @@ import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__
 import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__contract_tokens
 import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__deploy_fab
 import kotlinx.android.synthetic.main.activity_deploy_detector.deploy_detector__detector_address
-import toothpick.Scope
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
 
-  @Inject
-  lateinit var presenter: DeployDetectorPresenter
-
-  private lateinit var scope: Scope
+  private val presenter: DeployDetectorPresenter by inject()
 
   private var myMarker: Marker? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Toothpick.openScope(PRESENTER_SCOPE).installModules(DeployDetectorModule())
-    scope = Toothpick.openScopes(application, PRESENTER_SCOPE, this)
-    scope.installModules(SmoothieSupportActivityModule(this))
     super.onCreate(savedInstanceState)
 
-    Toothpick.inject(this, scope)
     setContentView(R.layout.activity_deploy_detector)
 
     setupToolbar(R.string.deploy_detector__title)
@@ -104,10 +94,6 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
 
   override fun onDestroy() {
     presenter.detach()
-    Toothpick.closeScope(this)
-    if (isFinishing) {
-      Toothpick.closeScope(PRESENTER_SCOPE)
-    }
     super.onDestroy()
   }
 
@@ -119,23 +105,23 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
   }
 
   override fun showError(message: String) {
-    com.google.android.material.snackbar.Snackbar.make(deploy_detector__detector_address, message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+    Snackbar.make(deploy_detector__detector_address, message, Snackbar.LENGTH_SHORT).show()
   }
 
   override fun showError(code: Int) {
     when (code) {
       DeployContractCodes.NO_GAS_PREFERENCES -> {
-        com.google.android.material.snackbar.Snackbar.make(
+        Snackbar.make(
           deploy_detector__detector_address,
           R.string.deploy_contract__no_gas_preferences,
-          com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+          Snackbar.LENGTH_SHORT
         ).show()
       }
       else -> {
-        com.google.android.material.snackbar.Snackbar.make(
+        Snackbar.make(
           deploy_detector__detector_address,
           "code $code",
-          com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+          Snackbar.LENGTH_SHORT
         ).show()
       }
     }
@@ -194,13 +180,8 @@ class DeployDetectorActivity : BaseActivity(), DeployDetectorView {
       return editText.value()
     }
 
-  @javax.inject.Scope
-  @Target(AnnotationTarget.CLASS)
-  @Retention(AnnotationRetention.RUNTIME)
-  annotation class Presenter
-
   companion object {
-    var PRESENTER_SCOPE: Class<*> = Presenter::class.java
+
     private const val DETECTOR_ADDRESS = "io.sikorka.android.extras.DETECTOR_ADDRESS"
     private const val LONGITUDE = "io.sikorka.android.extras.LONGITUDE"
     private const val LATITUDE = "io.sikorka.android.extras.LATITUDE"

@@ -2,10 +2,8 @@ package io.sikorka.android.ui.accounts
 
 import io.sikorka.android.core.accounts.AccountsModel
 import io.sikorka.android.core.model.Account
-import javax.inject.Inject
 
-class AccountAdapterPresenterImpl
-@Inject constructor() : AccountAdapterPresenter {
+class AccountAdapterPresenterImpl : AccountAdapterPresenter {
 
   private var data: List<Account> = emptyList()
   private var default: String = ""

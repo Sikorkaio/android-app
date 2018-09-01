@@ -1,83 +1,145 @@
 package io.sikorka.android.di.modules
 
+import android.app.NotificationManager
+import androidx.core.content.getSystemService
+import androidx.preference.PreferenceManager
+import androidx.room.Room
 import com.squareup.moshi.Moshi
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.core.GethNode
 import io.sikorka.android.core.ServiceManager
 import io.sikorka.android.core.ServiceManagerImpl
+import io.sikorka.android.core.accounts.AccountRepository
 import io.sikorka.android.core.accounts.PassphraseValidator
 import io.sikorka.android.core.accounts.PassphraseValidatorImpl
+import io.sikorka.android.core.configuration.ConfigurationFactory
 import io.sikorka.android.core.configuration.ConfigurationProvider
 import io.sikorka.android.core.configuration.ConfigurationProviderImpl
+import io.sikorka.android.core.configuration.PeerHelper
+import io.sikorka.android.core.configuration.RopstenConfiguration
+import io.sikorka.android.core.configuration.peers.PeerAdapter
 import io.sikorka.android.core.configuration.peers.PeerDataSource
 import io.sikorka.android.core.configuration.peers.PeerDataSourceImpl
 import io.sikorka.android.core.ethereumclient.LightClientProvider
+import io.sikorka.android.core.monitor.AccountBalanceMonitor
+import io.sikorka.android.core.monitor.DeployedContractMonitor
+import io.sikorka.android.core.monitor.PendingContractMonitor
+import io.sikorka.android.core.monitor.PendingTransactionMonitor
 import io.sikorka.android.data.AppDatabase
-import io.sikorka.android.data.balance.AccountBalanceDao
-import io.sikorka.android.data.contracts.deployed.DeployedSikorkaContractDao
-import io.sikorka.android.data.contracts.pending.PendingContractDao
+import io.sikorka.android.data.contracts.ContractRepository
 import io.sikorka.android.data.location.UserLocationProvider
 import io.sikorka.android.data.syncstatus.SyncStatusProvider
-import io.sikorka.android.data.transactions.PendingTransactionDao
-import io.sikorka.android.di.providers.*
-import io.sikorka.android.di.qualifiers.ApplicationCache
-import io.sikorka.android.di.qualifiers.KeystorePath
-import io.sikorka.android.events.RxBus
-import io.sikorka.android.events.RxBusImpl
+import io.sikorka.android.events.EventLiveDataProvider
 import io.sikorka.android.io.StorageManager
 import io.sikorka.android.io.StorageManagerImpl
+import io.sikorka.android.io.detectors.BtConnector
+import io.sikorka.android.io.detectors.BtConnectorImpl
+import io.sikorka.android.io.detectors.BtScanner
+import io.sikorka.android.io.detectors.BtScannerImpl
 import io.sikorka.android.settings.AppPreferences
 import io.sikorka.android.settings.AppPreferencesImpl
+import io.sikorka.android.ui.accounts.AccountAdapter
 import io.sikorka.android.ui.settings.DebugPreferencesStore
 import io.sikorka.android.ui.settings.DebugPreferencesStoreImpl
-import io.sikorka.android.utils.schedulers.AppDispatcherProvider
 import io.sikorka.android.utils.schedulers.AppDispatchers
-import io.sikorka.android.utils.schedulers.AppSchedulerProvider
 import io.sikorka.android.utils.schedulers.AppSchedulers
-import toothpick.config.Module
-import java.io.File
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.rx2.asCoroutineDispatcher
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module.module
+import java.util.concurrent.Executors
 
-class SikorkaModule : Module() {
-  init {
-    bind(String::class.java).withName(KeystorePath::class.java)
-      .toProvider(KeystorePathProvider::class.java)
-    bind(AppSchedulers::class.java).toProvider(AppSchedulerProvider::class.java).providesSingletonInScope()
-    bind(AppDispatchers::class.java).toProvider(AppDispatcherProvider::class.java).providesSingletonInScope()
-    bind(PassphraseValidator::class.java).to(PassphraseValidatorImpl::class.java)
-    bind(AppPreferences::class.java).to(AppPreferencesImpl::class.java)
-    bind(RxBus::class.java).to(RxBusImpl::class.java).singletonInScope()
+object Names {
+  const val KEYSTORE_PATH = "keystore_path"
+  const val APPLICATION_CACHE = "application_cache"
+}
 
-    bind(GethNode::class.java).singletonInScope()
+val sikorkaModule = module {
 
-    bind(AppDatabase::class.java).toProvider(AppDatabaseProvider::class.java)
-      .providesSingletonInScope()
-
-    bind(PendingContractDao::class.java).toProvider(PendingContractDaoProvider::class.java)
-      .providesSingletonInScope()
-    bind(PendingTransactionDao::class.java).toProvider(PendingTransactionDaoProvider::class.java)
-      .providesSingletonInScope()
-    bind(AccountBalanceDao::class.java).toProvider(AccountBalanceDaoProvider::class.java)
-      .providesSingletonInScope()
-    bind(DeployedSikorkaContractDao::class.java)
-      .toProvider(DeployedSikorkaContractDaoProvider::class.java)
-      .providesSingletonInScope()
-
-    bind(StorageManager::class.java).to(StorageManagerImpl::class.java).singletonInScope()
-    bind(DebugPreferencesStore::class.java).to(DebugPreferencesStoreImpl::class.java)
-      .singletonInScope()
-
-    bind(ConfigurationProvider::class.java).to(ConfigurationProviderImpl::class.java)
-      .singletonInScope()
-
-    bind(Moshi::class.java).toProvider(MoshiProvider::class.java).providesSingletonInScope()
-
-    bind(SyncStatusProvider::class.java).singletonInScope()
-    bind(LightClientProvider::class.java).singletonInScope()
-    bind(UserLocationProvider::class.java).singletonInScope()
-
-    bind(PeerDataSource::class.java).to(PeerDataSourceImpl::class.java)
-    bind(File::class.java).withName(ApplicationCache::class.java)
-      .toProvider(ApplicationCacheProvider::class.java)
-
-    bind(ServiceManager::class.java).to(ServiceManagerImpl::class.java)
+  var count = 0
+  val executor = Executors.newSingleThreadExecutor { Thread(it, "db-operations") }
+  val monitorExecutor = Executors.newSingleThreadExecutor { Thread(it, "monitor") }
+  val computation = Executors.newFixedThreadPool(2) {
+    Thread(it, "computation-${++count}")
   }
+
+  single {
+    Moshi.Builder()
+      .add(PeerAdapter())
+      .build()
+  }
+
+  single(Names.KEYSTORE_PATH) { "${androidContext().filesDir}/keystore" }
+  single(Names.APPLICATION_CACHE) { androidContext().externalCacheDir ?: androidContext().cacheDir }
+
+  single {
+    AppSchedulers(
+      io = Schedulers.io(),
+      computation = Schedulers.from(computation),
+      main = AndroidSchedulers.mainThread(),
+      db = Schedulers.from(executor),
+      monitor = Schedulers.from(monitorExecutor)
+    )
+  }
+
+  single {
+    val appSchedulers = get<AppSchedulers>()
+
+    AppDispatchers(
+      io = appSchedulers.io.asCoroutineDispatcher(),
+      computation = appSchedulers.computation.asCoroutineDispatcher(),
+      main = UI,
+      db = appSchedulers.db.asCoroutineDispatcher(),
+      monitor = appSchedulers.monitor.asCoroutineDispatcher()
+    )
+  }
+
+  factory { PassphraseValidatorImpl() as PassphraseValidator }
+
+  factory { AppPreferencesImpl(get()) as AppPreferences }
+  single { create<EventLiveDataProvider>() }
+
+  single { create<GethNode>() }
+
+  single {
+    Room.databaseBuilder(androidContext(), AppDatabase::class.java, "sikorka.db")
+      .build()
+  }
+  single { get<AppDatabase>().pendingContractDao() }
+  single { get<AppDatabase>().pendingTransactionDao() }
+  single { get<AppDatabase>().accountBalanceDao() }
+  single { get<AppDatabase>().deployedSikorkaContractDao() }
+
+  single { StorageManagerImpl(get(), get()) as StorageManager }
+  single { DebugPreferencesStoreImpl(get()) as DebugPreferencesStore }
+  single { ConfigurationProviderImpl(get(), get()) as ConfigurationProvider }
+  single { create<RopstenConfiguration>() }
+  factory { create<PeerHelper>() }
+
+  factory { ConfigurationFactory() }
+
+  single { create<PendingContractMonitor>() }
+  single { create<PendingTransactionMonitor>() }
+  single { create<AccountBalanceMonitor>() }
+  single { create<DeployedContractMonitor>() }
+
+  single { SyncStatusProvider() }
+  single { LightClientProvider() }
+  single { UserLocationProvider() }
+
+  factory { PeerDataSourceImpl(get(), get(), get(Names.APPLICATION_CACHE)) as PeerDataSource }
+  factory { create<ServiceManagerImpl>() as ServiceManager }
+
+  factory { AccountRepository(get(Names.KEYSTORE_PATH), get(), get()) }
+  factory { ContractRepository(get(), get(), get(), get()) }
+
+  factory { BtScannerImpl(get()) as BtScanner }
+  factory { BtConnectorImpl() as BtConnector }
+
+  factory { create<AccountAdapter>() }
+
+  single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
+  single { checkNotNull(androidContext().getSystemService<NotificationManager>()) }
+  single { androidContext().assets }
 }

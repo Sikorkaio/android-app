@@ -1,7 +1,6 @@
 package io.sikorka.android.ui.wizard.slides.accountsetup
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,22 +11,15 @@ import io.sikorka.android.helpers.fail
 import io.sikorka.android.ui.accounts.accountcreation.AccountCreationDialog
 import io.sikorka.android.ui.accounts.accountimport.AccountImportActivity
 import kotterknife.bindView
-import toothpick.Toothpick
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AccountSetupFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AccountSetupFragment : androidx.fragment.app.Fragment(), AccountSetupView {
 
   private val accountAddress: TextView by bindView(R.id.account_setup__account_address)
   private val createNew: TextView by bindView(R.id.account_setup__create_new)
   private val importAccount: TextView by bindView(R.id.account_setup__import_account)
 
-  @Inject
-  lateinit var presenter: AccountSetupPresenter
+  private val presenter: AccountSetupPresenter by inject()
 
   private fun onCreateNewPressed() {
     val fm = fragmentManager ?: fail("fragmentManager was null")
@@ -40,19 +32,6 @@ class AccountSetupFragment : androidx.fragment.app.Fragment(), AccountSetupView 
   private fun onAccountImportPressed() {
     val context = context ?: fail("context was null")
     AccountImportActivity.start(context)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    val context = context ?: fail("")
-    val scope = Toothpick.openScopes(context.applicationContext, this)
-    scope.installModules(AccountSetupModule())
-    Toothpick.inject(this, scope)
-    super.onCreate(savedInstanceState)
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Toothpick.closeScope(this)
   }
 
   override fun onCreateView(
@@ -91,8 +70,7 @@ class AccountSetupFragment : androidx.fragment.app.Fragment(), AccountSetupView 
   companion object {
 
     fun newInstance(): AccountSetupFragment {
-      val fragment = AccountSetupFragment()
-      return fragment
+      return AccountSetupFragment()
     }
   }
 }

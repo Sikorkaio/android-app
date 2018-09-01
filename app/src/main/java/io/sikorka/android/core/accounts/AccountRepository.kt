@@ -12,7 +12,6 @@ import io.sikorka.android.core.model.converters.GethAccountConverter
 import io.sikorka.android.core.model.converters.GethAddressConverter
 import io.sikorka.android.data.balance.AccountBalance
 import io.sikorka.android.data.balance.AccountBalanceDao
-import io.sikorka.android.di.qualifiers.KeystorePath
 import io.sikorka.android.helpers.Lce
 import io.sikorka.android.settings.AppPreferences
 import org.ethereum.geth.Account
@@ -21,12 +20,10 @@ import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
 import org.ethereum.geth.Transaction
 import timber.log.Timber
-import javax.inject.Inject
 import io.sikorka.android.core.model.Account as SikorkaAccount
 
-class AccountRepository
-@Inject constructor(
-  @KeystorePath private val keystorePath: String,
+class AccountRepository(
+  keystorePath: String,
   private val appPreferences: AppPreferences,
   private val accountBalanceDao: AccountBalanceDao
 ) {
@@ -53,9 +50,9 @@ class AccountRepository
     val balance = accountBalanceDao.getBalance(addressHex)
     return@fromCallable AccountModel(addressHex, balance?.balance ?: NO_BALANCE)
   }.onErrorReturn {
-      val addressHex = appPreferences.selectedAccount()
-      return@onErrorReturn AccountModel(addressHex)
-    }
+    val addressHex = appPreferences.selectedAccount()
+    return@onErrorReturn AccountModel(addressHex)
+  }
 
   private fun getAccountByHex(addressHex: String): Account {
     return keystore.accounts.all().first { it.address.hex.equals(addressHex, ignoreCase = true) }

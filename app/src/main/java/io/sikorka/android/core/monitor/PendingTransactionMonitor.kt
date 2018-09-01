@@ -8,11 +8,8 @@ import io.sikorka.android.data.transactions.PendingTransactionDao
 import io.sikorka.android.utils.isDisposed
 import io.sikorka.android.utils.schedulers.AppSchedulers
 import timber.log.Timber
-import javax.inject.Inject
 
-class PendingTransactionMonitor
-@Inject
-constructor(
+class PendingTransactionMonitor(
   private val syncStatusProvider: SyncStatusProvider,
   private val pendingTransactionDao: PendingTransactionDao,
   private val appSchedulers: AppSchedulers,

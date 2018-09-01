@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <string name="account__create_account">Create an Account</string>
   <string name="account__delete_account_dialog_content">Are you sure you want to delete your account?</string>
   <string name="account__delete_account_dialog_title">Delete Account</string>
-  <string name="account__passphrase">Passphrase</string>
 
   <string name="account_creation__passphrase_empty">Passphrase can\'t be empty</string>
   <string name="account_creation__passphrase_missmatch">Passphrase confirmation doesn\'t match</string>
@@ -50,20 +49,24 @@
 
   <string name="main_nav__exit">Exit</string>
   <string name="main_nav__accounts">Accounts</string>
-  <string name="main_nav__network_statistics">%d Peers | %d of %d Blocks</string>
+  <plurals name="main_nav__network_statistics">
+    <item quantity="one">%1$d Peer | %2$d of %3$d Blocks</item>
+    <item quantity="other">%1$d Peers | %2$d of %3$d Blocks</item>
+  </plurals>
   <string name="main_nav__header_no_balance">No balance information</string>
   <string name="main_nav_balance_eth">%s ether</string>
 
-  <string name="notification__network_statistics">%d Peers | %d of %d Blocks</string>
+  <plurals name="notification__network_statistics">
+    <item quantity="one">%1$d Peer | %2$d of %3$d Blocks</item>
+    <item quantity="other">%1$d Peers | %2$d of %3$d Blocks</item>
+  </plurals>
 
   <string name="dialog__passphrase_title">Verify your Passphrase</string>
   <string name="dialog__passphrase_content">In order to proceed you need to insert the passphrase for this account.</string>
   <string name="dialog__input_hint">Passphrase</string>
-  <string name="dialog_passphrase__input_prefill" />
 
   <string name="deploy_contract__title">Deploy your Contract</string>
   <string name="deploy_contract__specify_contract_name">Please specify a contract name</string>
-  <string name="deploy_contract__answer_empty">Answer is empty.</string>
   <string name="deploy_contract__contract_creation_submitted">Contract creation submitted (%s)</string>
 
   <string name="confirm_deploy__gas_limit">Gas Limit</string>
@@ -73,20 +76,18 @@
   <string name="confirm_deploy__positive_button">Deploy</string>
   <string name="confirm_deploy__dialog_title">Deploy a sikorka contract</string>
   <string name="confirm_deploy__empty_passphrase">Passphrase can\'t be empty</string>
-  <string name="contract_interact__question_label">Question</string>
+
   <string name="main__loading_message">Please wait…</string>
   <string name="errors__generic_error">An error occurred.</string>
   <string name="main__contract_intration_dialog_title">Start contract interaction</string>
   <string name="main__contract_intration_dialog_content">Are you sure you want to interact with %s?</string>
-  <string name="contract_interact__answer_success">Answer was correct</string>
-  <string name="contract_interact__answer_wrong">Answer was wrong</string>
+
   <string name="contract_interact__generic_error">There was some error during the operation.</string>
-  <string name="contract_interact__contract_address">Deployed at\n%s</string>
   <string name="main__no_peers_available">No peers available</string>
 
   <string name="wizard__no_accounts_title">No accounts available</string>
   <string name="wizard__no_accounts_content">In order to proceed you have to either create or import an account.</string>
-  <string name="account_creation__password_short">You passphrase is short passphrase should be at least %d characters long.</string>
+  <string name="account_creation__password_short" tools:ignore="PluralsCandidate">You passphrase is short passphrase should be at least %d characters long.</string>
   <string name="account_management__delete_last_account_content">You must have at least one account. You cannot delete this account.</string>
   <string name="account_management__action_delete">Delete</string>
   <string name="account_management__action_export">Export</string>
@@ -141,7 +142,7 @@
   <string name="main_nav__pending_contracts">Pending Contracts</string>
   <string name="pending_contracts__title">Pending Contracts</string>
   <string name="pending_contract__no_data_label">No Pending Contracts…</string>
-  <string name="contract_deployment__status_success_notification">Contract %s has been successfully deployed by transaction %s</string>
+  <string name="contract_deployment__status_success_notification">Contract %1$s has been successfully deployed by transaction %2$s</string>
   <string name="notification_channel__deployment_status">Deployment Status Updates</string>
   <string name="deploy_contract__name">Contract Name</string>
   <string name="interact_contract__detector_address">Detector Address</string>
@@ -149,7 +150,7 @@
   <string name="select_detector__manual_dialog_title">Specify detector address</string>
   <string name="select_detector__manual_dialog_content">Please specify the hex address of the detector</string>
   <string name="select_detector__manual_dialog_hint">Detector address</string>
-  <string name="select_detector__manual_dialog_prefill" />
+
   <string name="deploy_contract__token_supply">Total token supply</string>
   <string name="deploy_detector__contract_tokens">Token supply</string>
   <string name="contract_deployment__transaction_sent_title">Contract transaction sent</string>
@@ -164,7 +165,7 @@
   <string name="deploy_contract__token_supply_empty">Token supply should not be empty</string>
   <string name="deploy_detector__token_supply_empty">Token supply cannot be empty</string>
   <string name="interact_contract__select_gas_before_transaction">Select gas before transaction</string>
-  <string name="contract_deployment__status_failed_notification">Contract %s deployment failed %s</string>
+  <string name="contract_deployment__status_failed_notification">Contract %1$s deployment failed %2$s</string>
   <string name="contract_interact__proceed_with_claiming">Claim Your Tokens</string>
   <string name="contract_interact__proceed_with_claiming_content">Do you want to proceed claiming your tokens?</string>
   <string name="contract_interact__select_method">Select contract method to interact with</string>
@@ -180,7 +181,7 @@
   <string name="preferences__balance_precision_key" translatable="false">pref_key_balance_precision</string>
   <string name="balance_precision__precision_digits_hint">Precision (digits)</string>
   <string name="balance_precision__invalid_input">Invalid input value</string>
-  <string name="balance_precision__invalid_range">You have to select a number between %d–%d</string>
+  <string name="balance_precision__invalid_range">You have to select a number between %1$d–%2$d</string>
   <string name="balance_precision__title">Select the number of decimal digits</string>
   <string name="account_export__invalid_passphrase">Could not decrypt the key with this passphrase.</string>
   <string name="account_import__invalid_passphrase">Could not decrypt the key with this passphrase.</string>
@@ -217,5 +218,27 @@
   <string name="file_selection__select_file">Select a file</string>
   <string name="file_selection__select_folder">Select a folder</string>
   <string name="file_selection__folder_hint">Long press a folder to select it.</string>
+  <string name="error_icon__content_description">The icon is displayed when the data could not be loaded due to some error.</string>
+  <string name="file_selection__icon_content_description">The file icon is visible when there is no content to display.</string>
+  <string name="file_selection__navigate_up_content_description">When pressed it navigates up on the folder hierarchy.</string>
+  <string name="account_management__more_actions_content_description">Shows a popup menu with actions for the account</string>
+  <string name="account_management__account_default_content_description">Represents the default account that will be used.</string>
+  <string name="main__debug_button">Debug Button</string>
+  <string name="accounts__passphrase_hint">Passphrase</string>
+  <string name="accounts__passphrase_confirmation_hint">Passphrase Confirmation</string>
+  <string name="pending_contract__address">Address</string>
+  <string name="pending_contract__transaction">Transaction</string>
+  <string name="main__header_icon_content_description">Application icon</string>
+  <string name="main__header__copy_account_content_description">When pressed copies the user account to clipboard</string>
+  <string name="file_selection__item_type_content_description">The icon represents the type of item file/folder</string>
+  <string name="detector_type__type_icon_description">The icon represents the type of detector</string>
+  <string name="find_detector__icon_content_description">The icon represents the detector type</string>
+  <string name="network_selection__ethereum_logo_content_description">The ethereum logo</string>
+  <string name="information_screen__logo_content_description">The application logo</string>
+  <string name="account_setup__key_graphic_content_description">Key icon representing a user\'s account</string>
+  <string name="peer_manager__empty_icon_content_description">Icon is shown when no data entries are found</string>
+  <string name="splash_screen__application_logo">The application logo</string>
+  <string name="main__nav_sync_content_description">Icons representing the light client\'s sync state</string>
+  <string name="account_export__select_directory_content_description">Opens the folder selection dialog when pressed</string>
 
 </resources>

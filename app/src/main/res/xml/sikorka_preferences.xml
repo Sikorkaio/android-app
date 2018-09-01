@@ -17,9 +17,8 @@
 
     <androidx.preference.Preference
         android:key="pref_key_peer_manager"
-        android:title="@string/preferences__manage_peers"
         android:summary="@string/preferences__manage_peers_summary"
-        />
+        android:title="@string/preferences__manage_peers" />
 
   </androidx.preference.PreferenceCategory>
 

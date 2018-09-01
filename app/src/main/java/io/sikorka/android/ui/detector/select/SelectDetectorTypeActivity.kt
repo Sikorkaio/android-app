@@ -13,7 +13,7 @@ import kotterknife.bindView
 
 class SelectDetectorTypeActivity : BaseActivity() {
 
-  private val detectors: androidx.recyclerview.widget.RecyclerView by bindView(R.id.select_detector_type__supported_detectors)
+  private val detectors: RecyclerView by bindView(R.id.select_detector_type__supported_detectors)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class SelectDetectorTypeActivity : BaseActivity() {
 
     detectors.apply {
       adapter = detectorTypeAdapter
-      layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@SelectDetectorTypeActivity)
+      layoutManager = LinearLayoutManager(this@SelectDetectorTypeActivity)
     }
   }
 

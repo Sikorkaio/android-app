@@ -1,16 +1,17 @@
 package io.sikorka.android.ui.contracts.pending
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import io.sikorka.android.R
 import io.sikorka.android.data.contracts.pending.PendingContract
 import kotterknife.bindView
 
 class PendingContractsAdapter :
-  androidx.recyclerview.widget.RecyclerView.Adapter<PendingContractsAdapter.PendingContractsViewHolder>() {
+  Adapter<PendingContractsAdapter.PendingContractsViewHolder>() {
 
   private var data: List<PendingContract> = emptyList()
 
@@ -31,7 +32,7 @@ class PendingContractsAdapter :
     return PendingContractsViewHolder(view)
   }
 
-  class PendingContractsViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+  class PendingContractsViewHolder(itemView: View) : ViewHolder(itemView) {
 
     private val address: TextView by bindView(R.id.pending_contract__contract_address)
     private val transaction: TextView by bindView(R.id.pending_contract__contract_transaction)

@@ -1,17 +1,16 @@
 package io.sikorka.android.ui.detector.bluetooth
 
 import android.bluetooth.BluetoothDevice
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import io.sikorka.android.R
 import kotterknife.bindView
-import javax.inject.Inject
 
-class FindDetectorAdapter
-@Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<FindDetectorViewHolder>() {
+class FindDetectorAdapter : Adapter<FindDetectorViewHolder>() {
 
   private var data: List<BluetoothDevice> = emptyList()
   private var onClick: ((device: BluetoothDevice) -> Unit)? = null
@@ -42,7 +41,7 @@ class FindDetectorAdapter
   }
 }
 
-class FindDetectorViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+class FindDetectorViewHolder(itemView: View) : ViewHolder(itemView) {
 
   private val detectorName: TextView by bindView(R.id.find_detector__detector_name)
 

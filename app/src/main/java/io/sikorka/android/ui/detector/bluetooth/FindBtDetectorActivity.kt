@@ -3,12 +3,11 @@ package io.sikorka.android.ui.detector.bluetooth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.core.view.isVisible
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.sikorka.android.R
 import io.sikorka.android.helpers.fail
@@ -18,43 +17,31 @@ import io.sikorka.android.ui.BaseActivity
 import io.sikorka.android.ui.contracts.deploydetectorcontract.DeployDetectorActivity
 import io.sikorka.android.ui.dialogs.progress
 import io.sikorka.android.utils.isDisposed
+import io.sikorka.android.utils.schedulers.AppSchedulers
 import kotlinx.android.synthetic.main.activity_find_detector.find_detector__detector_list
 import kotlinx.android.synthetic.main.activity_find_detector.find_detector__loading_group
 import kotlinx.android.synthetic.main.activity_find_detector.find_detector__no_result_group
 import kotlinx.android.synthetic.main.activity_find_detector.find_detector__swipe_layout
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import toothpick.Scope
-import toothpick.Toothpick
-import toothpick.smoothie.module.SmoothieSupportActivityModule
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
 
-  private lateinit var scope: Scope
+  private val btScanner: BtScanner by inject()
 
-  @Inject
-  lateinit var btScanner: BtScanner
+  private val btConnector: BtConnector by inject()
 
-  @Inject
-  lateinit var btConnector: BtConnector
+  private val presenter: FindBtDetectorPresenter by inject()
 
-  @Inject
-  lateinit var presenter: FindBtDetectorPresenter
+  private val detectorAdapter: FindDetectorAdapter by inject()
 
-  @Inject
-  lateinit var detectorAdapter: FindDetectorAdapter
-
+  private val schdulers: AppSchedulers by inject()
   private val compositeDisposable = CompositeDisposable()
   private var discoveryDisposable: Disposable? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Toothpick.openScope(PRESENTER_SCOPE).installModules(FindBtDetectorModule())
-    scope = Toothpick.openScopes(application, PRESENTER_SCOPE, this)
-    scope.installModules(SmoothieSupportActivityModule(this))
     super.onCreate(savedInstanceState)
-    Toothpick.inject(this, scope)
-
     setContentView(R.layout.activity_find_detector)
 
     if (!btScanner.btSupport()) {
@@ -79,7 +66,7 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
       )
       dialog.show()
 
-      btConnector.connect(device)
+      compositeDisposable += btConnector.connect(device)
         .flatMap { it.getDetectorEthAddress() }
         .subscribeOn(Schedulers.io())
         .doAfterTerminate {
@@ -100,10 +87,6 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
   override fun onDestroy() {
     detectorAdapter.setOnClickListener(null)
     presenter.detach()
-    Toothpick.closeScope(this)
-    if (isFinishing) {
-      Toothpick.closeScope(PRESENTER_SCOPE)
-    }
     compositeDisposable.clear()
     super.onDestroy()
   }
@@ -114,9 +97,10 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
     }
 
     discoveryDisposable = btScanner.discover(this)
-      .buffer(15, TimeUnit.SECONDS)
+      .buffer(15, TimeUnit.SECONDS, schdulers.io)
       .distinct()
       .first(emptyList())
+      .subscribeOn(schdulers.io)
       .observeOn(AndroidSchedulers.mainThread())
       .doAfterTerminate {
         find_detector__swipe_layout.isRefreshing = false
@@ -141,13 +125,8 @@ class FindBtDetectorActivity : BaseActivity(), FindBtDetectorView {
   private val longitude: Double
     get() = intent?.getDoubleExtra(LONGITUDE, 0.0) ?: fail("got a null value instead")
 
-  @javax.inject.Scope
-  @Target(AnnotationTarget.TYPE)
-  @Retention(AnnotationRetention.RUNTIME)
-  annotation class Presenter
-
   companion object {
-    var PRESENTER_SCOPE: Class<*> = Presenter::class.java
+
     const val BT_ACTIVATE_REQUEST_CODE = 198
     private const val LATITUDE = "io.sikorka.android.extras.LATITUDE"
     private const val LONGITUDE = "io.sikorka.android.extras.LONGITUDE"

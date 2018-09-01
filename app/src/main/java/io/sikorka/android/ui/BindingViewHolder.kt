@@ -1,8 +1,8 @@
 package io.sikorka.android.ui
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
-abstract class BindingViewHolder<in T>(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+abstract class BindingViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
   abstract fun bindTo(item: T)
 }

@@ -2,7 +2,7 @@ package io.sikorka.android.ui
 
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class DataAdapter<T, VH : androidx.recyclerview.widget.RecyclerView.ViewHolder> : androidx.recyclerview.widget.RecyclerView.Adapter<VH>() {
+abstract class DataAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
   private var data: List<T> = emptyList()
 
   override fun getItemCount(): Int = data.size

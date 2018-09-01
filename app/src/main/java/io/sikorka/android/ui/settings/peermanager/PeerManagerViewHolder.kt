@@ -1,6 +1,5 @@
 package io.sikorka.android.ui.settings.peermanager
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +7,12 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import io.sikorka.android.R
 import io.sikorka.android.core.configuration.peers.PeerEntry
 import kotterknife.bindView
 
-class PeerManagerViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+class PeerManagerViewHolder(itemView: View) : ViewHolder(itemView) {
 
   private val nodeId: TextView by bindView(R.id.peers__node_id)
   private val nodeAddress: TextView by bindView(R.id.peers__node_address)
@@ -43,11 +43,7 @@ class PeerManagerViewHolder(itemView: View) : androidx.recyclerview.widget.Recyc
   }
 
   fun selectionMode(selectionMode: Boolean) {
-    if (selectionMode) {
-      nodeSelected.isVisible = true
-    } else {
-      nodeSelected.isVisible = false
-    }
+    nodeSelected.isVisible = selectionMode
   }
 
   fun setChecked(checked: Boolean) {

@@ -3,11 +3,8 @@ package io.sikorka.android.core.configuration
 import android.content.res.AssetManager
 import io.sikorka.android.io.copyToFile
 import java.io.File
-import javax.inject.Inject
 
-class PeerHelper
-@Inject
-constructor(private val assetManager: AssetManager) {
+class PeerHelper(private val assetManager: AssetManager) {
 
   fun prepareStaticNodes(peerFile: String, assetFilename: String) {
     val file = File(peerFile)

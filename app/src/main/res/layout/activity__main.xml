@@ -40,8 +40,8 @@
           android:focusable="true"
           android:fontFamily="@font/roboto_medium"
           android:padding="8dp"
-          android:paddingEnd="16dp"
           android:paddingStart="16dp"
+          android:paddingEnd="16dp"
           android:text="@string/main_nav__exit"
           android:textColor="@color/black" />
 
@@ -49,8 +49,8 @@
           android:id="@+id/main__nav_debug_randomize"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingEnd="8dp"
           android:paddingStart="8dp"
+          android:paddingEnd="8dp"
           android:text="@string/main__nav_randomized_debug_location"
           android:translationX="8dp"
           android:visibility="gone"
@@ -58,25 +58,27 @@
 
       <TextView
           android:id="@+id/main__nav_debug_button"
-          android:visibility="gone"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="?attr/selectableItemBackground"
           android:clickable="true"
           android:focusable="true"
           android:padding="9dp"
-          android:text="Debug Button" />
+          android:text="@string/main__debug_button"
+          android:visibility="gone" />
 
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
+          android:paddingStart="8dp"
           android:paddingEnd="8dp"
-          android:paddingStart="8dp">
+          tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/main__nav_sync_content_description"
             android:padding="4dp"
             app:srcCompat="@drawable/ic_rss_feed_black_24dp" />
 
@@ -86,8 +88,8 @@
             android:layout_height="36dp"
             android:fontFamily="@font/roboto_light"
             android:gravity="start|center_vertical"
-            android:paddingEnd="8dp"
             android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:textSize="13sp"
             tools:text="0 Peers | 10205003 blocks" />
       </LinearLayout>

@@ -1,5 +1,6 @@
 package io.sikorka.android.ui.contracts.interact
 
+import io.reactivex.rxkotlin.plusAssign
 import io.sikorka.android.contract.DiscountContract
 import io.sikorka.android.core.GethNode
 import io.sikorka.android.core.contracts.model.ContractGas
@@ -13,11 +14,8 @@ import org.ethereum.geth.Address
 import org.threeten.bp.Instant.now
 import timber.log.Timber
 import java.math.BigInteger
-import javax.inject.Inject
 
-class ContractInteractPresenterImpl
-@Inject
-constructor(
+class ContractInteractPresenterImpl(
   private val contractRepository: ContractRepository,
   private val appSchedulers: AppSchedulers,
   private val gethNode: GethNode,
@@ -72,7 +70,7 @@ constructor(
     }
 
     ifNotNull(gas, passphrase) { gas, passphrase ->
-      contractRepository.transact({
+      disposables += contractRepository.transact({
         boundInterface.claimToken(it, data)
       }, passphrase, gas)
         .subscribeOn(appSchedulers.io)

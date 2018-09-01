@@ -4,32 +4,31 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import androidx.constraintlayout.widget.Group
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import io.sikorka.android.R
 import io.sikorka.android.ui.coloredSpan
 import io.sikorka.android.ui.dialogs.fileselection.Selection.DIRECTORY
 import io.sikorka.android.ui.dialogs.fileselection.Selection.FILE
 import java.io.File
 
-class FileSelectionDialog : androidx.fragment.app.DialogFragment() {
+class FileSelectionDialog : DialogFragment() {
 
-  private lateinit var fm: androidx.fragment.app.FragmentManager
+  private lateinit var fm: FragmentManager
 
   private lateinit var rootDirectory: File
-  private lateinit var fileList: androidx.recyclerview.widget.RecyclerView
+  private lateinit var fileList: RecyclerView
   private lateinit var upButton: ImageButton
   private lateinit var currentDirectory: TextView
-  private lateinit var emptyGroup: androidx.constraintlayout.widget.Group
+  private lateinit var emptyGroup: Group
 
   private lateinit var currentFile: File
   private lateinit var onSelection: (File) -> Unit
@@ -132,7 +131,7 @@ class FileSelectionDialog : androidx.fragment.app.DialogFragment() {
 
   companion object {
     private const val TAG = "io.sikorka.android.ui.dialogs.fileselection.FILE_SELECTION"
-    fun create(fm: androidx.fragment.app.FragmentManager, rootDirectory: File, showFiles: Boolean): FileSelectionDialog {
+    fun create(fm: FragmentManager, rootDirectory: File, showFiles: Boolean): FileSelectionDialog {
       return FileSelectionDialog().apply {
         this.rootDirectory = rootDirectory
         this.showFiles = showFiles

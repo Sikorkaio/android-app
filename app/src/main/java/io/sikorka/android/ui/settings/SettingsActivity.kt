@@ -12,6 +12,9 @@ class SettingsActivity : BaseActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_settings)
     setupToolbar()
+    supportFragmentManager.beginTransaction()
+      .replace(R.id.settings_screen__container, SikorkaPreferences())
+      .commit()
   }
 
   companion object {
